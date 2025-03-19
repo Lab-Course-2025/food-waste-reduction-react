@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
-import loginSvg from "./login.svg"; // Adjust the path based on your folder structure
+import loginSvg from "./../assets/login.svg";
 
-function App() {
+function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +20,7 @@ function App() {
         {/* Left side - Login Form */}
         <div className="w-full md:w-1/2 p-8 sm:p-12 bg-white ">
           <h1 className="text-3xl font-bold mb-8 text-center">Kyqu</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -70,7 +70,7 @@ function App() {
                 <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
               <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
-              Keni harruar passwordin?
+                Keni harruar passwordin?
               </a>
             </div>
 
@@ -95,21 +95,21 @@ function App() {
 
             <div className="mt-6 grid grid-cols-3 gap-3">
               <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <img 
-                  src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" 
+                <img
+                  src="https://www.svgrepo.com/show/303108/google-icon-logo.svg"
                   alt="Google"
                   className="h-5 object-contain"
                 />
               </button>
               <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <img 
+                <img
                   src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
                   alt="Facebook"
                   className="h-5 object-contain"
                 />
               </button>
               <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-              <img 
+                <img
                   src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
                   alt="Facebook"
                   className="h-5 object-contain"
@@ -130,4 +130,4 @@ function App() {
   );
 }
 
-export default App;
+export default LogIn;
