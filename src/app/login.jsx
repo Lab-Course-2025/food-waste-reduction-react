@@ -18,8 +18,8 @@ function App() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-5xl w-full flex rounded-2xl shadow-lg overflow-hidden">
         {/* Left side - Login Form */}
-        <div className="w-full md:w-1/2 p-8 sm:p-12 bg-white">
-          <h1 className="text-3xl font-bold mb-8">Login</h1>
+        <div className="w-full md:w-1/2 p-8 sm:p-12 bg-white ">
+          <h1 className="text-3xl font-bold mb-8 text-center">Kyqu</h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -31,7 +31,7 @@ function App() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-orange-500 transition-colors"
-                placeholder="Enter your email"
+                placeholder="filanfisteku@gmail.com"
                 required
               />
             </div>
@@ -46,13 +46,13 @@ function App() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-orange-500 transition-colors"
-                  placeholder="Enter your password"
+                  placeholder="Futni së paku 8 karaktere!"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -67,19 +67,19 @@ function App() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
                 />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
               <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
-                Forgot password?
+              Keni harruar passwordin?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2"
+              className="w-full bg-[#FF4C00FF] text-white py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2"
             >
-              <span>Login</span>
-              <ArrowRight size={20} />
+              <span>Kyqu</span>
+              {/* <ArrowRight size={20} /> */}
             </button>
           </form>
 
@@ -89,14 +89,14 @@ function App() {
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or login with</span>
+                <span className="px-2 bg-white text-gray-500">Apo kyqu me:</span>
               </div>
             </div>
 
             <div className="mt-6 grid grid-cols-3 gap-3">
               <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <img 
-                  src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" 
+                  src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" 
                   alt="Google"
                   className="h-5 object-contain"
                 />
@@ -109,7 +109,11 @@ function App() {
                 />
               </button>
               <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <Apple className="h-5 w-5" />
+              <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                  alt="Facebook"
+                  className="h-5 object-contain"
+                />
               </button>
             </div>
           </div>
