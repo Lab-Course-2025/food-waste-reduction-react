@@ -7,7 +7,7 @@ function App() {
 
   return (
     <div>
-      <p>Food Waste Reduction</p>
+      <p>Food Waste Reduction!</p>
     </div>
   );
 }
