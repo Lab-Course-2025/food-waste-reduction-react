@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import logo from "../assets/logo.png";
 
-const NewsletterFooter = () => {
+const Footer = () => {
   return (
     <>
       {/* Newsletter Subscription */}
@@ -68,4 +68,4 @@ const NewsletterFooter = () => {
   );
 };
 
-export default NewsletterFooter;
+export default Footer;
