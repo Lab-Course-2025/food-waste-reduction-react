@@ -26,9 +26,14 @@ export default function FoodDonationForm() {
 
   const handlePhotoChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({ ...prev, photo: e.target.files[0] }))
+      const file = e.target.files[0];
+      setFormData((prev) => ({
+        ...prev,
+        photo: file,
+        photoPreview: URL.createObjectURL(file), // Store the preview URL
+      }));
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -57,14 +62,20 @@ export default function FoodDonationForm() {
                 <h4 className="text-base font-medium mb-3">Detajet e Donacionit</h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex flex-col items-center justify-center border border-gray-300 rounded-md p-4 h-60 bg-gray-50 shadow-lg">
+                <div className="flex flex-col items-center justify-center border border-gray-300 rounded-md p-4 h-60 bg-gray-50 shadow-lg">
+                {formData.photoPreview ? (
+                    <img src={formData.photoPreview} alt="Preview" className="h-full w-full object-cover rounded-md" />
+                ) : (
+                    <>
                     <Camera size={32} className="text-gray-400 mb-1" />
                     <p className="text-xs text-gray-500 mb-1">Ngarko një Fotografi</p>
-                    <label className="cursor-pointer text-blue-500 hover:text-blue-600 text-xs">
-                      <span>Choose File</span>
-                      <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
-                    </label>
-                  </div>
+                    </>
+                )}
+                <label className="cursor-pointer text-blue-500 hover:text-blue-600 text-xs">
+                    <span>Choose File</span>
+                    <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
+                </label>
+                </div>
 
                   <div className="space-y-4">
                     <div>
