@@ -1,73 +1,70 @@
-// components/Header.js
 import { useState } from "react";
-import { Globe, Menu, X } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react";
+import logo from "../assets/logo.png";
 
-const Button = ({ children, className, variant, size, ...props }) => {
-  const baseClasses =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
-  const variantClasses = {
-    default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-  };
-  const sizeClasses = {
-    default: "h-9 px-4 py-2",
-    sm: "h-8 rounded-md px-3 text-xs",
-  };
-
-  return (
-    <button
-      className={`${baseClasses} ${variantClasses[variant || "default"]} ${sizeClasses[size || "default"]} ${className || ""}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
 
 const Header = () => {
+  // State for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b py-3 px-4 md:px-8">
+    <header className=" border-b fixed top-0 left-0 w-full z-50 bg-white py-3 px-4 md:px-8">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <span className="text-yellow-500 text-xl">👋</span>
-          <a href="/" className="font-bold text-gray-800">
+          {/* Replace heart emoji with logo */}
+          <img src={logo} alt="Logo" className="h-8" /> {/* Adjust the size of the logo */}
+          <a href="/" className="font-bold text-black">
+
             Ndihmo Tjetrin
           </a>
         </div>
 
-        <nav className="hidden md:flex space-x-6 text-sm text-gray-600 bold">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex space-x-6 text-sm text-black font-semibold">
           <a href="#">Kryefaqja</a>
-          <a href="#">Donacionet</a>
-          <a href="#">Regjistro një Familje</a>
-          <a href="#">Regjistro një Biznes</a>
+          <a href="#">Informata</a>
+          <a href="#">Regjistrimi si Donator</a>
+          <a href="#">Regjistrimi si Perfitues</a>
           <a href="#">Kontakt</a>
         </nav>
 
+        {/* Mobile Menu button */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="text-gray-600">
-            <Globe className="h-4 w-4 mr-1" /> Shqip
-          </Button>
-          <Button
+          <button variant="ghost" size="sm" className="text-black font-semibold">
+            <a href="#">Kyqu</a>
+          </button>
+          <button
             variant="ghost"
             size="sm"
             className="md:hidden text-gray-600"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+
+          </button>
         </div>
       </div>
 
+      {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden py-3 px-4 bg-white border-t">
           <nav className="flex flex-col space-y-3 text-sm text-gray-600">
-            <a href="#">Kryefaqja</a>
-            <a href="#">Donacionet</a>
-            <a href="#">Regjistro një Familje</a>
-            <a href="#">Regjistro një Biznes</a>
-            <a href="#">Kontakt</a>
+            <a href="#" className="py-1">
+              Kryefaqja
+            </a>
+            <a href="#" className="py-1">
+              Donacionet
+            </a>
+            <a href="#" className="py-1">
+              Regjistro një Familje
+            </a>
+            <a href="#" className="py-1">
+              Regjistro një Biznes
+            </a>
+            <a href="#" className="py-1">
+              Kontakt
+            </a>
+
           </nav>
         </div>
       )}
@@ -76,3 +73,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
