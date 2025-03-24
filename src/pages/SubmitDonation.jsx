@@ -46,7 +46,9 @@ export default function FoodDonationForm() {
       {/* Top Header */}
       <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
-          <ArrowLeft className="mr-3" size={20} />
+          <button className="cursor-pointer">
+            <ArrowLeft className="mr-3" size={20} />
+          </button>
           <span className="text-base font-medium">Add New Food Donation</span>
         </div>
       </div>
