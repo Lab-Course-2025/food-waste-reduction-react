@@ -14,6 +14,7 @@ const Header = () => {
           {/* Replace heart emoji with logo */}
           <img src={logo} alt="Logo" className="h-8" /> {/* Adjust the size of the logo */}
           <a href="/" className="font-bold text-black">
+
             Ndihmo Tjetrin
           </a>
         </div>
@@ -39,6 +40,7 @@ const Header = () => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+
           </button>
         </div>
       </div>
@@ -62,6 +64,7 @@ const Header = () => {
             <a href="#" className="py-1">
               Kontakt
             </a>
+
           </nav>
         </div>
       )}
@@ -70,3 +73,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
