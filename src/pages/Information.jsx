@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import loginSvg from "./../assets/login.svg";
+import Iphoto from "./../assets/information-photo.png";
 
 const LandingPage = () => {
   return (
@@ -27,8 +27,8 @@ const LandingPage = () => {
                 </div>
 
                 {/* Right Side Image */}
-                <div className="md:w-1/2">
-                  <img src={loginSvg} alt="Login Illustration" className="w-full h-full object-contain" />
+                <div className="h-full flex items-center justify-center hidden md:block">
+                  <img src={Iphoto} alt="Login Illustration" className="w-full h-full"/>
                 </div>
               </div>
             </div>

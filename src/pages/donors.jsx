@@ -1,10 +1,13 @@
 "use client"
 import { useState } from "react"
 import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import dphoto from "../assets/donors-photo.png"
+
 
 
 const Donors = ()=>  {
@@ -17,9 +20,9 @@ const Donors = ()=>  {
         {/* Hero Section */}
         <section className="relative">
           <div className="absolute inset-0 bg-black/60 z-10"></div>
-          <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
+          <div className="relative h-[600px] w-full overflow-hidden">
             <img
-              src="https://www.sandiegofoodbank.org/wp-content/uploads/2024/07/volunteer-hero-2048x581.jpg"
+              src={dphoto}
               alt="Food donation volunteers"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
@@ -75,12 +78,11 @@ const Donors = ()=>  {
               </div>
 
               <div className="flex items-start py-2">
-                <a
-                  href="/donator-registration"
+                <Link to="/recipient"
                   className="text-sm text-orange-500 hover:text-orange-600 hover:underline"
                 >
                   Dëshironi të regjistroheni si përfitues?
-                </a>
+                </Link>
               </div>
 
               <Button className="w-full hover:bg-orange-600 text-white">Regjistrohu</Button>

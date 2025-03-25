@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Lphoto from "../assets/Landing-photo.png"
 
 export default function FoodDonationPage() {
 
@@ -34,9 +36,9 @@ export default function FoodDonationPage() {
       <Header/>
       {/* Hero Section */}
       <section className="relative">
-        <div className="relative h-[300px] w-full bg-rose-200 md:h-[500px]">
+        <div className="relative h-[600px] w-full bg-rose-200">
         <img
-            src="https://www.sandiegofoodbank.org/wp-content/uploads/2024/07/volunteer-hero-2048x581.jpg"
+            src={Lphoto}
             alt="Food donation volunteers"
             className="absolute inset-0 w-full h-full object-cover object-center"
         />
@@ -47,12 +49,16 @@ export default function FoodDonationPage() {
                 <p className="mt-2 text-sm text-white">Ndaj ushqimet e panevojshme për njerëzit në nevojë</p>
               </div>
               <div className="mt-6 flex justify-center gap-4">
+              <Link to="/donors">
                 <Button className="rounded-md bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Dhuro Ushqim
+                  Regjistrohu si Donator
                 </Button>
+              </Link>
+              <Link to="/recipient">
                 <Button className="rounded-md border border-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Si funksionon?
+                  Regjistrohu si Perfitues
                 </Button>
+              </Link>  
               </div>
             </div>
           </div>
