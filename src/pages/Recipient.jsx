@@ -32,7 +32,7 @@ const Recipient = () => {
               Bashkohu me ne për të reduktuar mbetjet ushqimore dhe për të mbështetur komunitetet lokale.
             </p>
             <Button className="hover:bg-orange-600 text-white rounded-md px-6">
-              Bëhu vullnetar sot!
+              Regjistrohu Tani!
             </Button>
           </div>
         </section>

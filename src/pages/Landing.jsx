@@ -46,7 +46,7 @@ export default function FoodDonationPage() {
             <div className="mx-auto max-w-3xl px-4 text-center">
               <div className="inline-block rounded-lg px-6 py-4">
                 <h1 className="text-2xl font-bold text-white md:text-3xl">Së bashku për të ndihmuar tjerët!</h1>
-                <p className="mt-2 text-sm text-white">Ndaj ushqimet e panevojshme për njerëzit në nevojë</p>
+                <p className="mt-2 text-sm text-white">Duke u kujdesur të mos humbim ushqim, ushqejmë të tjerët në nevojë! </p>
               </div>
               <div className="mt-6 flex justify-center gap-4">
               <Link to="/donors">
