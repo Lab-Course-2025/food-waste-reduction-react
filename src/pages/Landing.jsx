@@ -78,7 +78,7 @@ export default function FoodDonationPage() {
                   <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
                     <div className="relative h-48 w-full">
                       <img
-                        src="/placeholder.svg?height=200&width=400"
+                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
                         alt="Hands holding food"
                         fill
                         className="object-cover"
