@@ -11,12 +11,14 @@ const Header = () => {
   const navigate = useNavigate()
 
   return (
+
     <header className="border-b fixed top-0 left-0 w-full z-50 bg-white py-3 px-4 md:px-8">
       <div className="container mx-auto flex items-center relative p-1">
         {/* Logo - Left */}
         <div className="absolute left-0 flex items-center gap-2">
           <img src={logo || "/placeholder.svg"} alt="Logo" className="h-8" />
           <Link to="/" className="font-bold text-black">
+
             Ndihmo Tjetrin
           </Link>
         </div>
@@ -44,6 +46,7 @@ const Header = () => {
         <div className="ml-auto md:hidden">
           <button className="text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+
           </button>
         </div>
       </div>
@@ -74,6 +77,7 @@ const Header = () => {
             >
               Kyqu
             </Link>
+
           </nav>
         </div>
       )}
