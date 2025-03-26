@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Lphoto from "../assets/Landing-photo.png"
 
 export default function FoodDonationPage() {
 
@@ -34,9 +36,9 @@ export default function FoodDonationPage() {
       <Header/>
       {/* Hero Section */}
       <section className="relative">
-        <div className="relative h-[300px] w-full bg-rose-200 md:h-[500px]">
+        <div className="relative h-[600px] w-full bg-rose-200">
         <img
-            src="https://www.sandiegofoodbank.org/wp-content/uploads/2024/07/volunteer-hero-2048x581.jpg"
+            src={Lphoto}
             alt="Food donation volunteers"
             className="absolute inset-0 w-full h-full object-cover object-center"
         />
@@ -44,15 +46,19 @@ export default function FoodDonationPage() {
             <div className="mx-auto max-w-3xl px-4 text-center">
               <div className="inline-block rounded-lg px-6 py-4">
                 <h1 className="text-2xl font-bold text-white md:text-3xl">Së bashku për të ndihmuar tjerët!</h1>
-                <p className="mt-2 text-sm text-white">Ndaj ushqimet e panevojshme për njerëzit në nevojë</p>
+                <p className="mt-2 text-sm text-white">Duke u kujdesur të mos humbim ushqim, ushqejmë të tjerët në nevojë! </p>
               </div>
               <div className="mt-6 flex justify-center gap-4">
+              <Link to="/donors">
                 <Button className="rounded-md bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Dhuro Ushqim
+                  Regjistrohu si Donator
                 </Button>
+              </Link>
+              <Link to="/recipient">
                 <Button className="rounded-md border border-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Si funksionon?
+                  Regjistrohu si Perfitues
                 </Button>
+              </Link>  
               </div>
             </div>
           </div>
@@ -72,7 +78,7 @@ export default function FoodDonationPage() {
                   <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
                     <div className="relative h-48 w-full">
                       <img
-                        src="/placeholder.svg?height=200&width=400"
+                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
                         alt="Hands holding food"
                         fill
                         className="object-cover"
@@ -85,7 +91,7 @@ export default function FoodDonationPage() {
                         onClick={handleDonateClick}
                         className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white hover:bg-orange-600"
                       >
-                        Dhuro
+                        Apliko!
                       </Button>
                     </div>
                   </div>

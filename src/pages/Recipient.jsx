@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
@@ -18,7 +19,7 @@ const Recipient = () => {
         {/* Hero Section */}
         <section className="relative">
           <div className="absolute inset-0 bg-black/60 z-10"></div>
-          <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
+          <div className="relative h-[600px] w-full overflow-hidden">
             <img
               src="https://www.centraltexasfoodbank.org/sites/default/files/styles/basic_page_hero/public/2020-11/volunteers-in-warehouse-covid2.jpg?itok=U-4LXJvV"
               alt="Food donation volunteers"
@@ -31,7 +32,7 @@ const Recipient = () => {
               Bashkohu me ne për të reduktuar mbetjet ushqimore dhe për të mbështetur komunitetet lokale.
             </p>
             <Button className="hover:bg-orange-600 text-white rounded-md px-6">
-              Bëhu vullnetar sot!
+              Regjistrohu Tani!
             </Button>
           </div>
         </section>
@@ -76,12 +77,11 @@ const Recipient = () => {
               </div>
 
               <div className="flex items-start py-2">
-                <a
-                  href="/donator-registration"
+              <Link to="/donors"
                   className="text-sm text-orange-500 hover:text-orange-600 hover:underline"
                 >
-                  Deshironi te regjistroheni si donator?
-                </a>
+                  Dëshironi të regjistroheni si donator?
+                </Link>
               </div>
 
               <Button className="w-full hover:bg-orange-600 text-white">Regjistrohu</Button>

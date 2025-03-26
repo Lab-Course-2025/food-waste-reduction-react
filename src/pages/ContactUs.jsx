@@ -48,7 +48,7 @@ export default function ContactUs() {
               <div className="grid md:grid-cols-2">
                 {/* Contact Form */}
                 <div className="p-8 md:p-12">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-8">Na Kontaktoni</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Na Kontaktoni</h2>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
