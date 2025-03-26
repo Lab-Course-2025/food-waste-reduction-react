@@ -91,7 +91,7 @@ export default function FoodDonationPage() {
                         onClick={handleDonateClick}
                         className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white hover:bg-orange-600"
                       >
-                        Dhuro
+                        Apliko!
                       </Button>
                     </div>
                   </div>
