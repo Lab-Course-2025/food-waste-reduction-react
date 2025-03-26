@@ -1,16 +1,38 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+    setError('');
+
+    try {
+      const response = await axios.post('http://food-waste-reduction-api.test/api/login', {
+        email,
+        password,
+      });
+
+      const { token } = response.data;
+      localStorage.setItem('authToken', token);
+      console.log('Login successful:', response.data);
+
+      navigate('/donors');
+    } catch (err) {
+      setError('Login failed. Please check your credentials.');
+      console.error('Login error:', err.response?.data || err.message);
+    }
     console.log('Login attempted:', { email, password, rememberMe });
   };
 
@@ -20,7 +42,6 @@ function LogIn() {
         {/* Left side - Login Form */}
         <div className="w-full md:w-1/2 p-8 sm:p-12 bg-white ">
           <h1 className="text-3xl font-bold mb-8 text-center">Kyqu</h1>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -82,6 +103,9 @@ function LogIn() {
               {/* <ArrowRight size={20} /> */}
             </button>
           </form>
+
+          {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
+
 
           <div className="mt-8">
             <div className="relative">
