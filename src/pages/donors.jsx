@@ -32,9 +32,11 @@ const Donors = ()=>  {
             <p className="max-w-2xl mx-auto mb-6 text-sm md:text-base">
             Bëhu dhurues sot dhe ndihmo në reduktimin e mbetjeve ushqimore ndërsa ushqen ata që kanë nevojë.
             </p>
+            <Link to="/submit">
             <Button className="hover:bg-orange-600 text-white rounded-md px-6">
               Regjistrohu Tani!
             </Button>
+            </Link>
           </div>
         </section>
 

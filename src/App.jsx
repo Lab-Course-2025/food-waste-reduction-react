@@ -24,6 +24,7 @@ function App() {
           <Route path="/recipient" element={<Recipient />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/login" element={<LogIn />} />
+          <Route path="/submit" element={<Submit />} />
         </Routes>
       </main>
     </div>
