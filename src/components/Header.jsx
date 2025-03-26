@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Menu, X } from "lucide-react"
+import { Menu, X, LogIn} from "lucide-react"
 import logo from "../assets/logo.png"
 
 const Header = () => {
@@ -24,17 +24,18 @@ const Header = () => {
         {/* Desktop Navigation - Dead Center */}
         <div className="hidden md:flex w-full justify-center">
           <nav className="flex items-center space-x-6 text-sm text-black font-semibold">
-            <Link to="/">Kryefaqja</Link>
-            <Link to="/information">Informata</Link>
-            <Link to="/donors">Regjistrimi si Donator</Link>
-            <Link to="/recipient">Regjistrimi si Perfitues</Link>
-            <Link to="/contact-us">Kontakt</Link>
+            <Link to="/" className="hover:text-[#FF4C00FF] transition-colors duration-200">Kryefaqja</Link>
+            <Link to="/information" className="hover:text-[#FF4C00FF] transition-colors duration-200">Informata</Link>
+            <Link to="/donors" className="hover:text-[#FF4C00FF] transition-colors duration-200">Regjistrimi si Donator</Link>
+            <Link to="/recipient" className="hover:text-[#FF4C00FF] transition-colors duration-200">Regjistrimi si Perfitues</Link>
+            <Link to="/contact-us" className="hover:text-[#FF4C00FF] transition-colors duration-200">Kontakt</Link>
           </nav>
         </div>
 
         {/* Login - Right */}
         <div className="absolute right-0 hidden md:block">
-          <Link to="/login" className="text-black font-semibold hover:text-gray-700 transition-colors">
+          <Link to="/login" className="text-black font-semibold text-sm hover:text-[#FF4C00FF] transition-colors duration-200 flex items-center gap-2">
+          <LogIn className="w-6 h-6"/>
             Kyqu
           </Link>
         </div>
@@ -42,7 +43,7 @@ const Header = () => {
         {/* Mobile Menu button */}
         <div className="ml-auto md:hidden">
           <button className="text-gray-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
           </button>
         </div>
       </div>
