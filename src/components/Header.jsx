@@ -35,7 +35,7 @@ const Header = () => {
 
         {/* Desktop Navigation - Dead Center */}
         <div className="hidden md:flex w-full justify-center">
-          <nav className="flex items-center space-x-6 text-sm text-black font-semibold">
+          <nav className="flex items-center space-x-6 text-sm text-black font-medium">
             <NavLink to="/" className="hover:text-[#FF4C00FF] transition-colors duration-200">
               Kryefaqja
             </NavLink>
