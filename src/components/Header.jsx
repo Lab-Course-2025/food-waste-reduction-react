@@ -60,8 +60,8 @@ const Header = () => {
             to="/login"
             className="text-black font-semibold text-sm hover:text-[#FF4C00FF] transition-colors duration-200 flex items-center gap-2"
           >
-            <LogIn className="w-6 h-6" />
             Kyqu
+            <LogIn className="w-6 h-6" />
           </Link>
         </div>
 
