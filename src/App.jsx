@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom"
-//import "./App.css"
+import "./App.css"
 import "./index.css"
 import ScrollToTop from "./components/ScrollToTop"
 //import Header from "./components/Header"
@@ -10,6 +10,7 @@ import Recipient from "./pages/Recipient"
 import ContactUs from "./pages/ContactUs"
 import LogIn from "./pages/LogIn"
 import Submit from "./pages/SubmitDonation"
+import DonacionetAktive from "./pages/DonacionetAktive"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/submit" element={<Submit />} />
+          <Route path="/donacionetaktive" element={<DonacionetAktive />} />
         </Routes>
       </main>
     </div>

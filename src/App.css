@@ -1,42 +1,56 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../src/assets/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400; /* Regular */
+  font-style: normal;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../src/assets/fonts/Montserrat/Montserrat-Medium.ttf') format('truetype');
+  font-weight: 500; /* Bold */
+  font-style: normal;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../src/assets/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../src/assets/fonts/Montserrat/Montserrat-ExtraBold.ttf') format('truetype');
+  font-weight: 800; /* Extra Bold */
+  font-style: normal;
 }
 
-.card {
-  padding: 2em;
+@font-face {
+  font-family: 'Roboto';
+  src: url('../src/assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
 }
 
-.read-the-docs {
-  color: #888;
+@font-face {
+  font-family: 'Roboto';
+  src: url('../src/assets/fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
 }
+
+@import "tailwindcss";
+
+@theme{
+  --font-montserrat: Montserrat, "sans-serif";
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif; 
+} 
