@@ -25,7 +25,7 @@ export default function DonacionetAktive() {
   };
 
   return (
-    <section className="py-1">
+    <section className="min-h-screen w-full flex flex-col overflow-auto">
         {/* Header */}
     <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
