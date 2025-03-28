@@ -72,9 +72,9 @@ export default function FoodDonationPage() {
             <h2 className="py-6 text-center text-2xl font-bold">Donacionet Aktive</h2>
 
             {/* Scrollable donation container */}
-            <div className="max-h-[600px] overflow-y-auto px-4 pb-6">
+            <div className="px-4 pb-6">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+                {[1, 2, 3].map((item) => (
                   <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
                     <div className="relative h-48 w-full">
                       <img
@@ -89,7 +89,7 @@ export default function FoodDonationPage() {
                       <p className="mt-1 text-sm text-gray-500">Ushqime të ndryshme për familjet në nevojë</p>
                       <Button
                         onClick={handleDonateClick}
-                        className="mt-4 w-full rounded-md bg-orange-500 py-2 font-medium text-white hover:bg-orange-600"
+                        className="mt-4 w-full rounded-md py-2 font-medium text-white hover:bg-orange-600"
                       >
                         Apliko!
                       </Button>
@@ -99,23 +99,12 @@ export default function FoodDonationPage() {
               </div>
             </div>
 
-            {/* Scroll indicator */}
-            {/* <div className="flex justify-center py-4 border-t">
-              <Button
-                className="rounded-full p-2 hover:bg-gray-100 text-gray-400"
-                onClick={() => {
-                  const donationContainer = document.querySelector(".overflow-y-auto")
-                  if (donationContainer) {
-                    donationContainer.scrollBy({
-                      top: 300,
-                      behavior: "smooth",
-                    })
-                  }
-                }}
-              >
-                <ArrowDown className="h-6 w-6" />
-              </Button>
-            </div> */}
+            {/*Trego më shumë button*/}
+            <div className="flex justify-center py-4 border-t">
+              <Link to="/donacionetaktive">
+              <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
