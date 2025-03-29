@@ -1,16 +1,18 @@
-import { Routes, Route } from "react-router-dom";
-import "./App.css";
-import "./index.css";
-import ScrollToTop from "./components/ScrollToTop";
+
+import { Routes, Route } from "react-router-dom"
+import "./App.css"
+import "./index.css"
+import ScrollToTop from "./components/ScrollToTop"
 //import Header from "./components/Header"
-import Landing from "./pages/Landing";
-import Information from "./pages/Information";
-import Donors from "./pages/donors";
-import Recipient from "./pages/Recipient";
-import ContactUs from "./pages/ContactUs";
-import LogIn from "./pages/LogIn";
-import Submit from "./pages/SubmitDonation";
-import DonacionetAktive from "./pages/DonacionetAktive";
+import Landing from "./pages/Landing"
+import Information from "./pages/Information"
+import Donors from "./pages/donors"
+import Recipient from "./pages/Recipient"
+import ContactUs from "./pages/ContactUs"
+import LogIn from "./pages/LogIn"
+import Submit from "./pages/SubmitDonation"
+import DonacionetAktive from "./pages/DonacionetAktive"
+
 
 function App() {
   return (
@@ -30,7 +32,10 @@ function App() {
         </Routes>
       </main>
     </div>
-  );
+
+  )
 }
 
-export default App;
+export default App
+
+
