@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom"
 import "./App.css"
 import "./index.css"
@@ -11,6 +12,7 @@ import ContactUs from "./pages/ContactUs"
 import LogIn from "./pages/LogIn"
 import Submit from "./pages/SubmitDonation"
 import DonacionetAktive from "./pages/DonacionetAktive"
+
 
 function App() {
   return (
@@ -30,8 +32,10 @@ function App() {
         </Routes>
       </main>
     </div>
+
   )
 }
 
 export default App
+
 
