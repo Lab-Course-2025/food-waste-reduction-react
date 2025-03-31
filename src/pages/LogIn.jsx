@@ -17,9 +17,10 @@ function LogIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     try {
-      const response = await axios.post('http://food-waste-reduction-api.test/api/login', {
+      const response = await axios.post(`${apiUrl}/login`, {
         email,
         password,
       });
