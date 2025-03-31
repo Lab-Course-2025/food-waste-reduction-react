@@ -9,7 +9,13 @@ import Input from "../components/Input";
 import dphoto from "../assets/donors-photo.png";
 import axios from 'axios';
 
-
+// Define the cities as an array
+const cities = [
+  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan", 
+  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas", 
+  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik", 
+  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
+];
 
 const Donors = () => {
 
@@ -211,31 +217,11 @@ const Donors = () => {
                   <option className="text-gray-400" value="" disabled>
                     Zgjidh qytetin
                   </option>
-                  <option value="Prishtinë">Prishtinë</option>
-                  <option value="Prizren">Prizren</option>
-                  <option value="Pejë">Pejë</option>
-                  <option value="Gjakovë">Gjakovë</option>
-                  <option value="Mitrovicë">Mitrovicë</option>
-                  <option value="Ferizaj">Ferizaj</option>
-                  <option value="Gjilan">Gjilan</option>
-                  <option value="Vushtrri">Vushtrri</option>
-                  <option value="Podujevë">Podujevë</option>
-                  <option value="Suharekë">Suharekë</option>
-                  <option value="Rahovec">Rahovec</option>
-                  <option value="Malishevë">Malishevë</option>
-                  <option value="Drenas">Drenas</option>
-                  <option value="Lipjan">Lipjan</option>
-                  <option value="Kamenicë">Kamenicë</option>
-                  <option value="Skenderaj">Skenderaj</option>
-                  <option value="Deçan">Deçan</option>
-                  <option value="Istog">Istog</option>
-                  <option value="Dragash">Dragash</option>
-                  <option value="Kaçanik">Kaçanik</option>
-                  <option value="Shtime">Shtime</option>
-                  <option value="Fushë Kosovë">Fushë Kosovë</option>
-                  <option value="Obiliq">Obiliq</option>
-                  <option value="Klinë">Klinë</option>
-                  <option value="Novobërdë">Novobërdë</option>
+                  {cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
                 </select>
                 {errors["address.city"] && (
                   <p className="text-red-500 text-sm font-regular mt-1">
