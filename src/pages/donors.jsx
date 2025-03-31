@@ -202,8 +202,46 @@ const Donors = () => {
                 <label htmlFor="city" className="block text-sm font-medium mb-1">
                   Qyteti
                 </label>
-                <Input name="address.city" value={formData.address.city} onChange={handleChange} placeholder="Mitrovicë" className="w-full border-gray-300" />
-                {errors["address.city"] && <p className="text-red-500 text-sm font-regular mt-1">{errors["address.city"]}</p>}
+                <select
+                  name="address.city"
+                  value={formData.address.city}
+                  onChange={handleChange}
+                  className="w-full shadow-sm px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:border-orange-500 transition-colors"
+                >
+                  <option className="text-gray-400" value="" disabled>
+                    Zgjidh qytetin
+                  </option>
+                  <option value="Prishtinë">Prishtinë</option>
+                  <option value="Prizren">Prizren</option>
+                  <option value="Pejë">Pejë</option>
+                  <option value="Gjakovë">Gjakovë</option>
+                  <option value="Mitrovicë">Mitrovicë</option>
+                  <option value="Ferizaj">Ferizaj</option>
+                  <option value="Gjilan">Gjilan</option>
+                  <option value="Vushtrri">Vushtrri</option>
+                  <option value="Podujevë">Podujevë</option>
+                  <option value="Suharekë">Suharekë</option>
+                  <option value="Rahovec">Rahovec</option>
+                  <option value="Malishevë">Malishevë</option>
+                  <option value="Drenas">Drenas</option>
+                  <option value="Lipjan">Lipjan</option>
+                  <option value="Kamenicë">Kamenicë</option>
+                  <option value="Skenderaj">Skenderaj</option>
+                  <option value="Deçan">Deçan</option>
+                  <option value="Istog">Istog</option>
+                  <option value="Dragash">Dragash</option>
+                  <option value="Kaçanik">Kaçanik</option>
+                  <option value="Shtime">Shtime</option>
+                  <option value="Fushë Kosovë">Fushë Kosovë</option>
+                  <option value="Obiliq">Obiliq</option>
+                  <option value="Klinë">Klinë</option>
+                  <option value="Novobërdë">Novobërdë</option>
+                </select>
+                {errors["address.city"] && (
+                  <p className="text-red-500 text-sm font-regular mt-1">
+                    {errors["address.city"]}
+                  </p>
+                )}
               </div>
 
               <div>
