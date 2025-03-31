@@ -135,10 +135,10 @@ const Donors = () => {
 
         {/* Registration Form */}
         <section className="py-12 px-4">
-          <div className="max-w-md mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
+          <div className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
             <h2 className="text-xl font-bold text-center mb-8">Forma e Regjistrimit të Donatorëve</h2>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="identifier" className="block text-sm font-medium mb-1">
                   Emri i biznesit
@@ -261,7 +261,7 @@ const Donors = () => {
                 {errors.password && <p className="text-red-500 text-sm font-regular mt-1">{errors.password}</p>}
               </div>
 
-              <div className="flex items-start py-2">
+              <div className="flex items-start py-2 md:col-span-2">
                 <Link to="/recipient"
                   className="text-sm text-orange-500 hover:text-orange-600 hover:underline"
                 >
@@ -269,7 +269,7 @@ const Donors = () => {
                 </Link>
               </div>
 
-              <Button className="w-full hover:bg-orange-600 text-white">Regjistrohu</Button>
+              <Button className="w-full hover:bg-orange-600 text-white md:col-span-2">Regjistrohu</Button>
             </form>
           </div>
         </section>
