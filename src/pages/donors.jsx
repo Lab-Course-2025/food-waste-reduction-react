@@ -40,7 +40,7 @@ const Donors = () => {
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
       if (!formData[key].trim()) {
-        newErrors[key] = "Kjo fushë është e nevojshme. ";
+        newErrors[key] = "*E nevojshme. ";
       }
     });
     setErrors(newErrors);
@@ -106,7 +106,7 @@ const Donors = () => {
                   Emri i biznesit
                 </label>
                 <Input name="business_name" value={formData.business_name} onChange={handleChange} placeholder="Emri i biznesit" className="w-full border-gray-300" />
-                {errors.business_name && <p className="text-red-500 text-sm font-semibold  mt-1 font-semibold  mt-1">{errors.business_name}</p>}
+                {errors.business_name && <p className="text-red-500 text-sm font-regular  mt-1">{errors.business_name}</p>}
               </div>
 
               <div>
@@ -114,7 +114,7 @@ const Donors = () => {
                   Numri i biznesit
                 </label>
                 <Input name="business_number" value={formData.business_number} onChange={handleChange} placeholder="Numri i biznesit" className="w-full border-gray-300" />
-                {errors.business_number && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.business_number}</p>}
+                {errors.business_number && <p className="text-red-500 text-sm font-regular  mt-1">{errors.business_number}</p>}
               </div>
 
               <div>
@@ -122,7 +122,7 @@ const Donors = () => {
                   Emri i personit pergjegjes
                 </label>
                 <Input name="contact_first_name" value={formData.contact_first_name} onChange={handleChange} placeholder="Emri i personit pergjegjes" className="w-full border-gray-300" />
-                {errors.contact_first_name && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.contact_first_name}</p>}
+                {errors.contact_first_name && <p className="text-red-500 text-sm font-regular  mt-1">{errors.contact_first_name}</p>}
               </div>
 
               <div>
@@ -130,7 +130,7 @@ const Donors = () => {
                   Mbiemri i personit pergjegjes
                 </label>
                 <Input name="contact_last_name" value={formData.contact_last_name} onChange={handleChange} placeholder="Mbiemri i personit pergjegjes" className="w-full border-gray-300" />
-                {errors.contact_last_name && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.contact_last_name}</p>}
+                {errors.contact_last_name && <p className="text-red-500 text-sm font-regular  mt-1">{errors.contact_last_name}</p>}
               </div>
 
               <div>
@@ -138,7 +138,7 @@ const Donors = () => {
                   Pozita e personit pergjegjes
                 </label>
                 <Input name="contact_title" value={formData.contact_title} onChange={handleChange} placeholder="Pozita e personit pergjegjes" className="w-full border-gray-300" />
-                {errors.contact_title && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.contact_title}</p>}
+                {errors.contact_title && <p className="text-red-500 text-sm font-regular  mt-1">{errors.contact_title}</p>}
               </div>
 
               <div>
@@ -146,7 +146,7 @@ const Donors = () => {
                   Numri i telefonit i personit pergjegjes
                 </label>
                 <Input name="contact_phone" value={formData.contact_phone} onChange={handleChange} placeholder="+355 69 XXX XXXX" className="w-full border-gray-300" />
-                {errors.contact_phone && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.contact_phone}</p>}
+                {errors.contact_phone && <p className="text-red-500 text-sm font-regular  mt-1">{errors.contact_phone}</p>}
               </div>
 
               <div>
@@ -162,7 +162,7 @@ const Donors = () => {
                   placeholder="emri.mbiemri@gmail.com"
                   className="w-full border-gray-300"
                 />
-                {errors.email && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-red-500 text-sm font-regular  mt-1">{errors.email}</p>}
               </div>
 
               <div>
@@ -170,7 +170,7 @@ const Donors = () => {
                   Password
                 </label>
                 <Input name="password" value={formData.password} onChange={handleChange} type="password" placeholder="password" className="w-full border-gray-300" />
-                {errors.password && <p className="text-red-500 text-sm font-semibold  mt-1">{errors.password}</p>}
+                {errors.password && <p className="text-red-500 text-sm font-regular  mt-1">{errors.password}</p>}
               </div>
 
               <div className="flex items-start py-2">
