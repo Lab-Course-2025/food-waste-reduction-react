@@ -11,9 +11,9 @@ import axios from 'axios';
 
 // Define the cities as an array
 const cities = [
-  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan", 
-  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas", 
-  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik", 
+  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
+  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
+  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
   "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
 ];
 
@@ -212,10 +212,11 @@ const Donors = () => {
                   name="address.city"
                   value={formData.address.city}
                   onChange={handleChange}
-                  className="w-full shadow-sm px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:border-orange-500 transition-colors"
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.address.city === "" ? "text-gray-500" : "text-black"
+                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
                 >
                   <option className="text-gray-400" value="" disabled>
-                    Zgjidh qytetin
+                    Zgjedh qytetin
                   </option>
                   {cities.map((city) => (
                     <option key={city} value={city}>
