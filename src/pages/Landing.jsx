@@ -1,47 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Lphoto from "../assets/Landing-photo.png"
+import Lphoto from "../assets/Landing-photo.png";
 
 export default function FoodDonationPage() {
 
   // Handle donation button click
   const handleDonateClick = () => {
-    setShowDonationForm(true)
+    setShowDonationForm(true);
     // Scroll to form
     window.scrollTo({
       top: 0,
       behavior: "smooth",
-    })
-  }
+    });
+  };
 
   // Handle learn more button click
   const handleLearnMoreClick = () => {
-    const processSection = document.getElementById("process-section")
+    const processSection = document.getElementById("process-section");
     if (processSection) {
-      processSection.scrollIntoView({ behavior: "smooth" })
+      processSection.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <Header/>
       {/* Hero Section */}
       <section className="relative">
         <div className="relative h-[600px] w-full bg-rose-200">
-        <img
+          <img
             src={Lphoto}
             alt="Food donation volunteers"
             className="absolute inset-0 w-full h-full object-cover object-center"
-        />
+          />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="mx-auto max-w-3xl px-4 text-center">
               <div className="inline-block rounded-lg px-6 py-4">
@@ -49,16 +45,16 @@ export default function FoodDonationPage() {
                 <p className="mt-2 text-sm text-white">Duke u kujdesur të mos humbim ushqim, ushqejmë të tjerët në nevojë! </p>
               </div>
               <div className="mt-6 flex justify-center gap-4">
-              <Link to="/donors">
-                <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Regjistrohu si Donator
-                </Button>
-              </Link>
-              <Link to="/recipient">
-                <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
-                  Regjistrohu si Perfitues
-                </Button>
-              </Link>  
+                <Link to="/donors">
+                  <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
+                    Regjistrohu si Donator
+                  </Button>
+                </Link>
+                <Link to="/recipient">
+                  <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
+                    Regjistrohu si Perfitues
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -102,7 +98,7 @@ export default function FoodDonationPage() {
             {/*Trego më shumë button*/}
             <div className="flex justify-center py-4 border-t">
               <Link to="/donacionetaktive">
-              <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+                <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
               </Link>
             </div>
           </div>
@@ -195,10 +191,7 @@ export default function FoodDonationPage() {
           </button>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer/>
     </div>
-  )
+  );
 }
 

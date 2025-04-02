@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import dphoto from "../assets/donors-photo.png";
@@ -101,8 +99,6 @@ const Donors = () => {
 
   return (
     <div className="flex flex-col min-h-screen" >
-      {/* Header */}
-      < Header />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative">
@@ -221,9 +217,6 @@ const Donors = () => {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div >
   );
 };
