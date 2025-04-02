@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import "./index.css";
-import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./pages/Landing";
 import Information from "./pages/Information";
 import Donors from "./pages/Donors";
