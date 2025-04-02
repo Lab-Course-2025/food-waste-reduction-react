@@ -1,9 +1,7 @@
-"use client"
-import { useState } from "react"
-import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+"use client";
+import { useState } from "react";
+import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 
@@ -12,9 +10,6 @@ const Recipient = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <Header/>
-
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative">
@@ -77,7 +72,7 @@ const Recipient = () => {
               </div>
 
               <div className="flex items-start py-2">
-              <Link to="/donors"
+                <Link to="/donors"
                   className="text-sm text-orange-500 hover:text-orange-600 hover:underline"
                 >
                   Dëshironi të regjistroheni si donator?
@@ -91,11 +86,8 @@ const Recipient = () => {
 
         {/* Newsletter */}
       </main>
-
-      {/* Footer */}
-      <Footer/>
     </div>
-  )
-}
+  );
+};
 
 export default Recipient;
