@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { ArrowDown } from "lucide-react";
 import Button from "../components/Button";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { ArrowLeft, Camera } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { ArrowLeft, Camera } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function DonacionetAktive() {
   const [showDonationForm, setShowDonationForm] = useState(false); // Fixed missing state
@@ -26,17 +24,17 @@ export default function DonacionetAktive() {
 
   return (
     <section className="min-h-screen w-full flex flex-col overflow-auto">
-        {/* Header */}
-    <div className="bg-white border-b px-6 py-4">
+      {/* Header */}
+      <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
-        <Link to="/">
-        <button className="cursor-pointer">
-            <ArrowLeft className="mr-3 mt-2" size={20} />
-        </button>
-        </Link>
-        <span className="text-base font-medium">Donactionet Aktive</span>
+          <Link to="/">
+            <button className="cursor-pointer">
+              <ArrowLeft className="mr-3 mt-2" size={20} />
+            </button>
+          </Link>
+          <span className="text-base font-medium">Donactionet Aktive</span>
         </div>
-    </div>
+      </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 m-10">
         <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
           <h2 className="py-6 text-center text-2xl font-bold">Donacionet Aktive</h2>

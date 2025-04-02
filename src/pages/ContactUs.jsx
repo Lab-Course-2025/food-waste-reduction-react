@@ -1,5 +1,5 @@
-"use client"
-import { useState } from "react"
+"use client";
+import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
@@ -12,8 +12,8 @@ const Textarea = ({ className, ...props }) => {
       className={`flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${className || ""}`}
       {...props}
     />
-  )
-}
+  );
+};
 
 export default function ContactUs() {
   // Contact form state
@@ -21,23 +21,21 @@ export default function ContactUs() {
     name: "",
     email: "",
     message: "",
-  })
+  });
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
+    e.preventDefault();
+    console.log("Form submitted:", formData);
     // Here you would typically send the data to your backend
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <Header/>
       <main className="flex-1 pt-16">
         {/* Hero Section */}
 
@@ -128,10 +126,7 @@ export default function ContactUs() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <Footer/>
     </div>
-  )
+  );
 }
 
