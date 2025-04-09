@@ -51,7 +51,7 @@ export default function DonationDashboard() {
         </div>
       </header>
 
-      <section className="ml-20 mr-20">
+      <section className="md:ml-20 md:mr-20 ml-10 mr-10">
         <h2 className="text-xl font-bold mb-2">Donacionet e mia</h2>
         <p className="text-gray-600 mb-8">Ndjek dhe menaxho dhurimet e tua bamirëse</p>
 
@@ -80,7 +80,7 @@ export default function DonationDashboard() {
         {/* </Link> */}
       </section>
 
-      <section className="ml-20 mr-20 mt-10">
+      <section className="md:ml-20 md:mr-20 ml-10 mr-10 mt-10">
         <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4">Historia e Donacioneve</h2>
 
         <div className="overflow-x-auto">
