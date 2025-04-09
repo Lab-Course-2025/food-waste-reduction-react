@@ -72,12 +72,11 @@ export default function FoodDonationPage() {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3].map((item) => (
                   <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
-                    <div className="relative h-48 w-full">
+                    <div className="relative w-full aspect-w-16 aspect-h-9">
                       <img
                         src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
                         alt="Hands holding food"
-                        fill
-                        className="object-cover"
+                        className="h-full w-full object-cover"
                       />
                     </div>
                     <div className="p-4">

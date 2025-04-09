@@ -32,7 +32,7 @@ export default function DonacionetAktive() {
               <ArrowLeft className="mr-3 mt-2" size={20} />
             </button>
           </Link>
-          <span className="text-base font-medium">Donactionet Aktive</span>
+          <span className="text-base font-medium">Donacionet Aktive</span>
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 m-10">
@@ -44,12 +44,12 @@ export default function DonacionetAktive() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
                 <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
-                  <div className="relative h-48 w-full">
-                    <img
-                      src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                      alt="Hands holding food"
-                      className="w-full h-full object-cover" // Fixed the fill issue
-                    />
+                  <div className="relative w-full aspect-w-16 aspect-h-9">
+                      <img
+                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                        alt="Hands holding food"
+                        className="h-full w-full object-cover"
+                      />
                   </div>
                   <div className="p-4">
                     <h3 className="font-medium">Pako ushqimi {item}</h3>
