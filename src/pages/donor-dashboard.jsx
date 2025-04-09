@@ -80,6 +80,45 @@ export default function DonationDashboard() {
         {/* </Link> */}
       </section>
 
+      <section className="ml-20 mr-20 mt-10">
+        <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4">Historia e Donacioneve</h2>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-gray-500 border-b">
+                <th className="pb-4 font-medium">PËRSHKRIMI</th>
+                <th className="pb-4 font-medium">PËRFITUESI</th>
+                <th className="pb-4 font-medium">VLERA</th>
+                <th className="pb-4 font-medium">STATUSI</th>
+                <th className="pb-4 font-medium">DATA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {donations.map((donation) => (
+                <tr key={donation.id} className="border-b bg-white px-6 py-4">
+                  <td className="py-4 px-6">{donation.description}</td>
+                  <td className="py-4 px-6">{donation.initiative}</td>
+                  <td className="py-4 px-6">{donation.amount}€</td>
+                  <td className="py-4 px-6">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        donation.status === "Kompletuar"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {donation.status}
+                    </span>
+                  </td>
+                  <td className="py-4">{donation.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       
     </div>
   )
