@@ -119,7 +119,9 @@ export default function DonationDashboard() {
         </div>
       </section>
 
-      
+      <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
+        <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
+      </footer>
     </div>
   )
 }
