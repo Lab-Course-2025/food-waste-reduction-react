@@ -93,7 +93,7 @@ const Recipient = () => {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiUrl}/recipients/register`, formData);
       console.log("Success:", response.data);
-      navigate('/LogIn');
+      navigate('/login');
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
       // alert("Registration failed!");
