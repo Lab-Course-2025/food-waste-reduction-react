@@ -1,26 +1,59 @@
-"use client";
-
 import { useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { ArrowLeft, Camera } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
+
+const cities = [
+  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
+  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
+  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
+  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
+];
+
 export default function FoodDonationForm() {
   const [formData, setFormData] = useState({
     donationName: "",
     foodCategory: "",
     expirationDate: "",
+    isCooked: "raw", // "cooked" or "raw"
+    packagingStatus: "",
     transportAddress: "",
     transportDate: "",
     transportTime: "",
     additionalNotes: "",
     photo: null,
+    address: {
+      street: "",
+      postcode: "",
+      city: "",
+      country: "Kosova", // Default value since it's fixed
+    }
   });
+  const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Handle nested address fields
+    if (name.startsWith("address.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        address: { ...prev.address, [field]: value },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+
+    // Clear the error for the specific field when the user starts typing
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+
   };
 
   const handlePhotoChange = (e) => {
@@ -29,7 +62,7 @@ export default function FoodDonationForm() {
       setFormData((prev) => ({
         ...prev,
         photo: file,
-        photoPreview: URL.createObjectURL(file), // Store the preview URL
+        photoPreview: URL.createObjectURL(file),
       }));
     }
   };
@@ -37,12 +70,12 @@ export default function FoodDonationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // Handle form submission logic here
+    // TODO: Send to Laravel API
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
-      {/* Top Header */}
+      {/* Header */}
       <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
           <Link to="/donors">
@@ -54,17 +87,16 @@ export default function FoodDonationForm() {
         </div>
       </div>
 
-      {/* Main Content Area - centered with flex */}
       <div className="flex-1 overflow-auto flex items-center justify-center p-6">
-        {/* Form Card with Border and Shadow */}
         <div className="w-full max-w-4xl bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           <form onSubmit={handleSubmit} className="flex flex-col">
             <div className="p-6">
-              {/* Donation Details Section */}
+              {/* Donation Details */}
               <div className="mb-6">
                 <h4 className="text-base font-medium mb-3">Detajet e Donacionit</h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Image Upload */}
                   <div className="flex flex-col items-center justify-center border border-gray-300 rounded-md p-4 h-60 bg-gray-50 shadow-lg">
                     {formData.photoPreview ? (
                       <img src={formData.photoPreview} alt="Preview" className="h-full w-full object-cover rounded-md" />
@@ -80,101 +112,120 @@ export default function FoodDonationForm() {
                     </label>
                   </div>
 
+                  {/* Input Fields */}
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm mb-1">Emri i Donacionit</label>
                       <Input
                         name="donationName"
                         value={formData.donationName}
-                        onChange={handleInputChange}
-                        placeholder="Fut Emrin e Donacionit"
-                        className="w-full"
+                        onChange={handleChange}
+                        placeholder="P.sh. Bukë e freskët, Fruta"
+                        className="w-full border-gray-300"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm mb-1">Kategoria e Ushqimit</label>
-                      <Input
+                      <select
                         name="foodCategory"
                         value={formData.foodCategory}
-                        onChange={handleInputChange}
-                        placeholder="Fut Kategorinë e Donacionit"
-                        className="w-full"
-                      />
+                        onChange={handleChange}
+                        className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.address.city === "" ? "text-gray-500" : "text-black"
+                          }`}
+                      >
+                        <option value="">Zgjedh një kategori</option>
+                        <option value="Bakery">Bukë / Brumëra</option>
+                        <option value="Fruits">Fruta</option>
+                        <option value="Vegetables">Perime</option>
+                        <option value="Cooked">Gatim i gatuar</option>
+                        <option value="Dairy">Produkte të qumështit</option>
+                      </select>
                     </div>
 
                     <div>
-                      <label className="block text-sm mb-1">Expiration Date</label>
+                      <label className="block text-sm mb-1">Data e Skadencës</label>
                       <Input
                         name="expirationDate"
                         type="date"
                         value={formData.expirationDate}
-                        onChange={handleInputChange}
-                        placeholder="Fut Datën e Skadencës"
-                        className="w-full"
+                        onChange={handleChange}
+                        className="w-full border-gray-300"
                       />
                     </div>
                   </div>
                 </div>
+
               </div>
 
-              {/* Application Details Section */}
+
+              {/* Application Details */}
               <div className="mb-6">
-                <h4 className="text-base font-medium mb-3">Detajet e Aplikimit</h4>
+                {/* <h4 className="text-base font-medium mb-3">Detajet e Aplikimit</h4> */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Address Section Header */}
+                <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg">Adresa e donacionit</div>
+                {/* Address Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 mt-5">
                   <div>
-                    <label className="block text-sm mb-1">Adresa për Transport</label>
+                    <label htmlFor="street" className="block text-sm font-medium mb-1">Rruga</label>
                     <Input
-                      name="transportAddress"
-                      value={formData.transportAddress}
-                      onChange={handleInputChange}
-                      placeholder="Fut Emrin e Donacionit"
-                      className="w-full"
+                      name="address.street"
+                      value={formData.address.street}
+                      onChange={handleChange}
+                      placeholder="P.sh. Rr. Bulevardi Bill Clinton"
+                      className="w-full border-gray-300"
                     />
+                    {errors["address.street"] && <p className="text-red-500 text-sm mt-1">{errors["address.street"]}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm mb-1">Data për Transport</label>
+                    <label htmlFor="postcode" className="block text-sm font-medium mb-1">Kodi Postar</label>
                     <Input
-                      name="transportDate"
-                      type="date"
-                      value={formData.transportDate}
-                      onChange={handleInputChange}
-                      placeholder="Fut Datën për Transport"
-                      className="w-full"
+                      name="address.postcode"
+                      value={formData.address.postcode}
+                      onChange={handleChange}
+                      placeholder="40000"
+                      className="w-full border-gray-300"
                     />
+                    {errors["address.postcode"] && <p className="text-red-500 text-sm mt-1">{errors["address.postcode"]}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm mb-1">Koha për Transport</label>
-                    <Input
-                      name="transportTime"
-                      type="time"
-                      value={formData.transportTime}
-                      onChange={handleInputChange}
-                      placeholder="Fut Kohën për Transport"
-                      className="w-full"
-                    />
+                    <label htmlFor="city" className="block text-sm font-medium mb-1">Qyteti</label>
+                    <select
+                      name="address.city"
+                      value={formData.address.city}
+                      onChange={handleChange}
+                      className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.address.city === "" ? "text-gray-500" : "text-black"
+                        }`}
+                    >
+                      <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
+                      {cities.map((city) => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
+                    {errors["address.city"] && <p className="text-red-500 text-sm mt-1">{errors["address.city"]}</p>}
                   </div>
                 </div>
               </div>
 
-              {/* Additional Notes Section */}
+
+              {/* Notes */}
               <div>
                 <label className="block text-sm mb-1">Shkrime shtesë</label>
                 <textarea
                   name="additionalNotes"
                   value={formData.additionalNotes}
-                  onChange={handleInputChange}
-                  placeholder="Furnizoni një shënim ose udhëzim rreth donacionit apo ushqimit"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  onChange={handleChange}
+                  placeholder="Informacion tjetër rreth ushqimit ose udhëzimeve për marrje"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
                   rows={4}
                 />
               </div>
             </div>
 
-            {/* Form Actions */}
+            {/* Actions */}
             <div className="flex justify-between px-6 py-4 bg-gray-50 border-t mt-auto">
               <Button
                 type="button"
@@ -194,4 +245,3 @@ export default function FoodDonationForm() {
     </div>
   );
 }
-

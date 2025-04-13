@@ -25,11 +25,19 @@ function LogIn() {
         password,
       });
 
-      const { token } = response.data;
+      const { user, token } = response.data;
       localStorage.setItem('authToken', token);
       console.log('Login successful:', response.data);
 
-      navigate('/donors');
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (user.role === 'donor') {
+        navigate('/donor-dashboard');
+      } else if (user.role === 'recipient') {
+        // navigate to recipient dashboard
+        // navigate('/'); 
+      }
+
     } catch (err) {
       setError('Login failed. Please check your credentials.');
       console.error('Login error:', err.response?.data || err.message);

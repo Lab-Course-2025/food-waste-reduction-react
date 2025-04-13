@@ -36,6 +36,7 @@ const Donors = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -73,6 +74,11 @@ const Donors = () => {
         });
       }
     });
+
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = "Fjalëkalimi duhet të ketë të paktën 8 karaktere.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
@@ -93,7 +99,11 @@ const Donors = () => {
       navigate('/login');
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
-      // alert("Registration failed!");
+
+      if (error.response?.data?.errors) {
+        // Handle Laravel-style validation errors
+        setErrors(error.response.data.errors);
+      }
     }
   };
 
