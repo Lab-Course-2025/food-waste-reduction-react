@@ -13,6 +13,7 @@ import DonacionetAktive from "./pages/DonacionetAktive";
 import Layout from "./components/Layout";
 import DonorDashboard from "./pages/DonorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-right" />
       {hideHeaderFooter ? (
         <Routes>
           <Route path="/login" element={<LogIn />} />

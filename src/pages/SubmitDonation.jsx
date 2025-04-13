@@ -4,6 +4,7 @@ import Input from "../components/Input";
 import { ArrowLeft, Camera } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-hot-toast';
 
 
 const cities = [
@@ -62,6 +63,7 @@ export default function FoodDonationForm() {
       }));
     }
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,6 +87,10 @@ export default function FoodDonationForm() {
         }
       );
       console.log("Donation submitted successfully:", response.data);
+      toast.success("Donacioni u shtua me sukses!");
+      setTimeout(() => {
+        navigate("/donor-dashboard");
+      }, 1000);
 
       // Optionally reset the form
       setFormData({
@@ -216,7 +222,7 @@ export default function FoodDonationForm() {
                         <option value="Bakery">Bukë / Brumëra</option>
                         <option value="Fruits">Fruta</option>
                         <option value="Vegetables">Perime</option>
-                        <option value="Cooked">Gatim i gatuar</option>
+                        <option value="Cooked">Gatim</option>
                         <option value="Dairy">Produkte të qumështit</option>
                       </select>
                       {errors.category && (
