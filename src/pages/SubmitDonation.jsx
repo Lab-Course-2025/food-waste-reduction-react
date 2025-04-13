@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { ArrowLeft, Camera } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 
 const cities = [
@@ -14,15 +15,10 @@ const cities = [
 
 export default function FoodDonationForm() {
   const [formData, setFormData] = useState({
-    donationName: "",
-    foodCategory: "",
-    expirationDate: "",
-    isCooked: "raw", // "cooked" or "raw"
-    packagingStatus: "",
-    transportAddress: "",
-    transportDate: "",
-    transportTime: "",
-    additionalNotes: "",
+    name: "",
+    category: "",
+    expiration_date: "",
+    notes: "",
     photo: null,
     address: {
       street: "",
@@ -67,11 +63,89 @@ export default function FoodDonationForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // TODO: Send to Laravel API
+
+    const isValid = validateForm();
+    if (!isValid) return;
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("authToken");
+
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/food-listings`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Donation submitted successfully:", response.data);
+
+      // Optionally reset the form
+      setFormData({
+        name: "",
+        category: "",
+        expiration_date: "",
+        notes: "",
+        address: {
+          street: "",
+          postcode: "",
+          city: "",
+          house_number: "",
+          municipality: "",
+          country: "Kosova",
+        }
+      });
+
+      // Optionally show a success message or redirect
+    } catch (error) {
+      if (error.response) {
+        console.error("Server responded with error:", error.response.data);
+      } else {
+        console.error("Error submitting donation:", error.message);
+      }
+    }
   };
+
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validate top-level fields
+    if (!formData.name.trim()) {
+      newErrors.name = "*E nevojshme.";
+    }
+
+    if (!formData.category.trim()) {
+      newErrors.category = "*E nevojshme.";
+    }
+
+    if (!formData.expiration_date.trim()) {
+      newErrors.expiration_date = "*E nevojshme.";
+    }
+
+    // Validate address fields
+    if (!formData.address.street.trim()) {
+      newErrors["address.street"] = "*E nevojshme.";
+    }
+
+    if (!formData.address.postcode.trim()) {
+      newErrors["address.postcode"] = "*E nevojshme.";
+    }
+
+    if (!formData.address.city.trim()) {
+      newErrors["address.city"] = "*E nevojshme.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
@@ -117,21 +191,25 @@ export default function FoodDonationForm() {
                     <div>
                       <label className="block text-sm mb-1">Emri i Donacionit</label>
                       <Input
-                        name="donationName"
-                        value={formData.donationName}
+                        name="name"
+                        value={formData.name}
                         onChange={handleChange}
                         placeholder="P.sh. Bukë e freskët, Fruta"
                         className="w-full border-gray-300"
                       />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                      )}
                     </div>
+
 
                     <div>
                       <label className="block text-sm mb-1">Kategoria e Ushqimit</label>
                       <select
-                        name="foodCategory"
-                        value={formData.foodCategory}
+                        name="category"
+                        value={formData.category}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.address.city === "" ? "text-gray-500" : "text-black"
+                        className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.category === "" ? "text-gray-500" : "text-black"
                           }`}
                       >
                         <option value="">Zgjedh një kategori</option>
@@ -141,18 +219,26 @@ export default function FoodDonationForm() {
                         <option value="Cooked">Gatim i gatuar</option>
                         <option value="Dairy">Produkte të qumështit</option>
                       </select>
+                      {errors.category && (
+                        <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+                      )}
                     </div>
+
 
                     <div>
                       <label className="block text-sm mb-1">Data e Skadencës</label>
                       <Input
-                        name="expirationDate"
+                        name="expiration_date"
                         type="date"
-                        value={formData.expirationDate}
+                        value={formData.expiration_date}
                         onChange={handleChange}
                         className="w-full border-gray-300"
                       />
+                      {errors.expiration_date && (
+                        <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
+                      )}
                     </div>
+
                   </div>
                 </div>
 
@@ -215,8 +301,8 @@ export default function FoodDonationForm() {
               <div>
                 <label className="block text-sm mb-1">Shkrime shtesë</label>
                 <textarea
-                  name="additionalNotes"
-                  value={formData.additionalNotes}
+                  name="notes"
+                  value={formData.notes}
                   onChange={handleChange}
                   placeholder="Informacion tjetër rreth ushqimit ose udhëzimeve për marrje"
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
