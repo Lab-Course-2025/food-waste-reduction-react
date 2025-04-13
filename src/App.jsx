@@ -4,17 +4,18 @@ import "./index.css";
 import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./pages/Landing";
 import Information from "./pages/Information";
-import Donors from "./pages/Donors";
+import Donors from "./pages/donors";
 import Recipient from "./pages/Recipient";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
 import Submit from "./pages/SubmitDonation";
 import DonacionetAktive from "./pages/DonacionetAktive";
 import Layout from "./components/Layout";
+import DonorDashboard from "./pages/DonorDashboard";
 
 function App() {
   const location = useLocation();
-  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit"];
+  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit", "/donor-dashboard"];
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
 
   return (
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LogIn />} />
           <Route path="/donacionetaktive" element={<DonacionetAktive />} />
+          <Route path="/donor-dashboard" element={<DonorDashboard />} />
           <Route path="/submit" element={<Submit />} />
 
         </Routes>
