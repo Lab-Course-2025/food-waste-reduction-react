@@ -96,7 +96,10 @@ const Recipient = () => {
       navigate('/login');
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
-      // alert("Registration failed!");
+      if (error.response?.data?.errors) {
+        // Handle Laravel-style validation errors
+        setErrors(error.response.data.errors);
+      }
     }
   };
 
