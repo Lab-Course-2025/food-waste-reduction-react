@@ -10,33 +10,8 @@ export default function DonationDashboard() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [donor, setDonor] = useState(null);
-
-  const [donations] = useState([
-    {
-      id: 1,
-      description: "Pako Ushqimore 1",
-      initiative: "Iniciativa A",
-      amount: 500,
-      status: "Kompletuar",
-      date: "Mars 13, 2025",
-    },
-    {
-      id: 2,
-      description: "Pako Ushqimore 1",
-      initiative: "Iniciativa B",
-      amount: 250,
-      status: "Kompletuar",
-      date: "Shkurt 1, 2025",
-    },
-    {
-      id: 3,
-      description: "Pako Ushqimore 1",
-      initiative: "Iniciativa C",
-      amount: 100,
-      status: "Në Procesim",
-      date: "Janar 15, 2025",
-    },
-  ]);
+  const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,10 +37,23 @@ export default function DonationDashboard() {
         });
 
         // Update state with the donor's data
-        console.log(response.data);
-        setDonor(response.data); // Assuming the response contains the donor's details
+        // console.log(response.data);
+        setDonor(response.data);
+
+        setLoading(true);
+        // Fetch food listings or donations posted by the donor
+        const donationsResponse = await axios.get(`${apiUrl}/donor-food-listings`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        // console.log(donationsResponse.data);
+        setDonations(donationsResponse.data.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching donor data:", error);
+        setLoading(false);
       }
     };
 
@@ -178,37 +166,58 @@ export default function DonationDashboard() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-gray-500 border-b">
+                <th className="pb-4 font-medium">EMRI</th>
                 <th className="pb-4 font-medium">PËRSHKRIMI</th>
-                <th className="pb-4 font-medium">PËRFITUESI</th>
-                <th className="pb-4 font-medium">VLERA</th>
-                <th className="pb-4 font-medium">STATUSI</th>
-                <th className="pb-4 font-medium">DATA</th>
+                <th className="pb-4 font-medium">KATEGORIA</th>
+                <th className="pb-4 font-medium">DATA E SKADENCËS</th>
+                <th className="pb-4 font-medium">DATA E POSTIMIT</th>
+                <th className="pb-4 font-medium">ADRESA</th>
               </tr>
             </thead>
             <tbody>
-              {donations.map((donation) => (
-                <tr key={donation.id} className="border-b bg-white px-6 py-4">
-                  <td className="py-4 px-6">{donation.description}</td>
-                  <td className="py-4 px-6">{donation.initiative}</td>
-                  <td className="py-4 px-6">{donation.amount}€</td>
-                  <td className="py-4 px-6">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${donation.status === "Kompletuar"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                        }`}
-                    >
-                      {donation.status}
-                    </span>
-                  </td>
-                  <td className="py-4">{donation.date}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
                 </tr>
-              ))}
+              ) : donations.length > 0 ? donations.map((donation) => (
+                <tr key={donation.id} className="border-b bg-white px-6 py-4">
+                  <td className="py-4 px-6">{donation.name}</td>
+                  <td className="py-4 px-6">{donation.notes ? donation.notes : 'Nuk ka pershkrim'}</td>
+                  <td className="py-4 px-6">{donation.category}</td>
+                  <td className="py-4 px-6">
+                    {(() => {
+                      const date = new Date(donation.created_at);
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = date.getFullYear();
+
+                      return `${day}-${month}-${year}`;
+                    })()}
+                  </td>
+                  <td className="py-4 px-6">
+                    {(() => {
+                      const date = new Date(donation.created_at);
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = date.getFullYear();
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                      return `${day}-${month}-${year}, ${hours}:${minutes}`;
+                    })()}
+                  </td>
+                  <td className="py-4 px-6">{donation.address ? `${donation.address.city}, ${donation.address.street}` : 'Nuk ka adresë'}</td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">Nuk ka donacione të disponueshme.</td>
+                </tr>
+              )}
             </tbody>
+
           </table>
         </div>
       </section>
-
       <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
       </footer>
