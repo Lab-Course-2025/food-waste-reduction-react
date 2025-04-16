@@ -93,7 +93,7 @@ const handleNavigateToProfile = () => {
       <header className="flex justify-between items-center mb-8 bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
           <img src={logo || "/placeholder.svg"} alt="Logo" className="h-8" />
-          <Link to="/" className="font-bold text-black ml-2">
+          <Link to="/" className="font-bold text-black ml-2 hidden sm:inline">
             Ndihmo Tjetrin
           </Link>
         </div>
