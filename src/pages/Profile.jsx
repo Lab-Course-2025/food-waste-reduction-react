@@ -217,7 +217,7 @@ export default function UserProfile() {
 
             {/* Submit Button */}
             <div className="flex justify-end">
-              <Button className="bg-orange-500 hover:bg-orange-600">Ruaj Ndryshimet</Button>
+              <Button className="text-white">Ruaj Ndryshimet</Button>
             </div>
           </form>
         </main>
