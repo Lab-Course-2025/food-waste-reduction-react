@@ -133,6 +133,32 @@ const handleNavigateToProfile = () => {
       </header>
 
       {/* Main Content */}
+      <main className="container mx-auto p-4 max-w-5xl">
+        {/* Benefits Section */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-1">Përfitimet e Mia</h2>
+          <p className="text-sm text-gray-500 mb-4">Ndjek dhe monaxho përfitimet e tua bamirëse</p>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h3 className="text-sm text-gray-500">Donacionet e Disponueshme</h3>
+              <p className="text-3xl font-bold mt-1">24</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h3 className="text-sm text-gray-500">Donacionet e Përfituara</h3>
+              <p className="text-3xl font-bold mt-1">12</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h3 className="text-sm text-gray-500">Donacionet në Pritje</h3>
+              <p className="text-3xl font-bold mt-1">3</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Available Donations */}
+        
+      </main>
+
       
     </div>
   )
