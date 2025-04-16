@@ -156,10 +156,65 @@ const handleNavigateToProfile = () => {
         </section>
 
         {/* Available Donations */}
+        <section className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Donacionet e Disponueshme</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Donation Card 1 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
+                <span className="text-white">Foto e pakos</span>
+              </div>
+              <div className="p-4">
+                <h3 className="font-medium">Pako Ushqimi nga X</h3>
+                <p className="text-sm text-gray-500">Përmban: Vaj, Sheqer dhe Miell.</p>
+              </div>
+              <div className="flex justify-between p-4 pt-0">
+                <span className="text-sm text-gray-500">Mitrovicë</span>
+                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+              </div>
+            </div>
+
+            {/* Donation Card 2 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
+                <span className="text-white">Foto e pakos</span>
+              </div>
+              <div className="p-4">
+                <h3 className="font-medium">Pako e Rrobave nga Y</h3>
+                <p className="text-sm text-gray-500">Përmban: Rroba për të rriturit dhe fëmijë.</p>
+              </div>
+              <div className="flex justify-between p-4 pt-0">
+                <span className="text-sm text-gray-500">Prishtinë</span>
+                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+              </div>
+            </div>
+
+            {/* Donation Card 3 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
+                <span className="text-white">Foto e pakos</span>
+              </div>
+              <div className="p-4">
+                <h3 className="font-medium">Pako Ushqimi nga Z</h3>
+                <p className="text-sm text-gray-500">Përmban: Arra, Miell dhe Patate.</p>
+              </div>
+              <div className="flex justify-between p-4 pt-0">
+                <span className="text-sm text-gray-500">Pejë</span>
+                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Activity History */}
         
       </main>
 
-      
+      {/* Footer */}
+     
     </div>
   )
 }
