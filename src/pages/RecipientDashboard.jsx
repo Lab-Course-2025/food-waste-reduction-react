@@ -173,7 +173,7 @@ const handleNavigateToProfile = () => {
               </div>
               <div className="flex justify-between p-4 pt-0">
                 <span className="text-sm text-gray-500">Mitrovicë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
               </div>
             </div>
 
@@ -188,7 +188,7 @@ const handleNavigateToProfile = () => {
               </div>
               <div className="flex justify-between p-4 pt-0">
                 <span className="text-sm text-gray-500">Prishtinë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
               </div>
             </div>
 
@@ -203,7 +203,7 @@ const handleNavigateToProfile = () => {
               </div>
               <div className="flex justify-between p-4 pt-0">
                 <span className="text-sm text-gray-500">Pejë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600">Apliko</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
               </div>
             </div>
           </div>
