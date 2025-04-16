@@ -90,6 +90,49 @@ const handleNavigateToProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
+      <header className="flex justify-between items-center mb-8 bg-white border-b px-6 py-4">
+        <div className="max-w-4xl flex items-center ml-0">
+          <img src={logo || "/placeholder.svg"} alt="Logo" className="h-8" />
+          <Link to="/" className="font-bold text-black ml-2">
+            Ndihmo Tjetrin
+          </Link>
+        </div>
+        <div className="relative" ref={profileMenuRef}>
+          <button
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+          >
+            <div className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-white">
+              <span>{donor?.business_name?.charAt(0) || "F"}</span>
+            </div>
+            {/* <span className="font-medium">Filan Fisteku</span> */}
+            <span className="font-medium">{donor?.business_name || "Filan Fisteku"}</span> {/* Fallback to static name */}
+
+            <ChevronDown className="h-4 w-4" />
+          </button>
+
+          {profileMenuOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
+              <button
+                onClick={handleNavigateToProfile}
+                className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                <Home className="h-4 w-4" />
+                Profili
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Main Content */}
       
     </div>
   )
