@@ -4,7 +4,7 @@ import "./index.css";
 import ScrollToTop from "./components/ScrollToTop";
 import Landing from "./pages/Landing";
 import Information from "./pages/Information";
-import Donors from "./pages/donors";
+import Donors from "./pages/Donors";
 import Recipient from "./pages/Recipient";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
@@ -13,16 +13,25 @@ import DonacionetAktive from "./pages/DonacionetAktive";
 import Layout from "./components/Layout";
 import DonorDashboard from "./pages/DonorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import Profile from './pages/Profile';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
   const location = useLocation();
-  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit", "/donor-dashboard", "/admin-dashboard"];
+  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit", "/donor-dashboard", "/admin-dashboard", "/profile"];
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
 
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster position="top-center" toastOptions={{
+        style: {
+          fontSize: "1.125rem",
+          padding: "1rem 1.5rem",
+          minWidth: "400px",
+          minHeight: "70px",
+          borderRadius: "0.75rem"
+        }
+      }} />
       {hideHeaderFooter ? (
         <Routes>
           <Route path="/login" element={<LogIn />} />
@@ -30,7 +39,7 @@ function App() {
           <Route path="/donor-dashboard" element={<DonorDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/submit" element={<Submit />} />
-
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       ) : (
         <Layout>
