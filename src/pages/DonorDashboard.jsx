@@ -171,16 +171,16 @@ export default function DonationDashboard() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-gray-500 border-b">
-                <th className="pb-4 font-medium">EMRI</th>
-                <th className="pb-4 font-medium">PËRSHKRIMI</th>
-                <th className="pb-4 font-medium">KATEGORIA</th>
-                <th className="pb-4 font-medium">DATA E SKADENCËS</th>
-                <th className="pb-4 font-medium">DATA E POSTIMIT</th>
-                <th className="pb-4 font-medium">ADRESA</th>
+                <th className="pb-4 px-4 font-medium">EMRI</th>
+                <th className="pb-4 px-4 font-medium">PËRSHKRIMI</th>
+                <th className="pb-4 px-4 font-medium">KATEGORIA</th>
+                <th className="pb-4 px-4 font-medium">DATA E SKADENCËS</th>
+                <th className="pb-4 px-4 font-medium">DATA E POSTIMIT</th>
+                <th className="pb-4 px-4 font-medium">ADRESA</th>
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {loading || !Array.isArray(donations) ? (
                 <tr>
                   <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
                 </tr>
