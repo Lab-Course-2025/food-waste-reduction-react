@@ -81,6 +81,11 @@ export default function DonationDashboard() {
     }
   };
 
+  const handleNavigateToProfile = () => {
+    navigate("/profile");
+  };
+
+
   // const navigateToLanding = () => {
   //   setProfileMenuOpen(false);
   //   navigate("/");
@@ -112,13 +117,13 @@ export default function DonationDashboard() {
 
           {profileMenuOpen && (
             <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
-              {/* <button
-                onClick={navigateToLanding}
-                className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              <button
+                onClick={handleNavigateToProfile}
+                className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
               >
                 <Home className="h-4 w-4" />
-                Landing Page
-              </button> */}
+                Profili
+              </button>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
