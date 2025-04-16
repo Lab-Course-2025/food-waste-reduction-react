@@ -157,7 +157,7 @@ export default function DonationDashboard() {
         </div>
 
         <Link to="/submit">
-          <Button className="inline-flex items-center ">
+          <Button className="inline-flex items-center text-white">
             <PlusCircle className="mr-2 h-4 w-4" />
             Bëj një Donacion të Ri
           </Button>
