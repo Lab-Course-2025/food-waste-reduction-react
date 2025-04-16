@@ -210,11 +210,48 @@ const handleNavigateToProfile = () => {
         </section>
 
         {/* Activity History */}
-        
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">Historia e Aktivitetit</h2>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-1 rounded-full">
+                <Check className="h-4 w-4 text-green-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Pako Ushqimi nga X</h3>
+                <p className="text-sm text-gray-500">Qyteti: Mitrovicë</p>
+              </div>
+              <span className="text-sm text-gray-500">Para 2 ditësh</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-1 rounded-full">
+                <Check className="h-4 w-4 text-green-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Pako e Rrobave nga Y</h3>
+                <p className="text-sm text-gray-500">Qyteti: Prishtinë</p>
+              </div>
+              <span className="text-sm text-gray-500">Para 3 ditësh</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-1 rounded-full">
+                <Check className="h-4 w-4 text-green-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium">Pako Ushqimi nga Z</h3>
+                <p className="text-sm text-gray-500">Qyteti: Pejë</p>
+              </div>
+              <span className="text-sm text-gray-500">Para 4 ditësh</span>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
-     
+
     </div>
   )
 }
