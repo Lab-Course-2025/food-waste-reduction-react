@@ -134,37 +134,7 @@ export default function UserProfile() {
 
       <div className="flex h-full">
         {/* Sidebar */}
-        <aside className=" w-64 bg-white border-r border-gray-200 p-4">
-          <div className="font-medium mb-6">Profili juaj</div>
-          <div className="flex flex-col items-center mb-6">
-            {/* <Avatar className="h-20 w-20 bg-orange-500 mb-2">
-              <AvatarImage src="/placeholder-user.jpg" alt="@user" />
-              <AvatarFallback>
-                <User className="h-10 w-10 text-white" />
-              </AvatarFallback>
-            </Avatar> */}
-            <div className="text-center">
-              <div className="font-medium">Filan Fisteku</div>
-              <div className="text-sm text-gray-500">filan.fisteku@gmail.com</div>
-            </div>
-          </div>
-          <nav className="space-y-1">
-            <a href="#" className="flex items-center px-3 py-2 text-sm rounded-md bg-gray-100">
-              <User className="mr-2 h-4 w-4" />
-              <span>Profili</span>
-            </a>
-            <Link to="/donor-dashboard" className="flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100">
-            
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              <span>Dashboard</span>
-            
-            </Link>
-            <a href="#" className="flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Dil</span>
-            </a>
-          </nav>
-        </aside>
+        
 
         {/* Main Content */}
         <main className="flex-1 p-6">
