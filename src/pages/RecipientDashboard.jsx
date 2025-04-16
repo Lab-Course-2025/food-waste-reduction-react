@@ -251,7 +251,7 @@ const handleNavigateToProfile = () => {
       </main>
 
       {/* Footer */}
-      <footer className="text-center p-4 text-sm text-gray-500 border-t">
+      <footer className="text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
       </footer>
     </div>
