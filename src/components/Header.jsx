@@ -28,9 +28,10 @@ const Header = () => {
         {/* Logo - Left */}
         <div className="absolute left-0 flex items-center gap-2">
           <img src={logo || "/placeholder.svg"} alt="Logo" className="h-8" />
-          <Link to="/" className="font-bold text-black">
+          <Link to="/" className="font-bold text-black hidden lg:inline">
             Ndihmo Tjetrin
           </Link>
+
         </div>
 
         {/* Desktop Navigation - Dead Center */}
@@ -60,7 +61,7 @@ const Header = () => {
             to="/login"
             className="text-black font-semibold text-sm hover:text-[#FF4C00FF] transition-colors duration-200 flex items-center gap-2"
           >
-            Kyqu
+            <span className="hidden lg:inline">Kyqu</span>
             <LogIn className="w-6 h-6" />
           </Link>
         </div>
