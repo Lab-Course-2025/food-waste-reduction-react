@@ -210,7 +210,7 @@ const handleNavigateToProfile = () => {
         </section>
 
         {/* Activity History */}
-        <section className="mb-8">
+        <section className="mb-8 bg-white p-4 rounded-lg shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Historia e Aktivitetit</h2>
 
           <div className="space-y-4">
