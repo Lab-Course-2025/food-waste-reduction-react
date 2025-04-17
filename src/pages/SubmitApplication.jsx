@@ -156,7 +156,7 @@ export default function DonationApplication() {
 
       {/* Submit button */}
       <div className="w-full flex justify-center py-4 mt-5 bg-white">
-        <Button className="w-3/4 bg-red-600 hover:bg-red-700 text-white py-6">
+        <Button className="w-3/4 hover:bg-orange-700 text-white py-6">
           Dërgo Aplikimin
         </Button>
       </div>
