@@ -28,7 +28,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={handlePreviousPage}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-gray-300 rounded-md disabled:bg-gray-500"
+        className="px-4 py-2 bg-gray-300 rounded-md disabled:bg-gray-500 cursor-pointer"
       >
         <ChevronsLeft size={24} />
       </button>
@@ -40,7 +40,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           <button
             key={pageNumber}
             onClick={() => handlePageClick(pageNumber)}
-            className={`px-4 py-2 rounded-md ${currentPage === pageNumber ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded-md cursor-pointer ${currentPage === pageNumber ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
           >
             {pageNumber}
           </button>
@@ -50,7 +50,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={handleNextPage}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-gray-300 rounded-md disabled:bg-gray-500"
+        className="px-4 py-2 bg-gray-300 rounded-md disabled:bg-gray-500 cursor-pointer"
       >
         <ChevronsRight size={24} />
       </button>

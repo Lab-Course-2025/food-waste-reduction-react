@@ -244,149 +244,148 @@ export default function DonorDonations() {
           </div>
         </div>
       </div>
+
       {isModalOpen && selectedDonation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
           <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ndrysho Donacionin</h2>
+            <div>
+              <label htmlFor="name" className="block text-sm mb-1">
+                Emri
+              </label>
+              <Input
+                id="name"
+                type="text"
+                className="w-full rounded border px-3 py-2"
+                value={selectedDonation.name}
+                onChange={(e) =>
+                  setSelectedDonation({ ...selectedDonation, name: e.target.value })
+                }
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm mb-1">
-                  Emri
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={selectedDonation.name}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, name: e.target.value })
-                  }
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                )}
-              </div>
+            <div>
+              <label htmlFor="notes" className="block text-sm mb-1">
+                Shënime
+              </label>
+              <textarea
+                id="notes"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
+                value={selectedDonation.notes}
+                onChange={(e) =>
+                  setSelectedDonation({ ...selectedDonation, notes: e.target.value })
+                }
+              />
+              {errors.notes && (
+                <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
+              )}
+            </div>
 
-              <div>
-                <label htmlFor="notes" className="block text-sm mb-1">
-                  Shënime
-                </label>
-                <textarea
-                  id="notes"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
-                  value={selectedDonation.notes}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
-                  }
-                />
-                {errors.notes && (
-                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
-                )}
-              </div>
+            <div>
+              <label htmlFor="expiration_date" className="block text-sm mb-1">
+                Data e Skadencës
+              </label>
+              <Input
+                id="expiration_date"
+                name="expiration_date"
+                type="date"
+                value={selectedDonation.expiration_date}
+                className="w-full border-gray-300"
+                onChange={(e) =>
+                  setSelectedDonation({
+                    ...selectedDonation,
+                    expiration_date: e.target.value,
+                  })
+                }
+              />
+              {errors.expiration_date && (
+                <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
+              )}
+            </div>
 
-              <div>
-                <label htmlFor="expiration_date" className="block text-sm mb-1">
-                  Data e Skadencës
-                </label>
-                <Input
-                  id="expiration_date"
-                  name="expiration_date"
-                  type="date"
-                  value={selectedDonation.expiration_date}
-                  className="w-full border-gray-300"
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      expiration_date: e.target.value,
-                    })
-                  }
-                />
-                {errors.expiration_date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
-                )}
-              </div>
+            <div>
+              <label htmlFor="street" className="block text-sm mb-1">
+                Rruga
+              </label>
+              <Input
+                id="street"
+                type="text"
+                className="w-full rounded border px-3 py-2"
+                value={selectedDonation.address?.street || ""}
+                onChange={(e) =>
+                  setSelectedDonation({
+                    ...selectedDonation,
+                    address: {
+                      ...selectedDonation.address,
+                      street: e.target.value,
+                    },
+                  })
+                }
+              />
+              {errors["address.street"] && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors["address.street"]}
+                </p>
+              )}
+            </div>
 
-              <div>
-                <label htmlFor="street" className="block text-sm mb-1">
-                  Rruga
-                </label>
-                <Input
-                  id="street"
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={selectedDonation.address?.street || ""}
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      address: {
-                        ...selectedDonation.address,
-                        street: e.target.value,
-                      },
-                    })
-                  }
-                />
-                {errors["address.street"] && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors["address.street"]}
-                  </p>
-                )}
-              </div>
+            <div>
+              <label htmlFor="city" className="block text-sm mb-1">
+                Qyteti
+              </label>
+              <select
+                id="city"
+                value={selectedDonation.address?.city || ""}
+                onChange={(e) =>
+                  setSelectedDonation({
+                    ...selectedDonation,
+                    address: {
+                      ...selectedDonation.address,
+                      city: e.target.value,
+                    },
+                  })
+                }
+                className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${selectedDonation.address?.city === "" ? "text-gray-500" : "text-black"
+                  }`}
+              >
+                <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
 
-              <div>
-                <label htmlFor="city" className="block text-sm mb-1">
-                  Qyteti
-                </label>
-                <select
-                  id="city"
-                  value={selectedDonation.address?.city || ""}
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      address: {
-                        ...selectedDonation.address,
-                        city: e.target.value,
-                      },
-                    })
-                  }
-                  className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${selectedDonation.address?.city === "" ? "text-gray-500" : "text-black"
-                    }`}
-                >
-                  <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </select>
+              {errors["address.city"] && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors["address.city"]}
+                </p>
+              )}
+            </div>
 
-                {errors["address.city"] && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors["address.city"]}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-md bg-gray-200 px-4 py-2 text-sm"
-                >
-                  Mbyll
-                </button>
-                <Button
-                  type="submit"
-                  className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
-                >
-                  Përditëso
-                </Button>
-              </div>
-            </form>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-md bg-gray-200 px-4 py-2 text-sm"
+              >
+                Mbyll
+              </Button>
+              <Button
+                type="submit"
+                className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
+                onClick={handleSubmit}
+              >
+                Përditëso
+              </Button>
+            </div>
           </div>
         </div>
       )}
 
       {isDeleteModalOpen && donationToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
           <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
             <h2 className="text-lg font-semibold mb-4">Konfirmo Fshirjen</h2>
             <p className="text-gray-700 mb-6">
@@ -404,7 +403,7 @@ export default function DonorDonations() {
                 className="bg-red-600 text-white hover:bg-red-700"
                 onClick={handleDeleteDonation}
               >
-                Po, fshij
+                Fshij
               </Button>
             </div>
           </div>
