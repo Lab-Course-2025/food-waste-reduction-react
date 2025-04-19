@@ -14,6 +14,15 @@ export default function DonationDashboard() {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handleDonateClick = () => {
+    setShowDonationForm(true);
+    // Scroll to form
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
@@ -143,54 +152,43 @@ export default function DonationDashboard() {
         </section>
 
         {/* Available Donations */}
-        <section className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Donacionet e Disponueshme</h2>
-          </div>
+        <section className="py-10">
+          <div className="mx-auto max-w-6xl px-4 md:px-6">
+            <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+              <h2 className="py-6 text-center text-2xl font-bold">Donacionet Aktive</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Donation Card 1 */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
-                <span className="text-white">Foto e pakos</span>
+              {/* Scrollable donation container */}
+              <div className="px-4 pb-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3].map((item) => (
+                    <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
+                      <div className="relative w-full aspect-w-16 aspect-h-9">
+                        <img
+                          src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                          alt="Hands holding food"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-medium">Pako ushqimi {item}</h3>
+                        <p className="mt-1 text-sm text-gray-500">Ushqime të ndryshme për familjet në nevojë</p>
+                        <Button
+                          onClick={handleDonateClick}
+                          className="mt-4 w-full rounded-md py-2 font-medium text-white hover:bg-orange-600"
+                        >
+                          Apliko!
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-medium">Pako Ushqimi nga X</h3>
-                <p className="text-sm text-gray-500">Përmban: Vaj, Sheqer dhe Miell.</p>
-              </div>
-              <div className="flex justify-between p-4 pt-0">
-                <span className="text-sm text-gray-500">Mitrovicë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
-              </div>
-            </div>
 
-            {/* Donation Card 2 */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
-                <span className="text-white">Foto e pakos</span>
-              </div>
-              <div className="p-4">
-                <h3 className="font-medium">Pako e Rrobave nga Y</h3>
-                <p className="text-sm text-gray-500">Përmban: Rroba për të rriturit dhe fëmijë.</p>
-              </div>
-              <div className="flex justify-between p-4 pt-0">
-                <span className="text-sm text-gray-500">Prishtinë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
-              </div>
-            </div>
-
-            {/* Donation Card 3 */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="bg-gray-300 h-[120px] flex items-center justify-center">
-                <span className="text-white">Foto e pakos</span>
-              </div>
-              <div className="p-4">
-                <h3 className="font-medium">Pako Ushqimi nga Z</h3>
-                <p className="text-sm text-gray-500">Përmban: Arra, Miell dhe Patate.</p>
-              </div>
-              <div className="flex justify-between p-4 pt-0">
-                <span className="text-sm text-gray-500">Pejë</span>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white">Apliko</Button>
+              {/*Trego më shumë button*/}
+              <div className="flex justify-center py-4 border-t">
+                <Link to="/donacionetaktive">
+                  <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+                </Link>
               </div>
             </div>
           </div>

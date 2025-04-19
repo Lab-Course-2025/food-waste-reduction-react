@@ -4,6 +4,16 @@ import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import axios from 'axios';
+import Input from "../components/Input";
+import { toast } from 'react-hot-toast';
+
+
+const cities = [
+  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
+  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
+  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
+  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
+];
 
 export default function DonationDashboard() {
   const navigate = useNavigate();
@@ -12,6 +22,82 @@ export default function DonationDashboard() {
   const [donor, setDonor] = useState(null);
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [errors, setErrors] = useState({});
+
+
+  const handleDonateClick = () => {
+    setShowDonationForm(true);
+    // Scroll to form
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!selectedDonation.name) {
+      newErrors.name = '*E nevojshme.';
+    }
+    if (!selectedDonation.expiration_date) {
+      newErrors.expiration_date = '*E nevojshme.';
+    }
+    if (!selectedDonation.address?.street) {
+      newErrors["address.street"] = '*E nevojshme.';
+    }
+    if (!selectedDonation.address?.city) {
+      newErrors["address.city"] = '*E nevojshme.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if there are no errors
+  };
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      handleUpdateDonation(selectedDonation.id);
+    }
+  };
+
+  const handleEditDonation = (donation) => {
+    setSelectedDonation(donation);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateDonation = async (id) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("authToken");
+
+      const response = await axios.patch(
+        `${apiUrl}/food-listings/${id}`,
+        selectedDonation,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Refresh the data
+      const updatedData = await axios.get(`${apiUrl}/donor-food-listings`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDonations(updatedData.data.data);
+
+      toast.success('Donacioni u përditësua me sukses!');
+      setIsModalOpen(false);
+      setSelectedDonation(null);
+    } catch (error) {
+      console.error("Error updating donation", error);
+    }
+  };
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -84,12 +170,6 @@ export default function DonationDashboard() {
   const handleNavigateToProfile = () => {
     navigate("/donor-profile");
   };
-
-
-  // const navigateToLanding = () => {
-  //   setProfileMenuOpen(false);
-  //   navigate("/");
-  // };
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
@@ -164,6 +244,83 @@ export default function DonationDashboard() {
         </Link>
       </section>
 
+      <section className="py-10">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+            <h2 className="py-6 text-center text-2xl font-bold">Donacionet e mia</h2>
+
+            {/* Scrollable donation container */}
+            <div className="px-4 pb-10">
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {donations.map((donation) => (
+                  <div
+                    key={donation._id}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-video">
+                      <img
+                        src={
+                          donation.imageUrl ||
+                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                        }
+                        alt={donation.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex flex-col justify-between p-5 grow">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
+                        <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
+
+                        <div className="mt-3 text-sm text-gray-500 space-y-1">
+                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category}</p>
+                          <p>
+                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                            {donation.address?.street}, {donation.address?.city}, {donation.address?.country}
+                          </p>
+                          {donation.expiration_date && (
+                            <p>
+                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                              {new Date(donation.expiration_date).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Buttons */}
+                      <div className="mt-5 flex gap-3">
+                        <Button
+                          onClick={() => handleEditDonation(donation)}
+                          className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
+                        >
+                          Ndrysho
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteDonation(donation._id)}
+                          className="flex-1 rounded-lg bg-red-600 py-2 text-sm text-white hover:bg-red-700"
+                        >
+                          Fshij
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/*Trego më shumë button*/}
+            <div className="flex justify-center py-4 border-t">
+              <Link to="/donacionetaktive">
+                <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="md:ml-20 md:mr-20 ml-10 mr-10 mt-10">
         <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4">Historia e Donacioneve</h2>
 
@@ -223,6 +380,150 @@ export default function DonationDashboard() {
           </table>
         </div>
       </section>
+
+      {isModalOpen && selectedDonation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Ndrysho Donacionin</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm mb-1">
+                  Emri
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={selectedDonation.name}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, name: e.target.value })
+                  }
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm mb-1">
+                  Shënime
+                </label>
+                <textarea
+                  id="notes"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
+                  value={selectedDonation.notes}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
+                  }
+                />
+                {errors.notes && (
+                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="expiration_date" className="block text-sm mb-1">
+                  Data e Skadencës
+                </label>
+                <Input
+                  id="expiration_date"
+                  name="expiration_date"
+                  type="date"
+                  value={selectedDonation.expiration_date}
+                  className="w-full border-gray-300"
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      expiration_date: e.target.value,
+                    })
+                  }
+                />
+                {errors.expiration_date && (
+                  <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="street" className="block text-sm mb-1">
+                  Rruga
+                </label>
+                <Input
+                  id="street"
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={selectedDonation.address?.street || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      address: {
+                        ...selectedDonation.address,
+                        street: e.target.value,
+                      },
+                    })
+                  }
+                />
+                {errors["address.street"] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors["address.street"]}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="city" className="block text-sm mb-1">
+                  Qyteti
+                </label>
+                <select
+                  id="city"
+                  value={selectedDonation.address?.city || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      address: {
+                        ...selectedDonation.address,
+                        city: e.target.value,
+                      },
+                    })
+                  }
+                  className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${selectedDonation.address?.city === "" ? "text-gray-500" : "text-black"
+                    }`}
+                >
+                  <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
+                  {cities.map((city) => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+
+                {errors["address.city"] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors["address.city"]}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-md bg-gray-200 px-4 py-2 text-sm"
+                >
+                  Mbyll
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                >
+                  Përditëso
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
+
       <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
       </footer>

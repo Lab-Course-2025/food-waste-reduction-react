@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function DonacionetAktive() {
   const [showDonationForm, setShowDonationForm] = useState(false); // Fixed missing state
+  const navigate = useNavigate();
 
   const handleDonateClick = () => {
     setShowDonationForm(true);
@@ -27,12 +28,13 @@ export default function DonacionetAktive() {
       {/* Header */}
       <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
-          <Link to="/">
-            <button className="cursor-pointer">
-              <ArrowLeft className="mr-3 mt-2" size={20} />
-            </button>
-          </Link>
-          <span className="text-base font-medium">Donacionet Aktive</span>
+          <button
+            onClick={() => navigate(-1)} // 👈 Go back to previous page
+            className="cursor-pointer"
+          >
+            <ArrowLeft className="mr-3 mt-2" size={20} />
+          </button>
+          <span className="text-base font-medium mt-2">Prapa</span>
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 m-10">
@@ -45,11 +47,11 @@ export default function DonacionetAktive() {
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
                 <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
                   <div className="relative w-full aspect-w-16 aspect-h-9">
-                      <img
-                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                        alt="Hands holding food"
-                        className="h-full w-full object-cover"
-                      />
+                    <img
+                      src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                      alt="Hands holding food"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <div className="p-4">
                     <h3 className="font-medium">Pako ushqimi {item}</h3>
