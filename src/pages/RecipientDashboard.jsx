@@ -7,86 +7,73 @@ import axios from 'axios';
 
 export default function DonationDashboard() {
 
-const navigate = useNavigate();
-const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-const profileMenuRef = useRef(null);
-const [donor, setDonor] = useState(null);
-const [donations, setDonations] = useState([]);
-const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const [recipient, setRecipient] = useState(null);
+  const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event) => {
-    if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
         setProfileMenuOpen(false);
-    }
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+  }, []);
 
-useEffect(() => {
-    // Fetch donor data when the component mounts
-    const fetchDonorData = async () => {
-    try {
+  useEffect(() => {
+    // Fetch recipient data when the component mounts
+    const fetchRecipientData = async () => {
+      try {
         const apiUrl = import.meta.env.VITE_API_URL;
         const token = localStorage.getItem("authToken");
 
-        const response = await axios.get(`${apiUrl}/donors/profile`, {
-        headers: {
+        const response = await axios.get(`${apiUrl}/recipients/profile`, {
+          headers: {
             'Authorization': `Bearer ${token}`, // Use the token for authentication
-        },
+          },
         });
 
-        // Update state with the donor's data
         // console.log(response.data);
-        setDonor(response.data);
+        setRecipient(response.data);
+      } catch (error) {
+        console.error("Error fetching recipient data:", error);
 
-        setLoading(true);
-        // Fetch food listings or donations posted by the donor
-        const donationsResponse = await axios.get(`${apiUrl}/donor-food-listings`, {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-        });
-
-        // console.log(donationsResponse.data);
-        setDonations(donationsResponse.data.data);
-        setLoading(false);
-    } catch (error) {
-        console.error("Error fetching donor data:", error);
-        setLoading(false);
-    }
+      }
     };
 
-    fetchDonorData();
-}, []);
+    fetchRecipientData();
+  }, []);
 
-const handleLogout = async () => {
+  const handleLogout = async () => {
     console.log("Logging out...");
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("authToken");
 
     try {
-    const response = await axios.post(`${apiUrl}/logout`, {}, {
+      const response = await axios.post(`${apiUrl}/logout`, {}, {
         headers: {
-        'Authorization': `Bearer ${token}` // or sessionStorage if you're storing the token there
+          'Authorization': `Bearer ${token}` // or sessionStorage if you're storing the token there
         }
-    });
+      });
 
-    console.log(response.data.message); // This will log "Logged out successfully"
-    setProfileMenuOpen(false);
-    navigate("/login");
+      console.log(response.data.message); // This will log "Logged out successfully"
+      setProfileMenuOpen(false);
+      navigate("/login");
     } catch (error) {
-    console.error("Error logging out:", error);
+      console.error("Error logging out:", error);
     }
-};
+  };
 
-const handleNavigateToProfile = () => {
+  const handleNavigateToProfile = () => {
     navigate("/profile");
-};
+  };
 
-    
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -103,10 +90,10 @@ const handleNavigateToProfile = () => {
             onClick={() => setProfileMenuOpen(!profileMenuOpen)}
           >
             <div className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-white">
-              <span>{donor?.business_name?.charAt(0) || "F"}</span>
+              <span>{recipient?.organization_name?.charAt(0) || "F"}</span>
             </div>
             {/* <span className="font-medium">Filan Fisteku</span> */}
-            <span className="font-medium">{donor?.business_name || "Filan Fisteku"}</span> {/* Fallback to static name */}
+            <span className="font-medium">{recipient?.organization_name || "Filan Fisteku"}</span> {/* Fallback to static name */}
 
             <ChevronDown className="h-4 w-4" />
           </button>
@@ -255,5 +242,5 @@ const handleNavigateToProfile = () => {
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
       </footer>
     </div>
-  )
+  );
 }

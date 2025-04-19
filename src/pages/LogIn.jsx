@@ -35,7 +35,7 @@ function LogIn() {
         navigate('/donor-dashboard');
       } else if (user.role === 'recipient') {
         // navigate to recipient dashboard
-        // navigate('/'); 
+        navigate('/recipient-dashboard');
       }
 
     } catch (err) {

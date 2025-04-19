@@ -12,13 +12,14 @@ import Submit from "./pages/SubmitDonation";
 import DonacionetAktive from "./pages/DonacionetAktive";
 import Layout from "./components/Layout";
 import DonorDashboard from "./pages/DonorDashboard";
+import RecipientDashboard from "./pages/RecipientDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from './pages/Profile';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
   const location = useLocation();
-  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit", "/donor-dashboard", "/admin-dashboard", "/profile"];
+  const noHeaderFooterRoutes = ["/login", "/donacionetaktive", "/submit", "/donor-dashboard", "/recipient-dashboard", "/admin-dashboard", "/profile"];
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
 
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/login" element={<LogIn />} />
           <Route path="/donacionetaktive" element={<DonacionetAktive />} />
           <Route path="/donor-dashboard" element={<DonorDashboard />} />
+          <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/profile" element={<Profile />} />
