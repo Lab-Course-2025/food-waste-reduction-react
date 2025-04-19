@@ -70,7 +70,7 @@ export default function DonationDashboard() {
   };
 
   const handleNavigateToProfile = () => {
-    navigate("/profile");
+    navigate("/recipient-profile");
   };
 
 
