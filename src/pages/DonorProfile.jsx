@@ -17,6 +17,7 @@ export default function UserProfile() {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
+  const [cities, setCities] = useState([]);
   const [formData, setFormData] = useState({
     contact_first_name: "",
     contact_last_name: "",
@@ -24,20 +25,9 @@ export default function UserProfile() {
     contact_phone: "",
     business_name: "",
     business_number: "",
-    address: {
-      street: "",
-      postcode: "",
-      city: "",
-      country: "",
-    },
+    address: "",
+    city: ""
   });
-
-  const cities = [
-    "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
-    "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
-    "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
-    "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
-  ];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,6 +38,21 @@ export default function UserProfile() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data); // assuming response.data is an array of cities
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
 
   useEffect(() => {
     // Fetch donor data when the component mounts
@@ -72,12 +77,8 @@ export default function UserProfile() {
           contact_phone: response.data.contact_phone || "",
           business_name: response.data.business_name || "",
           business_number: response.data.business_number || "",
-          address: {
-            street: response.data.address?.street || "",
-            postcode: response.data.address?.postcode || "",
-            city: response.data.address?.city || "",
-            country: response.data.address?.country || "",
-          },
+          address: response.data.address || "",
+          city: response.data.city?.id || ""
         });
       } catch (error) {
         console.error("Error fetching donor data:", error);
@@ -116,19 +117,10 @@ export default function UserProfile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Handle nested address fields
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: { ...prev.address, [field]: value },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     // Clear the error for the specific field when the user starts typing
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -160,17 +152,12 @@ export default function UserProfile() {
       newErrors.business_number = "*E nevojshme.";
     }
 
-    // Validate address fields
-    if (!formData.address.street.trim()) {
-      newErrors["address.street"] = "*E nevojshme.";
+    if (!formData.address.trim()) {
+      newErrors.address = "*E nevojshme.";
     }
 
-    if (!formData.address.postcode.trim()) {
-      newErrors["address.postcode"] = "*E nevojshme.";
-    }
-
-    if (!formData.address.city.trim()) {
-      newErrors["address.city"] = "*E nevojshme.";
+    if (!formData.city.trim()) {
+      newErrors.city = "*E nevojshme.";
     }
 
     setErrors(newErrors);
@@ -335,43 +322,32 @@ export default function UserProfile() {
               <div className="md:col-span-2 col-span-1 text-center font-semibold text-lg mt-10 mb-4">Të dhënat e  adresës së biznesit</div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Rruga</label>
+                  <label className="block text-sm font-medium mb-1">Adresa</label>
                   <Input
-                    name="address.street"
-                    value={formData.address.street}
+                    name="address"
+                    value={formData.address}
                     onChange={handleChange} />
-                  {errors["address.street"] && <p className="text-red-500 text-sm mt-1">{errors["address.street"]}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Kodi Postar</label>
-                  <Input
-                    name="address.postcode"
-                    value={formData.address.postcode}
-                    onChange={handleChange} />
-                  {errors["address.postcode"] && <p className="text-red-500 text-sm mt-1">{errors["address.postcode"]}</p>}
+                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Qyteti</label>
-                  {/* <Input
-                    name="address.city"
-                    value={formData.address.city}
-                    onChange={handleChange} /> */}
-                  <select name="address.city" value={formData.address.city} onChange={handleChange} className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.address.city === "" ? "text-gray-500" : "text-black"
-                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}>
-                    <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
-                    {cities.map((city) => (<option key={city} value={city}>{city}</option>))}
-                  </select>
-                  {errors["address.city"] && <p className="text-red-500 text-sm mt-1">{errors["address.city"]}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Shteti</label>
-                  <Input
-                    name="address.country"
-                    value={formData.address.country}
+                  <select
+                    name="city"
+                    value={formData.city}
                     onChange={handleChange}
-                    disabled />
-                  {errors["address.country"] && <p className="text-red-500 text-sm mt-1">{errors["address.country"]}</p>}
+                    className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.city === "" ? "text-gray-500" : "text-black"} border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                  >
+                    <option value="">Zgjedh qytetin</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+
                 </div>
+
               </div>
             </div>
 

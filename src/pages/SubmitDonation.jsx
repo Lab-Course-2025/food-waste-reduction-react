@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { ArrowLeft, Camera } from "lucide-react";
@@ -7,13 +7,6 @@ import axios from "axios";
 import { toast } from 'react-hot-toast';
 
 
-const cities = [
-  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
-  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
-  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
-  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
-];
-
 export default function FoodDonationForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -21,32 +14,33 @@ export default function FoodDonationForm() {
     expiration_date: "",
     notes: "",
     photo: null,
-    address: {
-      street: "",
-      postcode: "",
-      city: "",
-      country: "Kosova", // Default value since it's fixed
-    }
+    address: "",
+    city: ""
   });
   const [errors, setErrors] = useState({});
+  const [cities, setCities] = useState([]);
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data); // access the 'data' array
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Handle nested address fields
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: { ...prev.address, [field]: value },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     // Clear the error for the specific field when the user starts typing
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
@@ -98,14 +92,8 @@ export default function FoodDonationForm() {
         category: "",
         expiration_date: "",
         notes: "",
-        address: {
-          street: "",
-          postcode: "",
-          city: "",
-          house_number: "",
-          municipality: "",
-          country: "Kosova",
-        }
+        address: "",
+        city: ""
       });
 
       // Optionally show a success message or redirect
@@ -136,16 +124,12 @@ export default function FoodDonationForm() {
     }
 
     // Validate address fields
-    if (!formData.address.street.trim()) {
-      newErrors["address.street"] = "*E nevojshme.";
+    if (!formData.address.trim()) {
+      newErrorsaddress = "*E nevojshme.";
     }
 
-    if (!formData.address.postcode.trim()) {
-      newErrors["address.postcode"] = "*E nevojshme.";
-    }
-
-    if (!formData.address.city.trim()) {
-      newErrors["address.city"] = "*E nevojshme.";
+    if (!formData.city.trim()) {
+      newErrors.city = "*E nevojshme.";
     }
 
     setErrors(newErrors);
@@ -260,45 +244,29 @@ export default function FoodDonationForm() {
                 {/* Address Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 mt-5">
                   <div>
-                    <label htmlFor="street" className="block text-sm font-medium mb-1">Rruga</label>
-                    <Input
-                      name="address.street"
-                      value={formData.address.street}
-                      onChange={handleChange}
-                      placeholder="P.sh. Rr. Bulevardi Bill Clinton"
-                      className="w-full border-gray-300"
-                    />
-                    {errors["address.street"] && <p className="text-red-500 text-sm mt-1">{errors["address.street"]}</p>}
+                    <label htmlFor="address" className="block text-sm font-medium mb-1">Adresa</label>
+                    <Input name="address" value={formData.address} onChange={handleChange} placeholder="Rruga" className="w-full border-gray-300" />
+                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                   </div>
-
-                  <div>
-                    <label htmlFor="postcode" className="block text-sm font-medium mb-1">Kodi Postar</label>
-                    <Input
-                      name="address.postcode"
-                      value={formData.address.postcode}
-                      onChange={handleChange}
-                      placeholder="40000"
-                      className="w-full border-gray-300"
-                    />
-                    {errors["address.postcode"] && <p className="text-red-500 text-sm mt-1">{errors["address.postcode"]}</p>}
-                  </div>
-
                   <div>
                     <label htmlFor="city" className="block text-sm font-medium mb-1">Qyteti</label>
                     <select
-                      name="address.city"
-                      value={formData.address.city}
+                      name="city"
+                      value={formData.city}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.address.city === "" ? "text-gray-500" : "text-black"
-                        }`}
+                      className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.city === "" ? "text-gray-500" : "text-black"} border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
                     >
                       <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
                       {cities.map((city) => (
-                        <option key={city} value={city}>{city}</option>
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
                       ))}
                     </select>
-                    {errors["address.city"] && <p className="text-red-500 text-sm mt-1">{errors["address.city"]}</p>}
+                    {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
                   </div>
+
+
                 </div>
               </div>
 
