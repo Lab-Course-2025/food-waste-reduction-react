@@ -7,12 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Pagination from "../components/Pagination";
 
-const cities = [
-  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
-  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
-  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
-  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
-];
 
 export default function DonorDonations() {
   const [donations, setDonations] = useState([]);
@@ -25,6 +19,8 @@ export default function DonorDonations() {
   const [totalPages, setTotalPages] = useState(1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [donationToDelete, setDonationToDelete] = useState(null);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
 
 
 
@@ -33,14 +29,11 @@ export default function DonorDonations() {
     if (!selectedDonation.name) {
       newErrors.name = '*E nevojshme.';
     }
-    if (!selectedDonation.expiration_date) {
-      newErrors.expiration_date = '*E nevojshme.';
+    if (!selectedDonation.address) {
+      newErrors.address = '*E nevojshme.';
     }
-    if (!selectedDonation.address?.street) {
-      newErrors["address.street"] = '*E nevojshme.';
-    }
-    if (!selectedDonation.address?.city) {
-      newErrors["address.city"] = '*E nevojshme.';
+    if (!selectedDonation.city) {
+      newErrors.city = '*E nevojshme.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Returns true if there are no errors
@@ -115,12 +108,20 @@ export default function DonorDonations() {
 
   const handleUpdateDonation = async (id) => {
     try {
+      const payload = {
+        name: selectedDonation.name,
+        notes: selectedDonation.notes || "",
+        expiration_date: selectedDonation.expiration_date,
+        address: selectedDonation.address,
+        city: selectedDonation.city || null,
+      };
+
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
 
       const response = await axios.patch(
         `${apiUrl}/food-listings/${id}`,
-        selectedDonation,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -144,6 +145,21 @@ export default function DonorDonations() {
   };
 
   useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+
+  useEffect(() => {
     const fetchDonations = async () => {
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
@@ -155,7 +171,8 @@ export default function DonorDonations() {
           },
           params: {
             page: currentPage,  // Send the current page to the API
-            limit: 10,           // Limit the number of items per page (can be dynamic)
+            limit: 9,           // Limit the number of items per page (can be dynamic)
+            city: selectedCity || undefined, // only send if selected
           },
         });
         // Update donations and pagination data
@@ -170,14 +187,14 @@ export default function DonorDonations() {
 
 
     fetchDonations();
-  }, [currentPage]);
+  }, [currentPage, selectedCity]);
 
   return (
     <div>
       <div className="bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
           <button
-            onClick={() => navigate(-1)} // 👈 Go back to previous page
+            onClick={() => navigate(-1)}
             className="cursor-pointer"
           >
             <ArrowLeft className="mr-3 mt-2" size={20} />
@@ -189,6 +206,26 @@ export default function DonorDonations() {
         <div className="rounded-lg bg-white overflow-hidden">
           <h2 className="py-6 text-center text-2xl font-bold">Donacionet e mia</h2>
           <div className="px-4 pb-10">
+            <div className="mb-6">
+              <label htmlFor="cityFilter" className="block mb-2 text-sm font-medium text-gray-700">
+                Filtro sipas qytetit:
+              </label>
+              <select
+                id="cityFilter"
+                className="w-full max-w-sm border rounded px-3 py-2"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                <option value="">Të gjitha qytetet</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {donations.map((donation) => (
                 <div
@@ -213,7 +250,11 @@ export default function DonorDonations() {
                         <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category}</p>
                         <p>
                           <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                          {donation.address?.street}, {donation.address?.city}, {donation.address?.country}
+                          {donation.address}
+                        </p>
+                        <p>
+                          <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                          {donation.city?.name}
                         </p>
                         {donation.expiration_date && (
                           <p>
@@ -249,137 +290,132 @@ export default function DonorDonations() {
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
           <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ndrysho Donacionin</h2>
-            <div>
-              <label htmlFor="name" className="block text-sm mb-1">
-                Emri
-              </label>
-              <Input
-                id="name"
-                type="text"
-                className="w-full rounded border px-3 py-2"
-                value={selectedDonation.name}
-                onChange={(e) =>
-                  setSelectedDonation({ ...selectedDonation, name: e.target.value })
-                }
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="name" className="block text-sm mb-1">
+                  Emri
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={selectedDonation.name}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, name: e.target.value })
+                  }
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
+              </div>
 
-            <div>
-              <label htmlFor="notes" className="block text-sm mb-1">
-                Shënime
-              </label>
-              <textarea
-                id="notes"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
-                value={selectedDonation.notes}
-                onChange={(e) =>
-                  setSelectedDonation({ ...selectedDonation, notes: e.target.value })
-                }
-              />
-              {errors.notes && (
-                <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
-              )}
-            </div>
+              <div>
+                <label htmlFor="notes" className="block text-sm mb-1">
+                  Shënime
+                </label>
+                <textarea
+                  id="notes"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
+                  value={selectedDonation.notes}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
+                  }
+                />
+                {errors.notes && (
+                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
+                )}
+              </div>
 
-            <div>
-              <label htmlFor="expiration_date" className="block text-sm mb-1">
-                Data e Skadencës
-              </label>
-              <Input
-                id="expiration_date"
-                name="expiration_date"
-                type="date"
-                value={selectedDonation.expiration_date}
-                className="w-full border-gray-300"
-                onChange={(e) =>
-                  setSelectedDonation({
-                    ...selectedDonation,
-                    expiration_date: e.target.value,
-                  })
-                }
-              />
-              {errors.expiration_date && (
-                <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
-              )}
-            </div>
+              <div>
+                <label htmlFor="expiration_date" className="block text-sm mb-1">
+                  Data e Skadencës
+                </label>
+                <Input
+                  id="expiration_date"
+                  name="expiration_date"
+                  type="date"
+                  value={selectedDonation.expiration_date}
+                  className="w-full border-gray-300"
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      expiration_date: e.target.value,
+                    })
+                  }
+                />
+                {errors.expiration_date && (
+                  <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
+                )}
+              </div>
 
-            <div>
-              <label htmlFor="street" className="block text-sm mb-1">
-                Rruga
-              </label>
-              <Input
-                id="street"
-                type="text"
-                className="w-full rounded border px-3 py-2"
-                value={selectedDonation.address?.street || ""}
-                onChange={(e) =>
-                  setSelectedDonation({
-                    ...selectedDonation,
-                    address: {
-                      ...selectedDonation.address,
-                      street: e.target.value,
-                    },
-                  })
-                }
-              />
-              {errors["address.street"] && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors["address.street"]}
-                </p>
-              )}
-            </div>
+              <div>
+                <label htmlFor="address" className="block text-sm mb-1">
+                  Rruga
+                </label>
+                <Input
+                  id="address"
+                  type="text"
+                  className="w-full rounded border px-3 py-2"
+                  value={selectedDonation.address || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      address: e.target.value,
+                    })
+                  }
+                />
+                {errors.address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+                )}
+              </div>
 
-            <div>
-              <label htmlFor="city" className="block text-sm mb-1">
-                Qyteti
-              </label>
-              <select
-                id="city"
-                value={selectedDonation.address?.city || ""}
-                onChange={(e) =>
-                  setSelectedDonation({
-                    ...selectedDonation,
-                    address: {
-                      ...selectedDonation.address,
+              <div>
+                <label htmlFor="city" className="block text-sm mb-1">
+                  Qyteti
+                </label>
+                <select
+                  name="city"
+                  value={selectedDonation.city?.id || selectedDonation.city || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
                       city: e.target.value,
-                    },
-                  })
-                }
-                className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${selectedDonation.address?.city === "" ? "text-gray-500" : "text-black"
-                  }`}
-              >
-                <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
-                {cities.map((city) => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </select>
+                    })
+                  }
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.city === "" ? "text-gray-500" : "text-black"
+                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                >
+                  <option value="">Zgjedh qytetin</option>
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                )}
+              </div>
 
-              {errors["address.city"] && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors["address.city"]}
-                </p>
-              )}
-            </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-md bg-gray-200 px-4 py-2 text-sm"
+                >
+                  Mbyll
+                </Button>
+                <Button
+                  type="submit"
+                  className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
+                  onClick={handleSubmit}
+                >
+                  Përditëso
+                </Button>
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-md bg-gray-200 px-4 py-2 text-sm"
-              >
-                Mbyll
-              </Button>
-              <Button
-                type="submit"
-                className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
-                onClick={handleSubmit}
-              >
-                Përditëso
-              </Button>
-            </div>
+              </div>
+            </form>
+
           </div>
         </div>
       )}
@@ -420,3 +456,4 @@ export default function DonorDonations() {
     </div>
   );
 }
+
