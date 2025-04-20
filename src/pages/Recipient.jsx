@@ -1,16 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import axios from 'axios';
 
-const cities = [
-  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
-  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
-  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
-  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
-];
+
 const Recipient = () => {
 
   const [formData, setFormData] = useState({
@@ -23,51 +18,31 @@ const Recipient = () => {
     contact_phone: "",
     email: "",
     password: "",
-    address: {
-      street: "",
-      postcode: "",
-      city: "",
-      country: "Kosova", // Default value since it's fixed
-    }
+    address: "",
+    city: ""
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [cities, setCities] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     // Handle nested address fields
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: { ...prev.address, [field]: value },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     // Clear the error for the specific field when the user starts typing
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-
   };
 
   const validateForm = () => {
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
       if (typeof formData[key] === "string" && !formData[key].trim()) {
-        newErrors[key] = "*E nevojshme.";
-      } else if (typeof formData[key] === "object" && formData[key] !== null) {
-        // Validate address fields
-        Object.keys(formData[key]).forEach((subKey) => {
-          const value = formData[key][subKey];
-          if (typeof value !== "string" || !value.trim()) {
-            newErrors[`${key}.${subKey}`] = "*E nevojshme.";
-          }
-        });
+        newErrors[key] = "*E nevojshme. ";
       }
     });
 
@@ -76,8 +51,22 @@ const Recipient = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data); // access the 'data' array
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
 
   const handleSubmit = async (e) => {
@@ -177,28 +166,28 @@ const Recipient = () => {
               {/* Address Information */}
               <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg mt-5">Adresa e organizates</div>
               <div>
-                <label htmlFor="street" className="block text-sm font-medium mb-1">Rruga</label>
-                <Input name="address.street" value={formData.address.street} onChange={handleChange} placeholder="Rruga" className="w-full border-gray-300" />
-                {errors["address.street"] && <p className="text-red-500 text-sm mt-1">{errors["address.street"]}</p>}
-              </div>
-              <div>
-                <label htmlFor="postcode" className="block text-sm font-medium mb-1">Kodi Postar</label>
-                <Input name="address.postcode" value={formData.address.postcode} onChange={handleChange} placeholder="40000" className="w-full border-gray-300" />
-                {errors["address.postcode"] && <p className="text-red-500 text-sm mt-1">{errors["address.postcode"]}</p>}
+                <label htmlFor="address" className="block text-sm font-medium mb-1">Adresa</label>
+                <Input name="address" value={formData.address} onChange={handleChange} placeholder="Rruga" className="w-full border-gray-300" />
+                {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
               </div>
               <div>
                 <label htmlFor="city" className="block text-sm font-medium mb-1">Qyteti</label>
-                <select name="address.city" value={formData.address.city} onChange={handleChange} className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.address.city === "" ? "text-gray-500" : "text-black"
-                  } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}>
+                <select
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.city === "" ? "text-gray-500" : "text-black"} border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                >
                   <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
-                  {cities.map((city) => (<option key={city} value={city}>{city}</option>))}
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
                 </select>
-                {errors["address.city"] && <p className="text-red-500 text-sm mt-1">{errors["address.city"]}</p>}
+                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
               </div>
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium mb-1">Shteti</label>
-                <Input name="address.country" value={formData.address.country} onChange={handleChange} placeholder="Kosova" className="w-full border-gray-300" disabled />
-              </div>
+
 
               {/* Login Information */}
               <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg mt-5">Email dhe fjalëkalimi</div>
