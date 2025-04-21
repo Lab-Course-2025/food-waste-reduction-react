@@ -15,10 +15,13 @@ export default function FoodDonationForm() {
     notes: "",
     photo: null,
     address: "",
-    city: ""
+    city: "",
+    quantity: "",
+    unit_of_measurement: "",
   });
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]); // Added categories state
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -31,7 +34,18 @@ export default function FoodDonationForm() {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/categories`);
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchCities();
+    fetchCategories();
   }, []);
 
   const handleChange = (e) => {
@@ -125,11 +139,19 @@ export default function FoodDonationForm() {
 
     // Validate address fields
     if (!formData.address.trim()) {
-      newErrorsaddress = "*E nevojshme.";
+      newErrors.address = "*E nevojshme.";
     }
 
     if (!formData.city.trim()) {
       newErrors.city = "*E nevojshme.";
+    }
+
+    if (!formData.quantity.trim()) {
+      newErrors.quantity = "*E nevojshme.";
+    }
+
+    if (!formData.unit_of_measurement.trim()) {
+      newErrors.unit_of_measurement = "*E nevojshme.";
     }
 
     setErrors(newErrors);
@@ -192,8 +214,69 @@ export default function FoodDonationForm() {
                       )}
                     </div>
 
+                    <div>
+                      <label className="block text-sm mb-1">Kategoria e Ushqimit</label>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.category === "" ? "text-gray-500" : "text-black"}`}
+                      >
+                        <option value="">Zgjedh një kategori</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.category && (
+                        <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+                      )}
+                    </div>
 
                     <div>
+                      <label className="block text-sm mb-1">Sasia</label>
+                      <Input
+                        name="quantity"
+                        value={formData.quantity}
+                        onChange={handleChange}
+                        placeholder="P.sh. 10, 20"
+                        className="w-full border-gray-300"
+                      />
+                      {errors.quantity && (
+                        <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>
+                      )}
+                    </div>
+
+                    {/* Unit of Measurement */}
+                    <div>
+                      <label className="block text-sm mb-1">Njësia matëse</label>
+                      <select
+                        name="unit_of_measurement"
+                        value={formData.unit_of_measurement}
+                        onChange={handleChange}
+                        className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${formData.category === "" ? "text-gray-500" : "text-black"
+                          }`}
+                      >
+                        <option value="">Zgjedh njësinë</option>
+                        <option value="kg">Kilogramë</option>
+                        <option value="g">Gramë</option>
+                        <option value="l">Litër</option>
+                        <option value="ml">Mililitër</option>
+                        <option value="pcs">Copa</option>
+                        <option value="packs">Paketa</option>
+                        <option value="boxes">Kuti</option>
+                        <option value="cans">Kanaçe</option>
+                        <option value="bottles">Shishe</option>
+                        <option value="servings">Racione</option>
+                      </select>
+                      {errors.unit_of_measurement && (
+                        <p className="text-red-500 text-sm mt-1">{errors.unit_of_measurement}</p>
+                      )}
+                    </div>
+
+
+                    {/* <div>
                       <label className="block text-sm mb-1">Kategoria e Ushqimit</label>
                       <select
                         name="category"
@@ -212,7 +295,7 @@ export default function FoodDonationForm() {
                       {errors.category && (
                         <p className="text-red-500 text-sm mt-1">{errors.category}</p>
                       )}
-                    </div>
+                    </div> */}
 
 
                     <div>

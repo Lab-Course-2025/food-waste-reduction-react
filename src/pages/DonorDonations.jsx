@@ -20,6 +20,7 @@ export default function DonorDonations() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [donationToDelete, setDonationToDelete] = useState(null);
   const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
 
 
@@ -116,6 +117,9 @@ export default function DonorDonations() {
         city: typeof selectedDonation.city === 'object'
           ? selectedDonation.city.id
           : selectedDonation.city,
+        category: typeof selectedDonation.category === 'object'
+          ? selectedDonation.category.id
+          : selectedDonation.category,
       };
 
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -157,7 +161,18 @@ export default function DonorDonations() {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/categories`);
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchCities();
+    fetchCategories();
   }, []);
 
 
@@ -249,7 +264,8 @@ export default function DonorDonations() {
                       <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
                       <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
                       <div className="mt-3 text-sm text-gray-500 space-y-1">
-                        <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category}</p>
+                        <p><span className="font-medium text-gray-700">Kategoria:</span>{donation.category?.name || "Ushqim"}
+                        </p>
                         <p>
                           <span className="font-medium text-gray-700">Adresa:</span>{" "}
                           {donation.address}
@@ -312,23 +328,6 @@ export default function DonorDonations() {
               </div>
 
               <div>
-                <label htmlFor="notes" className="block text-sm mb-1">
-                  Shënime
-                </label>
-                <textarea
-                  id="notes"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
-                  value={selectedDonation.notes}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
-                  }
-                />
-                {errors.notes && (
-                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
-                )}
-              </div>
-
-              <div>
                 <label htmlFor="expiration_date" className="block text-sm mb-1">
                   Data e Skadencës
                 </label>
@@ -348,6 +347,32 @@ export default function DonorDonations() {
                 {errors.expiration_date && (
                   <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
                 )}
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-sm mb-1">
+                  Kategoria
+                </label>
+                <select
+                  name="category"
+                  value={selectedDonation.category?.id || selectedDonation.category || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      category: e.target.value,
+                    })
+                  }
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.category === "" ? "text-gray-500" : "text-black"
+                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                >
+                  <option value="">Zgjedh kategorin</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+
               </div>
 
               <div>
@@ -396,6 +421,23 @@ export default function DonorDonations() {
                 </select>
                 {errors.city && (
                   <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm mb-1">
+                  Shënime
+                </label>
+                <textarea
+                  id="notes"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
+                  value={selectedDonation.notes}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
+                  }
+                />
+                {errors.notes && (
+                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
                 )}
               </div>
 

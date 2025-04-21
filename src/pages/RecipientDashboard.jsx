@@ -230,7 +230,7 @@ export default function DonationDashboard() {
                             </p>
                             <p>
                               <span className="font-medium text-gray-700">Kategoria:</span>{" "}
-                              {donation.category || "Ushqim"}
+                              {donation.category?.name || "Ushqim"}
                             </p>
                             <p>
                               <span className="font-medium text-gray-700">Adresa:</span>{" "}

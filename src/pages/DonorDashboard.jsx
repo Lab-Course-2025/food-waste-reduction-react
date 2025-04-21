@@ -16,6 +16,7 @@ export default function DonationDashboard() {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -87,6 +88,9 @@ export default function DonationDashboard() {
         city: typeof selectedDonation.city === 'object'
           ? selectedDonation.city.id
           : selectedDonation.city,
+        category: typeof selectedDonation.category === 'object'
+          ? selectedDonation.category.id
+          : selectedDonation.category,
       };
 
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -143,7 +147,18 @@ export default function DonationDashboard() {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/categories`);
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchCities();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -343,7 +358,7 @@ export default function DonationDashboard() {
                             </p>
                             <p>
                               <span className="font-medium text-gray-700">Kategoria:</span>{" "}
-                              {donation.category || "Ushqim"}
+                              {donation.category?.name || "Ushqim"}
                             </p>
                             <p>
                               <span className="font-medium text-gray-700">Adresa:</span>{" "}
@@ -417,23 +432,6 @@ export default function DonationDashboard() {
               </div>
 
               <div>
-                <label htmlFor="notes" className="block text-sm mb-1">
-                  Shënime
-                </label>
-                <textarea
-                  id="notes"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
-                  value={selectedDonation.notes}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
-                  }
-                />
-                {errors.notes && (
-                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
-                )}
-              </div>
-
-              <div>
                 <label htmlFor="expiration_date" className="block text-sm mb-1">
                   Data e Skadencës
                 </label>
@@ -453,6 +451,32 @@ export default function DonationDashboard() {
                 {errors.expiration_date && (
                   <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
                 )}
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-sm mb-1">
+                  Kategoria
+                </label>
+                <select
+                  name="category"
+                  value={selectedDonation.category?.id || selectedDonation.category || ""}
+                  onChange={(e) =>
+                    setSelectedDonation({
+                      ...selectedDonation,
+                      category: e.target.value,
+                    })
+                  }
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.category === "" ? "text-gray-500" : "text-black"
+                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                >
+                  <option value="">Zgjedh kategorin</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+
               </div>
 
               <div>
@@ -501,6 +525,23 @@ export default function DonationDashboard() {
                 </select>
                 {errors.city && (
                   <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm mb-1">
+                  Shënime
+                </label>
+                <textarea
+                  id="notes"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
+                  value={selectedDonation.notes}
+                  onChange={(e) =>
+                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
+                  }
+                />
+                {errors.notes && (
+                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
                 )}
               </div>
 

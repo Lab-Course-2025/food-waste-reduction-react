@@ -126,7 +126,7 @@ export default function DonorDonations() {
       </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 py-6">
         <div className="rounded-lg bg-white overflow-hidden">
-          <h2 className="py-6 text-center text-2xl font-bold">Donacionet e mia</h2>
+          <h2 className="py-6 text-center text-2xl font-bold">Donacionet aktive</h2>
           <div className="px-4 pb-10">
             <div className="mb-6">
               <label htmlFor="cityFilter" className="block mb-2 text-sm font-medium text-gray-700">
@@ -169,7 +169,8 @@ export default function DonorDonations() {
                       <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
                       <div className="mt-3 text-sm text-gray-500 space-y-1">
                         <p><span className="font-medium text-gray-700">Kompania:</span> {donation.donor.business_name}</p>
-                        <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category}</p>
+                        <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}
+                        </p>
                         <p>
                           <span className="font-medium text-gray-700">Adresa:</span>{" "}
                           {donation.address}
