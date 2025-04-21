@@ -1,19 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { PlusCircle, LogOut, Home, ChevronDown } from "lucide-react";
+import { PlusCircle, LogOut, Home, ChevronDown, ClipboardList } from "lucide-react";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import axios from 'axios';
 import Input from "../components/Input";
-import { toast } from 'react-hot-toast';
-
-
-const cities = [
-  "Prishtinë", "Prizren", "Pejë", "Gjakovë", "Mitrovicë", "Ferizaj", "Gjilan",
-  "Vushtrri", "Podujevë", "Suharekë", "Rahovec", "Malishevë", "Drenas",
-  "Lipjan", "Kamenicë", "Skenderaj", "Deçan", "Istog", "Dragash", "Kaçanik",
-  "Shtime", "Fushë Kosovë", "Obiliq", "Klinë", "Novobërdë"
-];
+import { toast } from "react-hot-toast";
 
 export default function DonationDashboard() {
   const navigate = useNavigate();
@@ -22,10 +14,12 @@ export default function DonationDashboard() {
   const [donor, setDonor] = useState(null);
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [cities, setCities] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
-  const [errors, setErrors] = useState({});
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [donationToDelete, setDonationToDelete] = useState(null);
 
   const handleDonateClick = () => {
     setShowDonationForm(true);
@@ -36,23 +30,6 @@ export default function DonationDashboard() {
     });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!selectedDonation.name) {
-      newErrors.name = '*E nevojshme.';
-    }
-    if (!selectedDonation.expiration_date) {
-      newErrors.expiration_date = '*E nevojshme.';
-    }
-    if (!selectedDonation.address?.street) {
-      newErrors["address.street"] = '*E nevojshme.';
-    }
-    if (!selectedDonation.address?.city) {
-      newErrors["address.city"] = '*E nevojshme.';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Returns true if there are no errors
-  };
 
 
   const handleSubmit = (e) => {
@@ -68,14 +45,56 @@ export default function DonationDashboard() {
     setIsModalOpen(true);
   };
 
+  const confirmDeleteDonation = (donation) => {
+    setDonationToDelete(donation);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteDonation = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("authToken");
+
+      await axios.delete(`${apiUrl}/food-listings/${donationToDelete.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Remove deleted donation from state
+      setDonations((prev) =>
+        prev.filter((d) => d.id !== donationToDelete.id)
+      );
+
+      toast.success("Donacioni u fshi me sukses!");
+    } catch (error) {
+      toast.error("Ndodhi një gabim gjatë fshirjes!");
+      console.error("Error deleting donation:", error);
+    } finally {
+      setIsDeleteModalOpen(false);
+      setDonationToDelete(null);
+    }
+  };
+
+
   const handleUpdateDonation = async (id) => {
     try {
+      const payload = {
+        name: selectedDonation.name,
+        notes: selectedDonation.notes || "",
+        expiration_date: selectedDonation.expiration_date,
+        address: selectedDonation.address,
+        city: typeof selectedDonation.city === 'object'
+          ? selectedDonation.city.id
+          : selectedDonation.city,
+      };
+
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
 
       const response = await axios.patch(
         `${apiUrl}/food-listings/${id}`,
-        selectedDonation,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -98,6 +117,34 @@ export default function DonationDashboard() {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!selectedDonation.name) {
+      newErrors.name = '*E nevojshme.';
+    }
+    if (!selectedDonation.address) {
+      newErrors.address = '*E nevojshme.';
+    }
+    if (!selectedDonation.city) {
+      newErrors.city = '*E nevojshme.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if there are no errors
+  };
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -171,6 +218,10 @@ export default function DonationDashboard() {
     navigate("/donor-profile");
   };
 
+  const navigateToDonationsPage = () => {
+    navigate("/donations");
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
       {/* Header with dropdown */}
@@ -216,177 +267,137 @@ export default function DonationDashboard() {
         </div>
       </header>
 
-      {/* Rest of the donor dashboard */}
-      <section className="md:ml-20 md:mr-20 ml-10 mr-10">
-        <h2 className="text-xl font-bold mb-2">Donacionet e mia</h2>
-        <p className="text-gray-600 mb-8">Ndjek dhe menaxho dhurimet e tua bamirëse</p>
+      <main className="container mx-auto p-4 max-w-6xl">
+        {/* Rest of the donor dashboard */}
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-2">Donacionet e mia</h2>
+          <p className="text-gray-600 mb-8">Ndjek dhe menaxho dhurimet e tua bamirëse</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="rounded-lg border bg-white shadow-sm p-6">
-            <p className="text-gray-500 text-sm mb-1">Donacionet Totale</p>
-            <p className="text-3xl font-bold">2,450€</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="rounded-lg border bg-white shadow-sm p-6">
+              <p className="text-gray-500 text-sm mb-1">Donacionet Totale</p>
+              <p className="text-3xl font-bold">2,450€</p>
+            </div>
+            <div className="rounded-lg border bg-white shadow-sm p-6">
+              <p className="text-gray-500 text-sm mb-1">Donacionet këtë vit</p>
+              <p className="text-3xl font-bold">850€</p>
+            </div>
+            <div className="rounded-lg border bg-white shadow-sm p-6">
+              <p className="text-gray-500 text-sm mb-1">Numri i Donacioneve</p>
+              <p className="text-3xl font-bold">12</p>
+            </div>
           </div>
-          <div className="rounded-lg border bg-white shadow-sm p-6">
-            <p className="text-gray-500 text-sm mb-1">Donacionet këtë vit</p>
-            <p className="text-3xl font-bold">850€</p>
-          </div>
-          <div className="rounded-lg border bg-white shadow-sm p-6">
-            <p className="text-gray-500 text-sm mb-1">Numri i Donacioneve</p>
-            <p className="text-3xl font-bold">12</p>
-          </div>
-        </div>
 
-        <Link to="/submit">
-          <Button className="inline-flex items-center text-white">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Bëj një Donacion të Ri
-          </Button>
-        </Link>
-      </section>
+          <Link to="/donor-donations">
+            <Button className="flex items-center text-white mb-2">
+              <ClipboardList className="mr-2 h-4 w-4" />
+              Shiko të gjitha listimet
+            </Button>
+          </Link>
 
-      <section className="py-10">
-        <div className="mx-auto max-w-6xl px-4 md:px-6">
-          <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
-            <h2 className="py-6 text-center text-2xl font-bold">Donacionet e mia</h2>
+          <Link to="/submit">
+            <Button className="flex items-center text-white">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Shto një donacion
+            </Button>
+          </Link>
 
-            {/* Scrollable donation container */}
-            <div className="px-4 pb-10">
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {donations.map((donation) => (
-                  <div
-                    key={donation._id}
-                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                  >
-                    {/* Image */}
-                    <div className="relative aspect-video">
-                      <img
-                        src={
-                          donation.imageUrl ||
-                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                        }
-                        alt={donation.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
+        </section>
 
-                    {/* Content */}
-                    <div className="flex flex-col justify-between p-5 grow">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
-                        <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
+        {/* Available Donations */}
+        <section className="py-10">
+          <div className="mx-auto max-w-6xl px-4 md:px-6">
+            <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+              <h2 className="py-6 text-center text-2xl font-bold">Donacionet e fundit</h2>
 
-                        <div className="mt-3 text-sm text-gray-500 space-y-1">
-                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category}</p>
-                          <p>
-                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                            {donation.address?.street}, {donation.address?.city}, {donation.address?.country}
+              {/* Scrollable donation container */}
+              <div className="px-4 pb-6">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {donations.slice(0, 3).map((donation, index) => (
+                    <div
+                      key={donation.id || index}
+                      className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      <div className="relative aspect-video">
+                        <img
+                          src={
+                            donation.image ||
+                            "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                          }
+                          alt={donation.name || "Donacion"}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between p-5 grow">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {donation.name || "Pako Ushqimi"}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {donation.notes || "Ushqime për familjet në nevojë"}
                           </p>
-                          {donation.expiration_date && (
+                          <div className="mt-3 text-sm text-gray-500 space-y-1">
                             <p>
-                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                              {new Date(donation.expiration_date).toLocaleDateString()}
+                              <span className="font-medium text-gray-700">Kompania:</span>{" "}
+                              {donation.donor.business_name || "Kompani e panjohur"}
                             </p>
-                          )}
+                            <p>
+                              <span className="font-medium text-gray-700">Kategoria:</span>{" "}
+                              {donation.category || "Ushqim"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                              {donation.address || "Nuk ka rrugë"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                              {donation.city?.name || "Nuk ka qyetet"}
+                            </p>
+                            {donation.expiration_date && (
+                              <p>
+                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                                {new Date(donation.expiration_date).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-5 flex gap-3">
+                          <Button
+                            onClick={() => handleEditDonation(donation)}
+                            className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
+                          >
+                            Ndrysho
+                          </Button>
+                          <Button
+                            onClick={() => confirmDeleteDonation(donation)}
+                            className="flex-1 rounded-lg bg-red-600 py-2 text-sm text-white hover:bg-red-700"
+                          >
+                            Fshij
+                          </Button>
                         </div>
                       </div>
-
-                      {/* Buttons */}
-                      <div className="mt-5 flex gap-3">
-                        <Button
-                          onClick={() => handleEditDonation(donation)}
-                          className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
-                        >
-                          Ndrysho
-                        </Button>
-                        <Button
-                          onClick={() => handleDeleteDonation(donation._id)}
-                          className="flex-1 rounded-lg bg-red-600 py-2 text-sm text-white hover:bg-red-700"
-                        >
-                          Fshij
-                        </Button>
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+
+              {/*Trego më shumë button*/}
+              <div className="flex justify-center py-4 border-t">
+                <Link to="/donor-donations">
+                  <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+                </Link>
               </div>
             </div>
-
-            {/*Trego më shumë button*/}
-            <div className="flex justify-center py-4 border-t">
-              <Link to="/donacionetaktive">
-                <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
-              </Link>
-            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="md:ml-20 md:mr-20 ml-10 mr-10 mt-10">
-        <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4">Historia e Donacioneve</h2>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-gray-500 border-b">
-                <th className="pb-4 font-medium">EMRI</th>
-                <th className="pb-4 font-medium">PËRSHKRIMI</th>
-                <th className="pb-4 font-medium">KATEGORIA</th>
-                <th className="pb-4 font-medium">DATA E SKADENCËS</th>
-                <th className="pb-4 font-medium">DATA E POSTIMIT</th>
-                <th className="pb-4 font-medium">ADRESA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
-                </tr>
-              ) : donations.length > 0 ? donations.map((donation) => (
-                <tr key={donation.id} className="border-b bg-white px-6 py-4">
-                  <td className="py-4 px-6">{donation.name}</td>
-                  <td className="py-4 px-6">{donation.notes ? donation.notes : 'Nuk ka pershkrim'}</td>
-                  <td className="py-4 px-6">{donation.category}</td>
-                  <td className="py-4 px-6">
-                    {(() => {
-                      const date = new Date(donation.created_at);
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const year = date.getFullYear();
-
-                      return `${day}-${month}-${year}`;
-                    })()}
-                  </td>
-                  <td className="py-4 px-6">
-                    {(() => {
-                      const date = new Date(donation.created_at);
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const year = date.getFullYear();
-                      const hours = String(date.getHours()).padStart(2, '0');
-                      const minutes = String(date.getMinutes()).padStart(2, '0');
-
-                      return `${day}-${month}-${year}, ${hours}:${minutes}`;
-                    })()}
-                  </td>
-                  <td className="py-4 px-6">{donation.address ? `${donation.address.city}, ${donation.address.street}` : 'Nuk ka adresë'}</td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan="5" className="text-center py-4">Nuk ka donacione të disponueshme.</td>
-                </tr>
-              )}
-            </tbody>
-
-          </table>
-        </div>
-      </section>
+        </section>
+      </main>
 
       {isModalOpen && selectedDonation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
           <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ndrysho Donacionin</h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm mb-1">
                   Emri
@@ -445,28 +456,23 @@ export default function DonationDashboard() {
               </div>
 
               <div>
-                <label htmlFor="street" className="block text-sm mb-1">
+                <label htmlFor="address" className="block text-sm mb-1">
                   Rruga
                 </label>
                 <Input
-                  id="street"
+                  id="address"
                   type="text"
                   className="w-full rounded border px-3 py-2"
-                  value={selectedDonation.address?.street || ""}
+                  value={selectedDonation.address || ""}
                   onChange={(e) =>
                     setSelectedDonation({
                       ...selectedDonation,
-                      address: {
-                        ...selectedDonation.address,
-                        street: e.target.value,
-                      },
+                      address: e.target.value,
                     })
                   }
                 />
-                {errors["address.street"] && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors["address.street"]}
-                  </p>
+                {errors.address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
                 )}
               </div>
 
@@ -475,58 +481,141 @@ export default function DonationDashboard() {
                   Qyteti
                 </label>
                 <select
-                  id="city"
-                  value={selectedDonation.address?.city || ""}
+                  name="city"
+                  value={selectedDonation.city?.id || selectedDonation.city || ""}
                   onChange={(e) =>
                     setSelectedDonation({
                       ...selectedDonation,
-                      address: {
-                        ...selectedDonation.address,
-                        city: e.target.value,
-                      },
+                      city: e.target.value,
                     })
                   }
-                  className={`w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${selectedDonation.address?.city === "" ? "text-gray-500" : "text-black"
-                    }`}
+                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.city === "" ? "text-gray-500" : "text-black"
+                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
                 >
-                  <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
+                  <option value="">Zgjedh qytetin</option>
                   {cities.map((city) => (
-                    <option key={city} value={city}>{city}</option>
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
                   ))}
                 </select>
-
-                {errors["address.city"] && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors["address.city"]}
-                  </p>
+                {errors.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
                 )}
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="rounded-md bg-gray-200 px-4 py-2 text-sm"
                 >
                   Mbyll
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                  className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
+                  onClick={handleSubmit}
                 >
                   Përditëso
-                </button>
+                </Button>
+
               </div>
             </form>
+
           </div>
         </div>
       )}
 
+      {isDeleteModalOpen && donationToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Konfirmo Fshirjen</h2>
+            <p className="text-gray-700 mb-6">
+              A jeni i sigurt që dëshironi të fshini donacionin{" "}
+              <span className="font-bold">{donationToDelete.name}</span>?
+            </p>
+            <div className="flex justify-end gap-3">
+              <Button
+                className="bg-gray-300 text-gray-800 hover:bg-gray-400"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Anulo
+              </Button>
+              <Button
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={handleDeleteDonation}
+              >
+                Fshij
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {/* <section className="md:ml-20 md:mr-20 ml-10 mr-10 mt-10">
+        <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4">Historia e Donacioneve</h2>
 
-      <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-gray-500 border-b">
+                <th className="pb-4 font-medium">EMRI</th>
+                <th className="pb-4 font-medium">PËRSHKRIMI</th>
+                <th className="pb-4 font-medium">KATEGORIA</th>
+                <th className="pb-4 font-medium">DATA E SKADENCËS</th>
+                <th className="pb-4 font-medium">DATA E POSTIMIT</th>
+                <th className="pb-4 font-medium">ADRESA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
+                </tr>
+              ) : donations.length > 0 ? donations.map((donation) => (
+                <tr key={donation.id} className="border-b bg-white px-6 py-4">
+                  <td className="py-4 px-6">{donation.name}</td>
+                  <td className="py-4 px-6">{donation.notes ? donation.notes : 'Nuk ka pershkrim'}</td>
+                  <td className="py-4 px-6">{donation.category}</td>
+                  <td className="py-4 px-6">
+                    {(() => {
+                      const date = new Date(donation.created_at);
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = date.getFullYear();
+
+                      return `${day}-${month}-${year}`;
+                    })()}
+                  </td>
+                  <td className="py-4 px-6">
+                    {(() => {
+                      const date = new Date(donation.created_at);
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = date.getFullYear();
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                      return `${day}-${month}-${year}, ${hours}:${minutes}`;
+                    })()}
+                  </td>
+                  <td className="py-4 px-6">{donation.address ? `${donation.address.city}, ${donation.address.street}` : 'Nuk ka adresë'}</td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">Nuk ka donacione të disponueshme.</td>
+                </tr>
+              )}
+            </tbody>
+
+          </table>
+        </div>
+      </section> */}
+
+      {/* <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
-      </footer>
-    </div>
+      </footer> */}
+    </div >
   );
 }
