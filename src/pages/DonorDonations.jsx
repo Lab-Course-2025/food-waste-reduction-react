@@ -113,7 +113,9 @@ export default function DonorDonations() {
         notes: selectedDonation.notes || "",
         expiration_date: selectedDonation.expiration_date,
         address: selectedDonation.address,
-        city: selectedDonation.city || null,
+        city: typeof selectedDonation.city === 'object'
+          ? selectedDonation.city.id
+          : selectedDonation.city,
       };
 
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -195,11 +197,11 @@ export default function DonorDonations() {
         <div className="max-w-4xl flex items-center ml-0">
           <button
             onClick={() => navigate(-1)}
-            className="cursor-pointer"
+            className="cursor-pointer flex items-center space-x-2"
           >
-            <ArrowLeft className="mr-3 mt-2" size={20} />
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Prapa</span>
           </button>
-          <span className="text-base font-medium mt-2">Prapa</span>
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 py-6">
@@ -229,7 +231,7 @@ export default function DonorDonations() {
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {donations.map((donation) => (
                 <div
-                  key={donation._id}
+                  key={donation.id}
                   className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                 >
                   <div className="relative aspect-video">
