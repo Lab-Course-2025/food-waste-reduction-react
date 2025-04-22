@@ -61,11 +61,31 @@ export default function DonorDonations() {
     setSelectedDonation(null);
   };
 
-  const handleConfirmApply = () => {
-    // Apply logic here (e.g., call an API to apply for the donation)
-    toast.success("You have successfully applied for the donation.");
-    handleCloseModal();
+  const handleConfirmApply = async () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("authToken");
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/applications`,
+        {
+          food_listing: selectedDonation.id
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      toast.success("Aplikimi u krye me sukses! ");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Ndodhi nje gabim gjate aplikimit", error);
+      toast.error("Something went wrong. Please try again.");
+    }
   };
+
 
   useEffect(() => {
     const fetchCities = async () => {
