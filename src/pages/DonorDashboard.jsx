@@ -317,6 +317,13 @@ export default function DonationDashboard() {
             </Button>
           </Link>
 
+          <Link to="/donor-applications">
+            <Button className="flex items-center text-white mt-2">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Shiko aplikimet
+            </Button>
+          </Link>
+
         </section>
 
         {/* Available Donations */}
