@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PlusCircle, LogOut, Home, ChevronDown, Check, ClipboardList } from "lucide-react";
+import { PlusCircle, LogOut, Home, ChevronDown, Check, ClipboardList, Folder } from "lucide-react";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -188,6 +188,12 @@ export default function DonationDashboard() {
           <Button className="flex items-center text-white mb-2">
             <ClipboardList className="mr-2 h-4 w-4" />
             Shiko të gjitha listimet
+          </Button>
+        </Link>
+        <Link to="/recipient-applications">
+          <Button className="flex items-center text-white mb-2">
+            <Folder className="mr-2 h-4 w-4" />
+            Shiko të gjitha aplikimet
           </Button>
         </Link>
 
