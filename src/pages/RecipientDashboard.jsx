@@ -99,6 +99,10 @@ export default function DonationDashboard() {
       });
 
       console.log(response.data.message); // This will log "Logged out successfully"
+
+      // Remove the authToken from localStorage
+      localStorage.removeItem("authToken");
+
       setProfileMenuOpen(false);
       navigate("/login");
     } catch (error) {

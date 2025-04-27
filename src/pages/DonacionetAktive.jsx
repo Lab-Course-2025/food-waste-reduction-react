@@ -13,11 +13,8 @@ export default function DonorDonations() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
-  const [errors, setErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [donationToDelete, setDonationToDelete] = useState(null);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [userApplications, setUserApplications] = useState([]);
@@ -26,12 +23,8 @@ export default function DonorDonations() {
     setCurrentPage(pageNumber);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      handleUpdateDonation(selectedDonation.id);
-    }
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("authToken");
   };
 
   const handlePageClick = (pageNumber) => {
@@ -65,7 +58,6 @@ export default function DonorDonations() {
   const handleConfirmApply = async () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("authToken");
-
     try {
       const response = await axios.post(
         `${apiUrl}/applications`,
@@ -102,6 +94,7 @@ export default function DonorDonations() {
     const fetchUserApplications = async () => {
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
+      if (!token) return; // Exit early if the user is not logged in
 
       try {
         const response = await axios.get(`${apiUrl}/recipient-applications`, {
@@ -116,8 +109,9 @@ export default function DonorDonations() {
     };
 
     fetchCities();
-    fetchUserApplications();
-
+    if (isAuthenticated()) {
+      fetchUserApplications();
+    }
   }, []);
 
   useEffect(() => {
@@ -240,14 +234,23 @@ export default function DonorDonations() {
                             Keni aplikuar tashmë
                           </Button>
                         ) : donation.status === 'active' ? (
-                          <div className="flex gap-3">
+                          isAuthenticated() ? (
+                            <div className="flex gap-3">
+                              <Button
+                                onClick={() => handleDonateClick(donation)}
+                                className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                              >
+                                Apliko!
+                              </Button>
+                            </div>
+                          ) : (
                             <Button
-                              onClick={() => handleDonateClick(donation)}
-                              className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                              className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-500 cursor-not-allowed"
+                              onClick={() => navigate("/recipient")}
                             >
-                              Apliko!
+                              Ju lutem regjistrohuni për të aplikuar
                             </Button>
-                          </div>
+                          )
                         ) : null}
                       </div>
                     </div>

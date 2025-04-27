@@ -1,14 +1,13 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Lphoto from "../assets/Landing-photo.png";
+import axios from "axios";
 
 export default function FoodDonationPage() {
-
+  const [donations, setDonations] = useState([]);
   // Handle donation button click
   const handleDonateClick = () => {
     setShowDonationForm(true);
@@ -18,6 +17,26 @@ export default function FoodDonationPage() {
       behavior: "smooth",
     });
   };
+
+  useEffect(() => {
+    const fetchFirstThreeDonations = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      try {
+        const response = await axios.get(`${apiUrl}/food-listings`, {
+          params: {
+            statuses: ['active', 'in-wait']
+          }
+        });
+        console.log(response.data.data);
+        setDonations(response.data.data);
+      } catch (error) {
+        console.error("Error fetching top donations:", error);
+      }
+    };
+
+    fetchFirstThreeDonations();
+  }, []);
 
   // Handle learn more button click
   const handleLearnMoreClick = () => {
@@ -69,25 +88,70 @@ export default function FoodDonationPage() {
 
             {/* Scrollable donation container */}
             <div className="px-4 pb-6">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
-                    <div className="relative w-full aspect-w-16 aspect-h-9">
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" >
+                {donations.slice(0, 3).map((donation, index) => (
+                  <div
+                    key={donation.id || index}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    <div className="relative aspect-video">
                       <img
-                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                        alt="Hands holding food"
+                        src={
+                          donation.image ||
+                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                        }
+                        alt={donation.name || "Donacion"}
                         className="h-full w-full object-cover"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-medium">Pako ushqimi {item}</h3>
-                      <p className="mt-1 text-sm text-gray-500">Ushqime të ndryshme për familjet në nevojë</p>
-                      <Button
-                        onClick={handleDonateClick}
-                        className="mt-4 w-full rounded-md py-2 font-medium text-white hover:bg-orange-600"
-                      >
-                        Apliko!
-                      </Button>
+                    <div className="flex flex-col justify-between p-5 grow">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {donation.name || "Pako Ushqimi"}
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                          {donation.notes || "Ushqime për familjet në nevojë"}
+                        </p>
+                        <div className="mt-3 text-sm text-gray-500 space-y-1">
+                          <p>
+                            <span className="font-medium text-gray-700">Kompania:</span>{" "}
+                            {donation.donor.business_name || "Kompani e panjohur"}
+                          </p>
+                          <p>
+                            <span className="font-medium text-gray-700">Kategoria:</span>{" "}
+                            {donation.category?.name || "Ushqim"}
+                          </p>
+                          <p>
+                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                            {donation.address || "Nuk ka rrugë"}
+                          </p>
+                          <p>
+                            <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                            {donation.city?.name || "Nuk ka qyetet"}
+                          </p>
+                          {donation.expiration_date && (
+                            <p>
+                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                              {new Date(donation.expiration_date).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-5 flex flex-col gap-2">
+                        {donation.status === 'in-wait' ?
+                          <p className="text-center text-sm text-yellow-600 font-medium">
+                            Ky donacion është në proces të pranimit
+                          </p>
+                          :
+                          <Button
+                            className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-500 cursor-not-allowed"
+                            onClick={() => navigate("/recipient")}
+                          >
+                            Ju lutem regjistrohuni për të aplikuar
+                          </Button>}
+
+
+                      </div>
                     </div>
                   </div>
                 ))}
