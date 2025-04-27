@@ -6,13 +6,13 @@ import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { toast } from 'react-hot-toast';
 
-const DonorApplications = () => {
+const DonorAcceptedApplications = () => {
   const [applications, setApplications] = useState([]);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedApplication, setSelectedApplication] = useState(null);
-  const [actionType, setActionType] = useState(""); // "accept" or "reject"
+  const [actionType, setActionType] = useState(""); // "completed" or "failed"
   const [showModal, setShowModal] = useState(false);
 
   const handlePageChange = (pageNumber) => {
@@ -24,6 +24,8 @@ const DonorApplications = () => {
       case 'pending': return 'Pending';
       case 'accepted': return 'Accepted';
       case 'rejected': return 'Rejected';
+      case 'completed': return 'Completed';
+      case 'failed': return 'Failed';
       default: return status;
     }
   };
@@ -39,7 +41,7 @@ const DonorApplications = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          status: 'pending',
+          status: 'accepted',
           page: currentPage,
           limit: 10,
         },
@@ -68,25 +70,28 @@ const DonorApplications = () => {
     try {
       // Update the application status
       await axios.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
-        status: actionType === "accepted" ? "accepted" : "rejected",
+        status: actionType === "completed" ? "completed" : "failed",
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      // Re-fetch applications to reflect the updated status
+      await fetchApplications();
+
       // Close modal and reset state
       setShowModal(false);
       setSelectedApplication(null);
       setActionType("");
+      if (actionType === 'failed') {
+        toast.success("Aplikimi u dërgua si 'dështuar'.");
+      } else {
+        toast.success("Aplikimi u kompletua me sukses!");
 
-      // Re-fetch applications to reflect the updated status
-      await fetchApplications();
-
-      // Show success toast
-      toast.success(`Aplikimi u ${actionType === "accepted" ? "pranua" : "refuzua"} me sukses!`);
+      }
     } catch (error) {
-      console.error(`Failed to ${actionType} application`, error);
+      console.error(`Failed to update application status to ${actionType}`, error);
       toast.error('Ndodhi nje gabim!');
     }
   };
@@ -128,34 +133,38 @@ const DonorApplications = () => {
                       ? 'bg-yellow-100 text-yellow-800'
                       : app.status === 'accepted'
                         ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
+                        : app.status === 'completed'
+                          ? 'bg-blue-100 text-blue-800'
+                          : app.status === 'failed'
+                            ? 'bg-red-100 text-red-800'
+                            : ''
                       }`}
                   >
                     {formatStatus(app.status)}
                   </span>
                 </div>
                 <div className="flex space-x-2">
-                  {app.status === 'pending' && (
+                  {app.status === 'accepted' && (
                     <>
                       <button
                         className="bg-green-500 text-white px-4 py-2 rounded-full text-sm cursor-pointer"
                         onClick={() => {
                           setSelectedApplication(app);
-                          setActionType("accepted");
+                          setActionType("completed");
                           setShowModal(true);
                         }}
                       >
-                        Prano
+                        U dorëzua
                       </button>
                       <button
                         className="bg-red-500 text-white px-4 py-2 rounded-full text-sm cursor-pointer"
                         onClick={() => {
                           setSelectedApplication(app);
-                          setActionType("rejected");
+                          setActionType("failed");
                           setShowModal(true);
                         }}
                       >
-                        Refuzo
+                        Dështoi
                       </button>
                     </>
                   )}
@@ -172,7 +181,8 @@ const DonorApplications = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
             <h2 className="text-lg font-semibold mb-4">Jeni të sigurt?</h2>
             <p>
-              A doni të {actionType === "accepted" ? "pranoni" : "refuzoni"} aplikimin nga <strong>{selectedApplication.recipient?.organization_name}</strong>?
+              A doni ta shënoni aplikimin nga <strong>{selectedApplication.recipient?.organization_name}</strong> si{" "}
+              {actionType === "completed" ? "të kompletuar" : "dështuar"}?
             </p>
             <div className="mt-6 flex justify-center space-x-4">
               <Button
@@ -182,10 +192,10 @@ const DonorApplications = () => {
                 Anulo
               </Button>
               <Button
-                className={`px-4 py-2 rounded text-white ${actionType === "accepted" ? "bg-green-500" : "bg-red-500"}`}
+                className={`px-4 py-2 rounded text-white ${actionType === "completed" ? "bg-green-500" : "bg-red-500"}`}
                 onClick={handleConfirmAction}
               >
-                Po, {actionType === "accepted" ? "prano" : "refuzo"}
+                Po, shënoje si {actionType === "completed" ? "të kompletuar" : "dështuar"}
               </Button>
             </div>
           </div>
@@ -202,4 +212,4 @@ const DonorApplications = () => {
   );
 };
 
-export default DonorApplications;
+export default DonorAcceptedApplications;

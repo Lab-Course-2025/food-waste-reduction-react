@@ -20,6 +20,7 @@ export default function DonorDonations() {
   const [donationToDelete, setDonationToDelete] = useState(null);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
+  const [userApplications, setUserApplications] = useState([]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -98,7 +99,25 @@ export default function DonorDonations() {
       }
     };
 
+    const fetchUserApplications = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("authToken");
+
+      try {
+        const response = await axios.get(`${apiUrl}/recipient-applications`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserApplications(response.data.data); // Assuming the response is a list of applications
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+      }
+    };
+
     fetchCities();
+    fetchUserApplications();
+
   }, []);
 
   useEffect(() => {
@@ -168,56 +187,62 @@ export default function DonorDonations() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {donations.map((donation) => (
-                <div
-                  key={donation.id}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative aspect-video">
-                    <img
-                      src={
-                        donation.imageUrl ||
-                        "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                      }
-                      alt={donation.title}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between p-5 grow">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
-                      <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
-                      <div className="mt-3 text-sm text-gray-500 space-y-1">
-                        <p><span className="font-medium text-gray-700">Kompania:</span> {donation.donor.business_name}</p>
-                        <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}
-                        </p>
-                        <p>
-                          <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                          {donation.address}
-                        </p>
-                        <p>
-                          <span className="font-medium text-gray-700">Qyteti:</span>{" "}
-                          {donation.city?.name}
-                        </p>
-                        {donation.expiration_date && (
+              {donations.map((donation) => {
+                // Check if the user has already applied for this donation
+                const hasApplied = userApplications.some(application => application.foodListing.id === donation.id);
+
+                return (
+                  <div
+                    key={donation.id}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    <div className="relative aspect-video">
+                      <img
+                        src={
+                          donation.imageUrl ||
+                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                        }
+                        alt={donation.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-between p-5 grow">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
+                        <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
+                        <div className="mt-3 text-sm text-gray-500 space-y-1">
+                          <p><span className="font-medium text-gray-700">Kompania:</span> {donation.donor.business_name}</p>
+                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}</p>
                           <p>
-                            <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                            {new Date(donation.expiration_date).toLocaleDateString()}
+                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                            {donation.address}
                           </p>
-                        )}
+                          <p>
+                            <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                            {donation.city?.name}
+                          </p>
+                          {donation.expiration_date && (
+                            <p>
+                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                              {new Date(donation.expiration_date).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="mt-5 flex gap-3">
-                      <Button
-                        onClick={() => handleDonateClick(donation)}
-                        className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
-                      >
-                        Apliko!
-                      </Button>
+                      <div className="mt-5 flex gap-3">
+                        <Button
+                          onClick={() => handleDonateClick(donation)}
+                          className={`flex-1 rounded-lg py-2 text-sm text-white ${hasApplied ? "bg-gray-400 cursor-not-allowed" : "bg-orange-600 hover:bg-orange-600"}`}
+                          disabled={hasApplied}
+                        >
+                          {hasApplied ? "Keni aplikuar tashmë" : "Apliko!"}
+                        </Button>
+                      </div>
+
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

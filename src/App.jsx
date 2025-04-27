@@ -19,6 +19,7 @@ import RecipientProfile from './pages/RecipientProfile';
 import DonorDonations from "./pages/DonorDonations";
 import RecipientApplications from "./pages/RecipientApplications";
 import DonorApplications from "./pages/DonorApplications";
+import DonorAcceptedApplications from "./pages/DonorAcceptedApplications";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
     "/recipient-dashboard", "/admin-dashboard",
     "/donor-profile", "/recipient-profile",
     "/donor-donations", "/recipient-applications",
-    "/donor-applications"
+    "/donor-applications", "/donor-accepted-applications"
   ];
 
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
@@ -58,6 +59,7 @@ function App() {
           <Route path="/donor-donations" element={<DonorDonations />} />
           <Route path="/recipient-applications" element={<RecipientApplications />} />
           <Route path="/donor-applications" element={<DonorApplications />} />
+          <Route path="/donor-accepted-applications" element={<DonorAcceptedApplications />} />
         </Routes>
       ) : (
         <Layout>
