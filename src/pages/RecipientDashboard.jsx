@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PlusCircle, LogOut, Home, ChevronDown, Check, ClipboardList } from "lucide-react";
+import { PlusCircle, LogOut, Home, ChevronDown, Check, ClipboardList, Folder, ListCheck } from "lucide-react";
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -11,26 +11,44 @@ export default function DonationDashboard() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [recipient, setRecipient] = useState(null);
-  const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalDonations, setTotalDonations] = useState(0); // Track total number of donations
 
-  const handleDonateClick = (donation) => {
-    setSelectedDonation(donation);
-    setIsModalOpen(true);
-  };
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const token = localStorage.getItem("authToken");
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedDonation(null);
-  };
+        const response = await axios.get(`${apiUrl}/recipient-applications`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          params: {
+            status: "completed",
+            page: currentPage,
+            limit: 10,
+          }
+        });
 
-  const handleConfirmApply = () => {
-    // Apply logic here (e.g., call an API to apply for the donation)
-    toast.success("You have successfully applied for the donation.");
-    handleCloseModal();
-  };
+        setApplications((prevApplications) => {
+          const newApplications = response.data.data.filter(
+            (newApp) => !prevApplications.some((app) => app.id === newApp.id)
+          );
+          return [...prevApplications, ...newApplications];
+        });
+        setTotalDonations(response.data.meta.total);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching applications:", error);
+      }
+    };
+
+    fetchApplications();
+  }, [currentPage]);
 
 
   useEffect(() => {
@@ -42,28 +60,6 @@ export default function DonationDashboard() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    const fetchFirstThreeDonations = async () => {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("authToken");
-
-      try {
-        const response = await axios.get(`${apiUrl}/food-listings`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        console.log(response.data.data);
-        setDonations(response.data.data);
-      } catch (error) {
-        console.error("Error fetching top donations:", error);
-      }
-    };
-
-    fetchFirstThreeDonations();
-  }, []);
-
 
   useEffect(() => {
     // Fetch recipient data when the component mounts
@@ -114,6 +110,9 @@ export default function DonationDashboard() {
     navigate("/recipient-profile");
   };
 
+  const handleShowMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -187,155 +186,76 @@ export default function DonationDashboard() {
         <Link to="/donacionetaktive">
           <Button className="flex items-center text-white mb-2">
             <ClipboardList className="mr-2 h-4 w-4" />
-            Shiko të gjitha listimet
+            Shiko donacionet aktive
+          </Button>
+        </Link>
+        <Link to="/recipient-applications">
+          <Button className="flex items-center text-white mb-2">
+            <Folder className="mr-2 h-4 w-4" />
+            Shiko aplikimet në pritje
+          </Button>
+        </Link>
+        <Link to="/recipient-accepted-applications">
+          <Button className="flex items-center text-white mb-2">
+            <ListCheck className="mr-2 h-4 w-4" />
+            Shiko aplikimet e pranuara
           </Button>
         </Link>
 
-        {/* Available Donations */}
-        <section className="py-10">
-          <div className="mx-auto max-w-6xl px-4 md:px-6">
-            <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
-              <h2 className="py-6 text-center text-2xl font-bold">Donacionet e fundit</h2>
+        <section className="md:ml-20 md:mr-20 ml-10 mr-10 mt-10">
+          <h2 className="text-xl font-bold mb-6 bg-white px-6 py-4 text-center">Historia e Donacioneve</h2>
 
-              {/* Scrollable donation container */}
-              <div className="px-4 pb-6">
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" >
-                  {donations.slice(0, 3).map((donation, index) => (
-                    <div
-                      key={donation.id || index}
-                      className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                    >
-                      <div className="relative aspect-video">
-                        <img
-                          src={
-                            donation.image ||
-                            "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                          }
-                          alt={donation.name || "Donacion"}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col justify-between p-5 grow">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {donation.name || "Pako Ushqimi"}
-                          </h3>
-                          <p className="mt-1 text-sm text-gray-600">
-                            {donation.notes || "Ushqime për familjet në nevojë"}
-                          </p>
-                          <div className="mt-3 text-sm text-gray-500 space-y-1">
-                            <p>
-                              <span className="font-medium text-gray-700">Kompania:</span>{" "}
-                              {donation.donor.business_name || "Kompani e panjohur"}
-                            </p>
-                            <p>
-                              <span className="font-medium text-gray-700">Kategoria:</span>{" "}
-                              {donation.category?.name || "Ushqim"}
-                            </p>
-                            <p>
-                              <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                              {donation.address || "Nuk ka rrugë"}
-                            </p>
-                            <p>
-                              <span className="font-medium text-gray-700">Qyteti:</span>{" "}
-                              {donation.city?.name || "Nuk ka qyetet"}
-                            </p>
-                            {donation.expiration_date && (
-                              <p>
-                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                                {new Date(donation.expiration_date).toLocaleDateString()}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="mt-5 flex gap-3">
-                          <Button
-                            onClick={() => handleDonateClick(donation)}
-                            className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
-                          >
-                            Apliko!
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-gray-500 border-b">
+                  <th className="pb-4 font-medium">EMRI</th>
+                  <th className="pb-4 font-medium">DHURUESI</th>
+                  <th className="pb-4 font-medium">DATA E KOMPLETIMIT</th>
+                  <th className="pb-4 font-medium">ADRESA E DHURUESIT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
+                  </tr>
+                ) : (
+                  <>
+                    {applications.length > 0 && applications.map((application) => (
+                      <tr key={application.id} className="border-b bg-gray-50">
+                        <td className="py-4 px-6">{application.foodListing.name}</td>
+                        <td className="py-4 px-6">{application.foodListing?.donor?.business_name || 'N/A'}</td>
 
+                        <td className="py-4 px-6">
+                          {application.completed_at ? new Date(application.completed_at).toLocaleDateString() : 'N/A'}
+                        </td>
 
-              {/*Trego më shumë button*/}
-              <div className="flex justify-center py-4 border-t">
-                <Link to="/donacionetaktive">
-                  <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+                        {/* Display the recipient address */}
+                        <td className="py-4 px-6">
+                          {application.foodListing?.donor?.address + ', ' + application.foodListing?.donor?.city?.name || 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
+              </tbody>
 
-        {/* Activity History */}
-        <section className="mb-8 bg-white p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Historia e Aktivitetit</h2>
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-1 rounded-full">
-                <Check className="h-4 w-4 text-green-500" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium">Pako Ushqimi nga X</h3>
-                <p className="text-sm text-gray-500">Qyteti: Mitrovicë</p>
-              </div>
-              <span className="text-sm text-gray-500">Para 2 ditësh</span>
+            </table>
+            <div className="mt-4 text-center">
+              {applications.length < totalDonations && ( // Show the button only if more items are available
+                <Button
+                  className="px-4 py-2 text-white rounded"
+                  onClick={handleShowMore}
+                >
+                  Show More
+                </Button>
+              )}
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-1 rounded-full">
-                <Check className="h-4 w-4 text-green-500" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium">Pako e Rrobave nga Y</h3>
-                <p className="text-sm text-gray-500">Qyteti: Prishtinë</p>
-              </div>
-              <span className="text-sm text-gray-500">Para 3 ditësh</span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-1 rounded-full">
-                <Check className="h-4 w-4 text-green-500" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium">Pako Ushqimi nga Z</h3>
-                <p className="text-sm text-gray-500">Qyteti: Pejë</p>
-              </div>
-              <span className="text-sm text-gray-500">Para 4 ditësh</span>
-            </div>
           </div>
         </section>
       </main>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold mb-4">Jeni të sigurt që dëshironi të aplikoni për këtë donacion?</h3>
-            <div className="flex justify-between">
-              <Button
-                onClick={handleCloseModal}
-                className="bg-gray-500 text-white py-2 px-4 rounded"
-              >
-                Anulo
-              </Button>
-              <Button
-                onClick={handleConfirmApply}
-                className="bg-green-500 text-white py-2 px-4 rounded"
-              >
-                Po, apliko
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="text-center text-gray-500 text-sm bg-white px-6 py-4">

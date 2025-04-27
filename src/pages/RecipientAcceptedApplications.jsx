@@ -1,0 +1,163 @@
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Trash2 } from "lucide-react";
+import axios from "axios";
+import Pagination from "../components/Pagination";
+import Button from "../components/Button";
+import { toast } from 'react-hot-toast';
+
+const DonorAcceptedApplications = () => {
+  const [applications, setApplications] = useState([]);
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [actionType, setActionType] = useState(""); // "completed" or "failed"
+  const [showModal, setShowModal] = useState(false);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const formatStatus = (status) => {
+    switch (status) {
+      case 'pending': return 'Pending';
+      case 'accepted': return 'Accepted';
+      case 'rejected': return 'Rejected';
+      case 'completed': return 'Completed';
+      case 'failed': return 'Failed';
+      default: return status;
+    }
+  };
+
+  // Refactored fetchApplications function
+  const fetchApplications = async () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("authToken");
+
+    try {
+      const response = await axios.get(`${apiUrl}/recipient-applications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          status: 'accepted',
+          page: currentPage,
+          limit: 10,
+        },
+      });
+      setApplications(response.data.data);
+      setTotalPages(response.data.meta.last_page);
+    } catch (error) {
+      console.error("Error fetching donor applications:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications(); // Fetch applications on component mount or currentPage change
+  }, [currentPage]);
+
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleString();
+  };
+
+  const handleConfirmAction = async () => {
+    if (!selectedApplication) return;
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem("authToken");
+
+    try {
+      // Update the application status
+      await axios.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
+        status: actionType === "completed" ? "completed" : "failed",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Re-fetch applications to reflect the updated status
+      await fetchApplications();
+
+      // Close modal and reset state
+      setShowModal(false);
+      setSelectedApplication(null);
+      setActionType("");
+      if (actionType === 'failed') {
+        toast.success("Aplikimi u dërgua si 'dështuar'.");
+      } else {
+        toast.success("Aplikimi u kompletua me sukses!");
+
+      }
+    } catch (error) {
+      console.error(`Failed to update application status to ${actionType}`, error);
+      toast.error('Ndodhi nje gabim!');
+    }
+  };
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="bg-white border-b px-6 py-4">
+        <div className="max-w-4xl flex items-center ml-0">
+          <button
+            onClick={() => navigate(-1)}
+            className="cursor-pointer flex items-center space-x-2"
+          >
+            <ArrowLeft size={20} />
+            <span className="text-base font-medium">Prapa</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto p-6">
+        <h2 className="py-6 text-center text-2xl font-bold">Aplikimet për postimet e mia</h2>
+
+        {applications.length === 0 ? (
+          <p className="text-center text-gray-600">Nuk ka asnjë aplikim për postimet tuaja</p>
+        ) : (
+          <div className="space-y-6">
+            {applications.map((app) => (
+              <div
+                key={app.id}
+                className="bg-white shadow-md rounded-xl p-6 border border-gray-200"
+              >
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-gray-800">{app.foodListing?.name}</h3>
+
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <p><span className="font-medium text-gray-700">Dhuruesi:</span> {app.foodListing?.donor?.business_name}</p>
+                    <p><span className="font-medium text-gray-700">Adresa:</span> {app.foodListing?.donor?.address}, {app.foodListing?.donor?.city.name}</p>
+                    <p><span className="font-medium text-gray-700">Aplikuar më:</span> {formatDate(app.created_at)}</p>
+                  </div>
+
+                  {app.status === 'accepted' && (
+                    <div className="bg-green-50 border border-green-200 text-green-800 p-3 rounded-lg text-sm mt-4">
+                      Aplikimi juaj është pranuar, kontakto me dhuruesin për të diskutuar detajet e mëtejme.
+                    </div>
+                  )}
+
+                  <div className="text-sm text-gray-600 space-y-1 mt-4">
+                    <p><span className="font-medium text-gray-700">Email i dhuruesit:</span> {app.foodListing?.user?.email}</p>
+                    <p><span className="font-medium text-gray-700">Nr. kontaktues i personit përgjegjës:</span> {app.foodListing?.donor?.contact_phone}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Pagination Section */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </div>
+  );
+};
+
+export default DonorAcceptedApplications;

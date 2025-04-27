@@ -17,6 +17,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import DonorProfile from './pages/DonorProfile';
 import RecipientProfile from './pages/RecipientProfile';
 import DonorDonations from "./pages/DonorDonations";
+import RecipientApplications from "./pages/RecipientApplications";
+import DonorApplications from "./pages/DonorApplications";
+import DonorAcceptedApplications from "./pages/DonorAcceptedApplications";
+import RecipientAcceptedApplications from "./pages/RecipientAcceptedApplications";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -26,8 +30,11 @@ function App() {
     "/submit", "/donor-dashboard",
     "/recipient-dashboard", "/admin-dashboard",
     "/donor-profile", "/recipient-profile",
-    "/donor-donations"
+    "/donor-donations", "/recipient-applications",
+    "/donor-applications", "/donor-accepted-applications",
+    "/recipient-accepted-applications"
   ];
+
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
 
   return (
@@ -52,6 +59,10 @@ function App() {
           <Route path="/donor-profile" element={<DonorProfile />} />
           <Route path="/recipient-profile" element={<RecipientProfile />} />
           <Route path="/donor-donations" element={<DonorDonations />} />
+          <Route path="/recipient-applications" element={<RecipientApplications />} />
+          <Route path="/donor-applications" element={<DonorApplications />} />
+          <Route path="/donor-accepted-applications" element={<DonorAcceptedApplications />} />
+          <Route path="/recipient-accepted-applications" element={<RecipientAcceptedApplications />} />
         </Routes>
       ) : (
         <Layout>
