@@ -12,7 +12,6 @@ export default function DonationDashboard() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [donor, setDonor] = useState(null);
-  const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
@@ -34,102 +33,13 @@ export default function DonationDashboard() {
     });
   };
 
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      handleUpdateDonation(selectedDonation.id);
-    }
-  };
-
-  const handleEditDonation = (donation) => {
-    setSelectedDonation(donation);
-    setIsModalOpen(true);
-  };
-
-  const confirmDeleteDonation = (donation) => {
-    setDonationToDelete(donation);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDeleteDonation = async () => {
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("authToken");
-
-      await axios.delete(`${apiUrl}/food-listings/${donationToDelete.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Remove deleted donation from state
-      setDonations((prev) =>
-        prev.filter((d) => d.id !== donationToDelete.id)
-      );
-
-      toast.success("Donacioni u fshi me sukses!");
-    } catch (error) {
-      toast.error("Ndodhi një gabim gjatë fshirjes!");
-      console.error("Error deleting donation:", error);
-    } finally {
-      setIsDeleteModalOpen(false);
-      setDonationToDelete(null);
-    }
-  };
-
-
-  const handleUpdateDonation = async (id) => {
-    try {
-      const payload = {
-        name: selectedDonation.name,
-        notes: selectedDonation.notes || "",
-        expiration_date: selectedDonation.expiration_date,
-        address: selectedDonation.address,
-        city: typeof selectedDonation.city === 'object'
-          ? selectedDonation.city.id
-          : selectedDonation.city,
-        category: typeof selectedDonation.category === 'object'
-          ? selectedDonation.category.id
-          : selectedDonation.category,
-      };
-
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("authToken");
-
-      const response = await axios.patch(
-        `${apiUrl}/food-listings/${id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // Refresh the data
-      const updatedData = await axios.get(`${apiUrl}/donor-food-listings`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setDonations(updatedData.data.data);
-
-      toast.success('Donacioni u përditësua me sukses!');
-      setIsModalOpen(false);
-      setSelectedDonation(null);
-    } catch (error) {
-      console.error("Error updating donation", error);
-    }
-  };
-
   useEffect(() => {
     const fetchApplications = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL;
         const token = localStorage.getItem("authToken");
 
+        setLoading(true);
         const response = await axios.get(`${apiUrl}/donor-applications`, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -148,53 +58,15 @@ export default function DonationDashboard() {
           return [...prevApplications, ...newApplications];
         });
         setTotalDonations(response.data.meta.total);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching applications:", error);
+        setLoading(false);
       }
     };
 
     fetchApplications();
   }, [currentPage]);
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!selectedDonation.name) {
-      newErrors.name = '*E nevojshme.';
-    }
-    if (!selectedDonation.address) {
-      newErrors.address = '*E nevojshme.';
-    }
-    if (!selectedDonation.city) {
-      newErrors.city = '*E nevojshme.';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Returns true if there are no errors
-  };
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const response = await axios.get(`${apiUrl}/cities`);
-        setCities(response.data.data);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const response = await axios.get(`${apiUrl}/categories`);
-        setCategories(response.data.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCities();
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -222,21 +94,8 @@ export default function DonationDashboard() {
         // Update state with the donor's data
         // console.log(response.data);
         setDonor(response.data);
-
-        setLoading(true);
-        // Fetch food listings or donations posted by the donor
-        const donationsResponse = await axios.get(`${apiUrl}/donor-food-listings`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        // console.log(donationsResponse.data);
-        setDonations(donationsResponse.data.data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching donor data:", error);
-        setLoading(false);
       }
     };
 
@@ -425,196 +284,7 @@ export default function DonationDashboard() {
 
           </div>
         </section>
-
-
-
       </main>
-
-      {isModalOpen && selectedDonation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
-          <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">Ndrysho Donacionin</h2>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="name" className="block text-sm mb-1">
-                  Emri
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={selectedDonation.name}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, name: e.target.value })
-                  }
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="expiration_date" className="block text-sm mb-1">
-                  Data e Skadencës
-                </label>
-                <Input
-                  id="expiration_date"
-                  name="expiration_date"
-                  type="date"
-                  value={selectedDonation.expiration_date}
-                  className="w-full border-gray-300"
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      expiration_date: e.target.value,
-                    })
-                  }
-                />
-                {errors.expiration_date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.expiration_date}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="category" className="block text-sm mb-1">
-                  Kategoria
-                </label>
-                <select
-                  name="category"
-                  value={selectedDonation.category?.id || selectedDonation.category || ""}
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      category: e.target.value,
-                    })
-                  }
-                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.category === "" ? "text-gray-500" : "text-black"
-                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
-                >
-                  <option value="">Zgjedh kategorin</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-
-              </div>
-
-              <div>
-                <label htmlFor="address" className="block text-sm mb-1">
-                  Rruga
-                </label>
-                <Input
-                  id="address"
-                  type="text"
-                  className="w-full rounded border px-3 py-2"
-                  value={selectedDonation.address || ""}
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      address: e.target.value,
-                    })
-                  }
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="city" className="block text-sm mb-1">
-                  Qyteti
-                </label>
-                <select
-                  name="city"
-                  value={selectedDonation.city?.id || selectedDonation.city || ""}
-                  onChange={(e) =>
-                    setSelectedDonation({
-                      ...selectedDonation,
-                      city: e.target.value,
-                    })
-                  }
-                  className={`w-full shadow-sm px-3 py-2 border rounded-md ${selectedDonation.city === "" ? "text-gray-500" : "text-black"
-                    } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
-                >
-                  <option value="">Zgjedh qytetin</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.city && (
-                  <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="notes" className="block text-sm mb-1">
-                  Shënime
-                </label>
-                <textarea
-                  id="notes"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 border-gray-300"
-                  value={selectedDonation.notes}
-                  onChange={(e) =>
-                    setSelectedDonation({ ...selectedDonation, notes: e.target.value })
-                  }
-                />
-                {errors.notes && (
-                  <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
-                )}
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-md bg-gray-200 px-4 py-2 text-sm"
-                >
-                  Mbyll
-                </Button>
-                <Button
-                  type="submit"
-                  className="rounded-md px-4 py-2 text-sm text-white hover:bg-orange-600"
-                  onClick={handleSubmit}
-                >
-                  Përditëso
-                </Button>
-
-              </div>
-            </form>
-
-          </div>
-        </div>
-      )}
-
-      {isDeleteModalOpen && donationToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
-          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Konfirmo Fshirjen</h2>
-            <p className="text-gray-700 mb-6">
-              A jeni i sigurt që dëshironi të fshini donacionin{" "}
-              <span className="font-bold">{donationToDelete.name}</span>?
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                className="bg-gray-300 text-gray-800 hover:bg-gray-400"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                Anulo
-              </Button>
-              <Button
-                className="bg-red-600 text-white hover:bg-red-700"
-                onClick={handleDeleteDonation}
-              >
-                Fshij
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>

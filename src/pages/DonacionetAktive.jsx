@@ -131,6 +131,7 @@ export default function DonorDonations() {
             Authorization: `Bearer ${token}`,
           },
           params: {
+            statuses: ['active', 'in-wait'],
             page: currentPage,  // Send the current page to the API
             limit: 9,           // Limit the number of items per page (can be dynamic)
             city: selectedCity || undefined, // only send if selected
@@ -229,16 +230,26 @@ export default function DonorDonations() {
                           )}
                         </div>
                       </div>
-                      <div className="mt-5 flex gap-3">
-                        <Button
-                          onClick={() => handleDonateClick(donation)}
-                          className={`flex-1 rounded-lg py-2 text-sm text-white ${hasApplied ? "bg-gray-400 cursor-not-allowed" : "bg-orange-600 hover:bg-orange-600"}`}
-                          disabled={hasApplied}
-                        >
-                          {hasApplied ? "Keni aplikuar tashmë" : "Apliko!"}
-                        </Button>
+                      <div className="mt-5 flex flex-col gap-2">
+                        {donation.status === 'in-wait' ? (
+                          <p className="text-center text-sm text-yellow-600 font-medium">
+                            Ky donacion është në proces të pranimit
+                          </p>
+                        ) : hasApplied ? (
+                          <Button className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600">
+                            Keni aplikuar tashmë
+                          </Button>
+                        ) : donation.status === 'active' ? (
+                          <div className="flex gap-3">
+                            <Button
+                              onClick={() => handleDonateClick(donation)}
+                              className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                            >
+                              Apliko!
+                            </Button>
+                          </div>
+                        ) : null}
                       </div>
-
                     </div>
                   </div>
                 );

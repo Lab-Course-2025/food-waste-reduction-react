@@ -36,6 +36,7 @@ const RecipientApplications = () => {
             Authorization: `Bearer ${token}`,
           },
           params: {
+            status: 'pending',
             page: currentPage,
             limit: 10,
           },
@@ -99,12 +100,6 @@ const RecipientApplications = () => {
                     {formatStatus(app.status)}
                   </span>
                 </div>
-                <button
-                  onClick={() => handleDelete(app.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full ml-4 text-sm cursor-pointer"
-                >
-                  <Trash2 size={20} />
-                </button>
               </div>
             ))}
 
