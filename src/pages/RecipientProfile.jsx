@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-
+import { apiClient } from "../utils/apiClient";
 
 
 export default function UserProfile() {
@@ -58,14 +58,7 @@ export default function UserProfile() {
     // Fetch recipient data when the component mounts
     const fetchRecipientData = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("authToken");
-
-        const response = await axios.get(`${apiUrl}/recipients/profile`, {
-          headers: {
-            'Authorization': `Bearer ${token}`, // Use the token for authentication
-          },
-        });
+        const response = await apiClient.get('recipients/profile');
 
         // Update state with the recipient's data
         console.log(response.data);
@@ -97,17 +90,16 @@ export default function UserProfile() {
   const handleLogout = async () => {
     console.log("Logging out...");
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
     try {
-      const response = await axios.post(`${apiUrl}/logout`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}` // or sessionStorage if you're storing the token there
-        }
-      });
+      const response = await apiClient.post('/logout');
 
-      console.log(response.data.message); // This will log "Logged out successfully"
+      console.log(response.data.message);
+
+      // Remove auth data from localStorage
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("expiresAt");
+      localStorage.removeItem("refreshToken");
+
       setProfileMenuOpen(false);
       navigate("/login");
     } catch (error) {
@@ -186,14 +178,7 @@ export default function UserProfile() {
     const payload = formData;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem('authToken');
-
-      const response = await axios.patch(`${apiUrl}/recipients/${recipient.id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.patch(`/recipients/${recipient.id}`, payload);
 
       console.log('Updated successfully:', response.data);
       toast.success("Profili u përditësua me sukses!");
@@ -311,7 +296,7 @@ export default function UserProfile() {
                 <div>
                   <label className="block text-sm font-medium mb-1">Emri i Organizatës</label>
                   <Input
-                    name="business_name"
+                    name="organization_name"
                     value={formData.organization_name}
                     onChange={handleChange} />
                   {errors.business_name && (
@@ -321,20 +306,20 @@ export default function UserProfile() {
                 <div>
                   <label className="block text-sm font-medium mb-1">Numri i organizatës</label>
                   <Input
-                    name="business_number"
+                    name="registration_number"
                     value={formData.registration_number}
                     onChange={handleChange} />
-                  {errors.business_number && (
+                  {errors.registration_number && (
                     <p className="text-red-500 text-sm mt-1">{errors.registration_number}</p>
                   )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Lloji i organizatës</label>
                   <Input
-                    name="business_number"
+                    name="organization_type"
                     value={formData.organization_type}
                     onChange={handleChange} />
-                  {errors.business_number && (
+                  {errors.organization_type && (
                     <p className="text-red-500 text-sm mt-1">{errors.registration_number}</p>
                   )}
                 </div>

@@ -3,7 +3,7 @@ import { PlusCircle, LogOut, Home, ChevronDown, Check, ClipboardList, Folder, Li
 import Button from "../components/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import axios from 'axios';
+import { apiClient } from '../utils/apiClient';
 
 export default function DonationDashboard() {
 
@@ -19,15 +19,12 @@ export default function DonationDashboard() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("authToken");
+        setLoading(true);
 
-        const response = await axios.get(`${apiUrl}/recipient-applications`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        const response = await apiClient.get('/recipient-applications', {
           params: {
             status: "completed",
+            sort: "completed_at",
             page: currentPage,
             limit: 10,
           }
@@ -62,23 +59,13 @@ export default function DonationDashboard() {
   }, []);
 
   useEffect(() => {
-    // Fetch recipient data when the component mounts
     const fetchRecipientData = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("authToken");
+        const response = await apiClient.get('/recipients/profile');
 
-        const response = await axios.get(`${apiUrl}/recipients/profile`, {
-          headers: {
-            'Authorization': `Bearer ${token}`, // Use the token for authentication
-          },
-        });
-
-        // console.log(response.data);
         setRecipient(response.data);
       } catch (error) {
         console.error("Error fetching recipient data:", error);
-
       }
     };
 
@@ -88,20 +75,15 @@ export default function DonationDashboard() {
   const handleLogout = async () => {
     console.log("Logging out...");
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
     try {
-      const response = await axios.post(`${apiUrl}/logout`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}` // or sessionStorage if you're storing the token there
-        }
-      });
+      const response = await apiClient.post('/logout');
 
-      console.log(response.data.message); // This will log "Logged out successfully"
+      console.log(response.data.message);
 
-      // Remove the authToken from localStorage
+      // Remove auth data from localStorage
       localStorage.removeItem("authToken");
+      localStorage.removeItem("expiresAt");
+      localStorage.removeItem("refreshToken");
 
       setProfileMenuOpen(false);
       navigate("/login");
@@ -109,6 +91,7 @@ export default function DonationDashboard() {
       console.error("Error logging out:", error);
     }
   };
+
 
   const handleNavigateToProfile = () => {
     navigate("/recipient-profile");

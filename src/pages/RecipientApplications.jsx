@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import axios from "axios";
 import Pagination from "../components/Pagination";
+import { apiClient } from '../utils/apiClient';
 
 const RecipientApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -31,10 +31,7 @@ const RecipientApplications = () => {
       const token = localStorage.getItem("authToken");
 
       try {
-        const response = await axios.get(`${apiUrl}/recipient-applications`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await apiClient.get(`${apiUrl}/recipient-applications`, {
           params: {
             status: 'pending',
             page: currentPage,

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import axios from "axios";
 import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { toast } from 'react-hot-toast';
+import { apiClient } from '../utils/apiClient';
 
 const DonorApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -28,16 +28,9 @@ const DonorApplications = () => {
     }
   };
 
-  // Refactored fetchApplications function
   const fetchApplications = async () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
     try {
-      const response = await axios.get(`${apiUrl}/donor-applications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await apiClient.get('donor-applications', {
         params: {
           status: 'pending',
           page: currentPage,
@@ -52,7 +45,7 @@ const DonorApplications = () => {
   };
 
   useEffect(() => {
-    fetchApplications(); // Fetch applications on component mount or currentPage change
+    fetchApplications();
   }, [currentPage]);
 
   const formatDate = (dateStr) => {
@@ -62,17 +55,10 @@ const DonorApplications = () => {
   const handleConfirmAction = async () => {
     if (!selectedApplication) return;
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
     try {
       // Update the application status
-      await axios.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
+      await apiClient.patch(`/applications/${selectedApplication.id}`, {
         status: actionType === "accepted" ? "accepted" : "rejected",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       // Close modal and reset state
@@ -87,9 +73,10 @@ const DonorApplications = () => {
       toast.success(`Aplikimi u ${actionType === "accepted" ? "pranua" : "refuzua"} me sukses!`);
     } catch (error) {
       console.error(`Failed to ${actionType} application`, error);
-      toast.error('Ndodhi nje gabim!');
+      toast.error('Ndodhi një gabim!');
     }
   };
+
 
   return (
     <div>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import axios from "axios";
 import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { toast } from 'react-hot-toast';
+import { apiClient } from '../utils/apiClient';
 
 const DonorAcceptedApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -30,16 +30,12 @@ const DonorAcceptedApplications = () => {
     }
   };
 
-  // Refactored fetchApplications function
   const fetchApplications = async () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("authToken");
 
     try {
-      const response = await axios.get(`${apiUrl}/recipient-applications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await apiClient.get('recipient-applications', {
         params: {
           status: 'accepted',
           page: currentPage,
@@ -59,41 +55,6 @@ const DonorAcceptedApplications = () => {
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleString();
-  };
-
-  const handleConfirmAction = async () => {
-    if (!selectedApplication) return;
-
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
-    try {
-      // Update the application status
-      await axios.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
-        status: actionType === "completed" ? "completed" : "failed",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Re-fetch applications to reflect the updated status
-      await fetchApplications();
-
-      // Close modal and reset state
-      setShowModal(false);
-      setSelectedApplication(null);
-      setActionType("");
-      if (actionType === 'failed') {
-        toast.success("Aplikimi u dërgua si 'dështuar'.");
-      } else {
-        toast.success("Aplikimi u kompletua me sukses!");
-
-      }
-    } catch (error) {
-      console.error(`Failed to update application status to ${actionType}`, error);
-      toast.error('Ndodhi nje gabim!');
-    }
   };
 
   return (

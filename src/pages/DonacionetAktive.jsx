@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Pagination from "../components/Pagination";
+import { apiClient } from '../utils/apiClient';
 
 export default function DonorDonations() {
   const [donations, setDonations] = useState([]);
@@ -56,28 +57,26 @@ export default function DonorDonations() {
   };
 
   const handleConfirmApply = async () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
     try {
-      const response = await axios.post(
-        `${apiUrl}/applications`,
-        {
-          food_listing: selectedDonation.id
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        }
-      );
+      const response = await apiClient.post('/applications', {
+        food_listing: selectedDonation.id
+      });
 
-      toast.success("Aplikimi u krye me sukses! ");
+      const newApplication = {
+        id: response.data.id,
+        foodListing: { id: selectedDonation.id } // Use selectedDonation.id
+      };
+
+      setUserApplications(prev => [newApplication, ...prev]);
+
+      toast.success("Aplikimi u krye me sukses!");
       handleCloseModal();
     } catch (error) {
-      console.error("Ndodhi nje gabim gjate aplikimit", error);
+      console.error("Ndodhi një gabim gjatë aplikimit", error);
       toast.error("Something went wrong. Please try again.");
     }
   };
+
 
 
   useEffect(() => {
@@ -92,17 +91,9 @@ export default function DonorDonations() {
     };
 
     const fetchUserApplications = async () => {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("authToken");
-      if (!token) return; // Exit early if the user is not logged in
-
       try {
-        const response = await axios.get(`${apiUrl}/recipient-applications`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUserApplications(response.data.data); // Assuming the response is a list of applications
+        const response = await apiClient.get('/recipient-applications');
+        setUserApplications(response.data.data);
       } catch (error) {
         console.error("Error fetching applications:", error);
       }
@@ -120,10 +111,7 @@ export default function DonorDonations() {
       const token = localStorage.getItem("authToken");
 
       try {
-        const response = await axios.get(`${apiUrl}/food-listings`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await apiClient.get('/food-listings', {
           params: {
             statuses: ['active', 'in-wait'],
             page: currentPage,  // Send the current page to the API
