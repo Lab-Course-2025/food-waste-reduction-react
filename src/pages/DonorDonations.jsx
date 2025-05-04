@@ -82,14 +82,7 @@ export default function DonorDonations() {
 
   const handleDeleteDonation = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("authToken");
-
-      await apiC.delete(`${apiUrl}/food-listings/${donationToDelete.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await apiClient.delete(`/food-listings/${donationToDelete.id}`);
 
       // Remove deleted donation from state
       setDonations((prev) =>

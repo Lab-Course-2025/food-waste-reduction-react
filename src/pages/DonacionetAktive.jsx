@@ -62,6 +62,13 @@ export default function DonorDonations() {
         food_listing: selectedDonation.id
       });
 
+      const newApplication = {
+        id: response.data.id,
+        foodListing: { id: selectedDonation.id } // Use selectedDonation.id
+      };
+
+      setUserApplications(prev => [newApplication, ...prev]);
+
       toast.success("Aplikimi u krye me sukses!");
       handleCloseModal();
     } catch (error) {
