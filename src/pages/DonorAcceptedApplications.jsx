@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import axios from "axios";
 import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { toast } from 'react-hot-toast';
+import { apiClient } from '../utils/apiClient';
 
 const DonorAcceptedApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -36,10 +36,7 @@ const DonorAcceptedApplications = () => {
     const token = localStorage.getItem("authToken");
 
     try {
-      const response = await axios.get(`${apiUrl}/donor-applications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await apiClient.get('donor-applications', {
         params: {
           status: 'accepted',
           page: currentPage,
@@ -69,12 +66,8 @@ const DonorAcceptedApplications = () => {
 
     try {
       // Update the application status
-      await axios.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
+      await apiClient.patch(`${apiUrl}/applications/${selectedApplication.id}`, {
         status: actionType === "completed" ? "completed" : "failed",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       // Re-fetch applications to reflect the updated status

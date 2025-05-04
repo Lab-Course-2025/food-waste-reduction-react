@@ -6,6 +6,7 @@ import logo from "../assets/logo.png";
 import axios from 'axios';
 import Input from "../components/Input";
 import { toast } from "react-hot-toast";
+import { apiClient } from '../utils/apiClient';
 
 export default function DonationDashboard() {
   const navigate = useNavigate();
@@ -36,16 +37,11 @@ export default function DonationDashboard() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("authToken");
-
         setLoading(true);
-        const response = await axios.get(`${apiUrl}/donor-applications`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        const response = await apiClient.get('/donor-applications', {
           params: {
             status: "completed",
+            sort: "completed_at",
             page: currentPage,
             limit: 10,
           }
@@ -57,6 +53,7 @@ export default function DonationDashboard() {
           );
           return [...prevApplications, ...newApplications];
         });
+
         setTotalDonations(response.data.meta.total);
         setLoading(false);
       } catch (error) {
@@ -79,20 +76,10 @@ export default function DonationDashboard() {
   }, []);
 
   useEffect(() => {
-    // Fetch donor data when the component mounts
     const fetchDonorData = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem("authToken");
+        const response = await apiClient.get('/donors/profile');
 
-        const response = await axios.get(`${apiUrl}/donors/profile`, {
-          headers: {
-            'Authorization': `Bearer ${token}`, // Use the token for authentication
-          },
-        });
-
-        // Update state with the donor's data
-        // console.log(response.data);
         setDonor(response.data);
       } catch (error) {
         console.error("Error fetching donor data:", error);
@@ -105,20 +92,15 @@ export default function DonationDashboard() {
   const handleLogout = async () => {
     console.log("Logging out...");
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem("authToken");
-
     try {
-      const response = await axios.post(`${apiUrl}/logout`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}` // or sessionStorage if you're storing the token there
-        }
-      });
+      const response = await apiClient.post('/logout');
 
-      console.log(response.data.message); // This will log "Logged out successfully"
+      console.log(response.data.message);
 
-      // Remove the authToken from localStorage
+      // Remove auth data from localStorage
       localStorage.removeItem("authToken");
+      localStorage.removeItem("expiresAt");
+      localStorage.removeItem("refreshToken");
 
       setProfileMenuOpen(false);
       navigate("/login");
@@ -126,6 +108,7 @@ export default function DonationDashboard() {
       console.error("Error logging out:", error);
     }
   };
+
 
   const handleNavigateToProfile = () => {
     navigate("/donor-profile");

@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Pagination from "../components/Pagination";
-
+import { apiClient } from "../utils/apiClient";
 
 export default function DonorDonations() {
   const [donations, setDonations] = useState([]);
@@ -85,7 +85,7 @@ export default function DonorDonations() {
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
 
-      await axios.delete(`${apiUrl}/food-listings/${donationToDelete.id}`, {
+      await apiC.delete(`${apiUrl}/food-listings/${donationToDelete.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -125,21 +125,10 @@ export default function DonorDonations() {
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
 
-      const response = await axios.patch(
-        `${apiUrl}/food-listings/${id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await apiClient.patch(`/food-listings/${id}`, payload);
+
       // Refresh the data
-      const updatedData = await axios.get(`${apiUrl}/donor-food-listings`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const updatedData = await apiClient.get('/donor-food-listings');
       setDonations(updatedData.data.data);
 
       toast.success('Donacioni u përditësua me sukses!');
@@ -182,10 +171,7 @@ export default function DonorDonations() {
       const token = localStorage.getItem("authToken");
 
       try {
-        const response = await axios.get(`${apiUrl}/donor-food-listings`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await apiClient.get(`${apiUrl}/donor-food-listings`, {
           params: {
             page: currentPage,  // Send the current page to the API
             limit: 9,           // Limit the number of items per page (can be dynamic)

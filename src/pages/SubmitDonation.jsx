@@ -5,7 +5,7 @@ import { ArrowLeft, Camera } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
-
+import { apiClient } from "../utils/apiClient";
 
 export default function FoodDonationForm() {
   const [formData, setFormData] = useState({
@@ -85,15 +85,7 @@ export default function FoodDonationForm() {
 
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/food-listings`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.post('food-listings', formData);
       console.log("Donation submitted successfully:", response.data);
       toast.success("Donacioni u shtua me sukses!");
       setTimeout(() => {
