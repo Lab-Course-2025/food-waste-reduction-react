@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -101,9 +101,11 @@ function LogIn() {
                 />
                 <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
-              <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
-                Keni harruar passwordin?
-              </a>
+              <Link to="/forgot-password">
+                <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
+                  Keni harruar passwordin?
+                </a>
+              </Link>
             </div>
 
             <button
@@ -160,8 +162,8 @@ function LogIn() {
             <img src={loginSvg} alt="Login Illustration" className="w-full h-full" />
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
