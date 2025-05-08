@@ -18,6 +18,7 @@ const Recipient = () => {
     contact_phone: "",
     email: "",
     password: "",
+    confirm_password: "",
     address: "",
     city: ""
   });
@@ -48,6 +49,10 @@ const Recipient = () => {
 
     if (formData.password && formData.password.length < 8) {
       newErrors.password = "Fjalëkalimi duhet të ketë të paktën 8 karaktere.";
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = "Fjalëkalimet nuk përputhen.";
     }
 
     setErrors(newErrors);
@@ -197,10 +202,23 @@ const Recipient = () => {
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                <Input name="password" value={formData.password} onChange={handleChange} type="password" placeholder="Password" className="w-full border-gray-300" />
+                <label htmlFor="password" className="block text-sm font-medium mb-1">Fjalëkalimi</label>
+                <Input name="password" value={formData.password} onChange={handleChange} type="password" placeholder="Fjalëkalimi" className="w-full border-gray-300" />
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>
+              <div>
+                <label htmlFor="confirm_password" className="block text-sm font-medium mb-1">Konfirmo Fjalëkalimin</label>
+                <Input
+                  type="password"
+                  name="confirm_password"
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                  placeholder="Konfirmo fjalëkalimin"
+                  className="w-full border-gray-300"
+                />
+                {errors.confirm_password && <p className="text-red-500 text-sm mt-1">{errors.confirm_password}</p>}
+              </div>
+
 
               <div className="flex items-start py-2 md:col-span-2">
                 <Link to="/recipient"
