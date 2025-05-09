@@ -1,6 +1,6 @@
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { Home, ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
+import { Home, ChevronDown, LogOut, LayoutDashboard, Key } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -334,6 +334,15 @@ export default function UserProfile() {
 
                 </div>
 
+              </div>
+              <div className="flex justify-end mt-6">
+                <Link
+                  to="/change-password"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition"
+                >
+                  <Key className="h-4 w-4" />
+                  Ndrysho fjalëkalimin
+                </Link>
               </div>
             </div>
 

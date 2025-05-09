@@ -23,6 +23,7 @@ import DonorAcceptedApplications from "./pages/DonorAcceptedApplications";
 import RecipientAcceptedApplications from "./pages/RecipientAcceptedApplications";
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import ChangePassword from "./pages/ChangePassword";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
     "/donor-donations", "/recipient-applications",
     "/donor-applications", "/donor-accepted-applications",
     "/recipient-accepted-applications", "/forgot-password",
-    "/reset-password"
+    "/reset-password", "/change-password"
   ];
 
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
@@ -68,6 +69,7 @@ function App() {
           <Route path="/recipient-accepted-applications" element={<RecipientAcceptedApplications />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
       ) : (
         <Layout>

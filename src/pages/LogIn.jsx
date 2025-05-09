@@ -26,10 +26,10 @@ function LogIn() {
       });
 
       const { user, token, expires_at, refresh_token } = response.data;
+      localStorage.setItem('userRole', user.role);
       localStorage.setItem('authToken', token);
       localStorage.setItem('refreshToken', refresh_token);
       localStorage.setItem('expiresAt', expires_at);
-      console.log('Login successful:', response.data);
 
       if (user.role === 'admin') {
         navigate('/admin-dashboard');
