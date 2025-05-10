@@ -13,7 +13,7 @@ export default function FoodDonationForm() {
     category: "",
     expiration_date: "",
     notes: "",
-    photo: null,
+    image: null,
     address: "",
     city: "",
     quantity: "",
@@ -66,16 +66,54 @@ export default function FoodDonationForm() {
       const file = e.target.files[0];
       setFormData((prev) => ({
         ...prev,
-        photo: file,
-        photoPreview: URL.createObjectURL(file),
+        image: file,
+        imagePreview: URL.createObjectURL(file),
       }));
     }
   };
   const navigate = useNavigate();
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Form submitted:", formData);
+
+  //   const isValid = validateForm();
+  //   if (!isValid) return;
+
+  //   const apiUrl = import.meta.env.VITE_API_URL;
+  //   const token = localStorage.getItem("authToken");
+
+
+  //   try {
+  //     const response = await apiClient.post('food-listings', formData);
+  //     console.log("Donation submitted successfully:", response.data);
+  //     toast.success("Donacioni u shtua me sukses!");
+  //     setTimeout(() => {
+  //       navigate("/donor-dashboard");
+  //     }, 1000);
+
+  //     // Optionally reset the form
+  //     setFormData({
+  //       name: "",
+  //       category: "",
+  //       expiration_date: "",
+  //       notes: "",
+  //       address: "",
+  //       city: ""
+  //     });
+
+  //     // Optionally show a success message or redirect
+  //   } catch (error) {
+  //     if (error.response) {
+  //       console.error("Server responded with error:", error.response.data);
+  //     } else {
+  //       console.error("Error submitting donation:", error.message);
+  //     }
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
 
     const isValid = validateForm();
     if (!isValid) return;
@@ -83,26 +121,49 @@ export default function FoodDonationForm() {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("authToken");
 
+    // Build FormData
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("category", formData.category);
+    form.append("expiration_date", formData.expiration_date);
+    form.append("notes", formData.notes);
+    form.append("address", formData.address);
+    form.append("city", formData.city);
+    form.append("quantity", formData.quantity);
+    form.append("unit_of_measurement", formData.unit_of_measurement);
+    if (formData.image) {
+      form.append("image", formData.image);
+    }
 
     try {
-      const response = await apiClient.post('food-listings', formData);
+      const response = await apiClient.post("food-listings", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // if your backend uses auth
+        },
+      });
+
       console.log("Donation submitted successfully:", response.data);
       toast.success("Donacioni u shtua me sukses!");
+
       setTimeout(() => {
         navigate("/donor-dashboard");
       }, 1000);
 
-      // Optionally reset the form
+      // Reset the form
       setFormData({
         name: "",
         category: "",
         expiration_date: "",
         notes: "",
         address: "",
-        city: ""
+        city: "",
+        quantity: "",
+        unit_of_measurement: "",
+        image: null,
+        imagePreview: null,
       });
 
-      // Optionally show a success message or redirect
     } catch (error) {
       if (error.response) {
         console.error("Server responded with error:", error.response.data);
@@ -111,6 +172,7 @@ export default function FoodDonationForm() {
       }
     }
   };
+
 
 
   const validateForm = () => {
@@ -176,8 +238,8 @@ export default function FoodDonationForm() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Image Upload */}
                   <div className="flex flex-col items-center justify-center border border-gray-300 rounded-md p-4 h-60 bg-gray-50 shadow-lg">
-                    {formData.photoPreview ? (
-                      <img src={formData.photoPreview} alt="Preview" className="h-full w-full object-cover rounded-md" />
+                    {formData.imagePreview ? (
+                      <img src={formData.imagePreview} alt="Preview" className="h-full w-full object-cover rounded-md" />
                     ) : (
                       <>
                         <Camera size={32} className="text-gray-400 mb-1" />

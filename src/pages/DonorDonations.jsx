@@ -24,7 +24,6 @@ export default function DonorDonations() {
   const [selectedCity, setSelectedCity] = useState("");
 
 
-
   const validateForm = () => {
     const newErrors = {};
     if (!selectedDonation.name) {
@@ -231,12 +230,12 @@ export default function DonorDonations() {
                   <div className="relative aspect-video">
                     <img
                       src={
-                        donation.imageUrl ||
-                        "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                        donation.image_url ?? "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
                       }
-                      alt={donation.title}
+                      alt={donation.name}
                       className="h-full w-full object-cover"
                     />
+
                   </div>
                   <div className="flex flex-col justify-between p-5 grow">
                     <div>
