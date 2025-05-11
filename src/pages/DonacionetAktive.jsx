@@ -19,6 +19,7 @@ export default function DonorDonations() {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [userApplications, setUserApplications] = useState([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -214,33 +215,45 @@ export default function DonorDonations() {
                         </div>
                       </div>
                       <div className="mt-5 flex flex-col gap-2">
-                        {donation.status === 'in-wait' ? (
+                        {donation.status === 'in-wait' && (
                           <p className="text-center text-sm text-yellow-600 font-medium">
                             Ky donacion është në proces të pranimit
                           </p>
-                        ) : hasApplied ? (
-                          <Button className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600">
-                            Keni aplikuar tashmë
-                          </Button>
-                        ) : donation.status === 'active' ? (
-                          isAuthenticated() ? (
-                            <div className="flex gap-3">
+                        )}
+
+                        {donation.status === 'active' && (
+                          <>
+                            {hasApplied ? (
                               <Button
-                                onClick={() => handleDonateClick(donation)}
-                                className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                                className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
                               >
-                                Apliko!
+                                Keni aplikuar tashmë
                               </Button>
-                            </div>
-                          ) : (
-                            <Button
-                              className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-500 cursor-not-allowed"
-                              onClick={() => navigate("/recipient")}
-                            >
-                              Ju lutem regjistrohuni për të aplikuar
-                            </Button>
-                          )
-                        ) : null}
+
+                            ) :
+                              <div className="flex gap-3">
+                                <Button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (isAuthenticated()) {
+                                      handleDonateClick(donation);
+                                    } else {
+                                      setShowLoginModal(true);
+                                    }
+                                  }}
+                                  className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                                >
+                                  Apliko!
+                                </Button>
+                              </div>
+                            }
+                          </>
+                        )}
                       </div>
                     </div>
                   </Link>
@@ -274,6 +287,33 @@ export default function DonorDonations() {
         </div>
       )}
 
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+            <h2 className="text-lg font-semibold mb-4">Për të aplikuar duhet të jeni të kyçur si përfitues</h2>
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-600"
+                onClick={() => navigate("/login")}
+              >
+                Kyçu
+              </Button>
+              <Button
+                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={() => navigate("/recipient")}
+              >
+                Krijo llogari
+              </Button>
+            </div>
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowLoginModal(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       {/* Pagination Section */}
       <Pagination
         currentPage={currentPage}

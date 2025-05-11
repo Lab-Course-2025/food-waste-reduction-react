@@ -1,16 +1,36 @@
-// src/pages/DonationDetails.jsx
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiClient } from "../utils/apiClient";
 import { ArrowLeft } from "lucide-react";
 import Button from "../components/Button";
+import { toast } from "react-hot-toast";
 
 export default function DonationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [donation, setDonation] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("authToken");
+  };
+
+  const checkIfApplied = async () => {
+    try {
+      const response = await apiClient.get(`/recipient-applications`);
+      const applications = response.data.data;
+      const alreadyApplied = applications.some(app => app.foodListing.id === id);
+      setHasApplied(alreadyApplied);
+      console.log('aplikuar ?! ' + alreadyApplied);
+    } catch (error) {
+      console.error("Error checking application status:", error);
+    }
+  };
+
 
   useEffect(() => {
     const fetchDonation = async () => {
@@ -25,11 +45,36 @@ export default function DonationDetails() {
     };
 
     fetchDonation();
+    checkIfApplied();
   }, [id]);
 
   if (loading) return <div className="p-6">Loading...</div>;
 
   if (!donation) return <div className="p-6 text-red-600">Donation not found.</div>;
+
+  const handleDonateClick = (donation) => {
+    setIsModalOpen(true);
+  };
+
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleConfirmApply = async () => {
+    try {
+      const response = await apiClient.post('/applications', {
+        food_listing: donation.id
+      });
+
+      toast.success("Aplikimi u krye me sukses!");
+      handleCloseModal();
+      checkIfApplied();
+    } catch (error) {
+      console.error("Ndodhi një gabim gjatë aplikimit", error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div>
@@ -73,17 +118,79 @@ export default function DonationDetails() {
 
             {/* Apliko button */}
             <div className="pt-4">
-              <Button
-                onClick={() => alert("Aplikimi u dërgua!")} // replace with real logic
+              {hasApplied ? (
+                <Button className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600" disabled>
+                  Keni aplikuar tashmë
+                </Button>
+              ) : <Button
+                onClick={() => {
+                  if (isAuthenticated()) {
+                    handleDonateClick();
+                  } else {
+                    setShowLoginModal(true);
+                  }
+                }}
                 className="px-6 py-2 text-white text-sm font-medium rounded-lg shadow"
               >
                 Apliko
               </Button>
+              }
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">Jeni të sigurt që dëshironi të aplikoni për këtë donacion?</h3>
+            <div className="flex justify-between">
+              <Button
+                onClick={handleCloseModal}
+                className="bg-gray-500 text-white py-2 px-4 rounded"
+              >
+                Anulo
+              </Button>
+              <Button
+                onClick={handleConfirmApply}
+                className="bg-green-500 text-white py-2 px-4 rounded"
+              >
+                Po, apliko
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+            <h2 className="text-lg font-semibold mb-4">Për të aplikuar duhet të jeni të kyçur si përfitues</h2>
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-600"
+                onClick={() => navigate("/login")}
+              >
+                Kyçu
+              </Button>
+              <Button
+                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={() => navigate("/recipient")}
+              >
+                Krijo llogari
+              </Button>
+            </div>
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowLoginModal(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
