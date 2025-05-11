@@ -227,15 +227,12 @@ export default function DonorDonations() {
                   key={donation.id}
                   className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative h-[250px] w-full">
                     <img
-                      src={
-                        donation.image_url ?? "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
-                      }
+                      src={donation.image_url ?? "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"}
                       alt={donation.name}
                       className="h-full w-full object-cover"
                     />
-
                   </div>
                   <div className="flex flex-col justify-between p-5 grow">
                     <div>
