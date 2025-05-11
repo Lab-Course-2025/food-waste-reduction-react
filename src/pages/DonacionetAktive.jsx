@@ -179,11 +179,11 @@ export default function DonorDonations() {
                     key={donation.id}
                     className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                   >
-                    <div className="relative aspect-video">
+                    <div className="relative h-[250px] w-full">
                       <img
                         src={
-                          donation.imageUrl ||
-                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                          donation.image_url ||
+                          "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
                         }
                         alt={donation.title}
                         className="h-full w-full object-cover"
