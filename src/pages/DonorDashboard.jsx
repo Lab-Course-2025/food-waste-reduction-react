@@ -13,6 +13,7 @@ export default function DonationDashboard() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [donor, setDonor] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
@@ -80,7 +81,8 @@ export default function DonationDashboard() {
       try {
         const response = await apiClient.get('/donors/profile');
 
-        setDonor(response.data);
+        setDonor(response.data.data);
+        setMeta(response.data.meta);
       } catch (error) {
         console.error("Error fetching donor data:", error);
       }
@@ -175,16 +177,16 @@ export default function DonationDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="rounded-lg border bg-white shadow-sm p-6">
-              <p className="text-gray-500 text-sm mb-1">Donacionet Totale</p>
-              <p className="text-3xl font-bold">2,450€</p>
+              <p className="text-gray-500 text-sm mb-1">Donacionet Aktive</p>
+              <p className="text-3xl font-bold">{meta?.active_donations}</p>
             </div>
             <div className="rounded-lg border bg-white shadow-sm p-6">
-              <p className="text-gray-500 text-sm mb-1">Donacionet këtë vit</p>
-              <p className="text-3xl font-bold">850€</p>
+              <p className="text-gray-500 text-sm mb-1">Donacionet e dhuruara</p>
+              <p className="text-3xl font-bold">{meta?.donated_donations}</p>
             </div>
             <div className="rounded-lg border bg-white shadow-sm p-6">
-              <p className="text-gray-500 text-sm mb-1">Numri i Donacioneve</p>
-              <p className="text-3xl font-bold">12</p>
+              <p className="text-gray-500 text-sm mb-1">Donacionet në pritje</p>
+              <p className="text-3xl font-bold">{meta?.in_hold_donations}</p>
             </div>
           </div>
 
