@@ -175,7 +175,8 @@ export default function DonorDonations() {
                 const hasApplied = userApplications.some(application => application.foodListing.id === donation.id);
 
                 return (
-                  <div
+                  <Link
+                    to={`/donations/${donation.id}`}
                     key={donation.id}
                     className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                   >
@@ -242,7 +243,7 @@ export default function DonorDonations() {
                         ) : null}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

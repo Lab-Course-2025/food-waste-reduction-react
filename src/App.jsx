@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, matchPath } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import ScrollToTop from "./components/ScrollToTop";
@@ -24,6 +24,7 @@ import RecipientAcceptedApplications from "./pages/RecipientAcceptedApplications
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ChangePassword from "./pages/ChangePassword";
+import DonationDetails from "./pages/DonationDetails";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -36,10 +37,12 @@ function App() {
     "/donor-donations", "/recipient-applications",
     "/donor-applications", "/donor-accepted-applications",
     "/recipient-accepted-applications", "/forgot-password",
-    "/reset-password", "/change-password"
+    "/reset-password", "/change-password", "/donations/:id"
   ];
 
-  const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
+  const hideHeaderFooter = noHeaderFooterRoutes.some(route =>
+    matchPath({ path: route, end: true }, location.pathname)
+  );
 
   return (
     <>
@@ -70,6 +73,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/donations/:id" element={<DonationDetails />} />
         </Routes>
       ) : (
         <Layout>
