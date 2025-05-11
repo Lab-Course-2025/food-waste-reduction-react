@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Button from "../components/Button"; // Adjust the import path if needed
 import { toast } from "react-hot-toast";
@@ -20,6 +20,23 @@ export default function DonorDonations() {
   const [selectedCity, setSelectedCity] = useState("");
   const [userApplications, setUserApplications] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowLoginModal(false);
+      }
+    };
+
+    if (showLoginModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showLoginModal]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -289,7 +306,7 @@ export default function DonorDonations() {
 
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
-          <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+          <div ref={modalRef} className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
             <h2 className="text-lg font-semibold mb-4">Për të aplikuar duhet të jeni të kyçur si përfitues</h2>
             <div className="flex justify-center gap-4 mt-6">
               <Button
