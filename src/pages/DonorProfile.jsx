@@ -62,17 +62,16 @@ export default function UserProfile() {
         const response = await apiClient.get('donors/profile');
 
         // Update state with the donor's data
-        console.log(response.data);
-        setDonor(response.data);
+        setDonor(response.data.data);
         setFormData({
-          contact_first_name: response.data.contact_first_name || "",
-          contact_last_name: response.data.contact_last_name || "",
-          contact_title: response.data.contact_title || "",
-          contact_phone: response.data.contact_phone || "",
-          business_name: response.data.business_name || "",
-          business_number: response.data.business_number || "",
-          address: response.data.address || "",
-          city: response.data.city?.id || ""
+          contact_first_name: response.data.data.contact_first_name || "",
+          contact_last_name: response.data.data.contact_last_name || "",
+          contact_title: response.data.data.contact_title || "",
+          contact_phone: response.data.data.contact_phone || "",
+          business_name: response.data.data.business_name || "",
+          business_number: response.data.data.business_number || "",
+          address: response.data.data.address || "",
+          city: response.data.data.city?.id || ""
         });
       } catch (error) {
         console.error("Error fetching donor data:", error);

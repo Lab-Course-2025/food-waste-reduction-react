@@ -11,6 +11,7 @@ export default function DonationDashboard() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const [recipient, setRecipient] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Track the current page
@@ -63,7 +64,8 @@ export default function DonationDashboard() {
       try {
         const response = await apiClient.get('/recipients/profile');
 
-        setRecipient(response.data);
+        setRecipient(response.data.data);
+        setMeta(response.data.meta);
       } catch (error) {
         console.error("Error fetching recipient data:", error);
       }
@@ -157,15 +159,15 @@ export default function DonationDashboard() {
           <div className="grid grid-cols-3 md:gap-3 gap-3">
             <div className="bg-white md:p-4 py-4 pl-1 rounded-lg shadow-sm">
               <h3 className="text-sm text-gray-500">Donacionet e Disponueshme</h3>
-              <p className="text-3xl font-bold mt-1">24</p>
+              <p className="text-3xl font-bold mt-1">{meta?.active_donations}</p>
             </div>
             <div className="bg-white md:p-4 py-4 pl-1 rounded-lg shadow-sm">
               <h3 className="text-sm text-gray-500">Donacionet e Përfituara</h3>
-              <p className="text-3xl font-bold mt-1">12</p>
+              <p className="text-3xl font-bold mt-1">{meta?.received_donations}</p>
             </div>
             <div className="bg-white md:p-4 py-4 pl-1 rounded-lg shadow-sm">
               <h3 className="text-sm text-gray-500">Donacionet në Pritje</h3>
-              <p className="text-3xl font-bold mt-1">3</p>
+              <p className="text-3xl font-bold mt-1">{meta?.in_hold_donations}</p>
             </div>
           </div>
         </section>

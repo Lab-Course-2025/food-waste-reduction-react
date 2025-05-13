@@ -61,18 +61,18 @@ export default function UserProfile() {
         const response = await apiClient.get('recipients/profile');
 
         // Update state with the recipient's data
-        console.log(response.data);
-        setRecipient(response.data);
+        console.log(response.data.data);
+        setRecipient(response.data.data);
         setFormData({
-          contact_first_name: response.data.contact_first_name || "",
-          contact_last_name: response.data.contact_last_name || "",
-          contact_title: response.data.contact_title || "",
-          contact_phone: response.data.contact_phone || "",
-          organization_name: response.data.organization_name || "",
-          organization_type: response.data.organization_type || "",
-          registration_number: response.data.registration_number || "",
-          address: response.data.address || "",
-          city: response.data.city?.id || ""
+          contact_first_name: response.data.data.contact_first_name || "",
+          contact_last_name: response.data.data.contact_last_name || "",
+          contact_title: response.data.data.contact_title || "",
+          contact_phone: response.data.data.contact_phone || "",
+          organization_name: response.data.data.organization_name || "",
+          organization_type: response.data.data.organization_type || "",
+          registration_number: response.data.data.registration_number || "",
+          address: response.data.data.address || "",
+          city: response.data.data.city?.id || ""
         });
       } catch (error) {
         console.error("Error fetching recipient data:", error);

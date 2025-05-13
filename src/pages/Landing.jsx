@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
@@ -7,6 +7,9 @@ import Lphoto from "../assets/Landing-photo.png";
 import axios from "axios";
 
 export default function FoodDonationPage() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const modalRef = useRef(null);
+
   const [donations, setDonations] = useState([]);
   // Handle donation button click
   const handleDonateClick = () => {
@@ -17,6 +20,24 @@ export default function FoodDonationPage() {
       behavior: "smooth",
     });
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowLoginModal(false);
+      }
+    };
+
+    if (showLoginModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showLoginModal]);
 
   useEffect(() => {
     const fetchFirstThreeDonations = async () => {
@@ -94,11 +115,11 @@ export default function FoodDonationPage() {
                     key={donation.id || index}
                     className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                   >
-                    <div className="relative aspect-video">
+                    <div className="relative h-[250px] w-full">
                       <img
                         src={
-                          donation.image ||
-                          "https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
+                          donation.image_url ||
+                          "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
                         }
                         alt={donation.name || "Donacion"}
                         className="h-full w-full object-cover"
@@ -144,11 +165,12 @@ export default function FoodDonationPage() {
                           </p>
                           :
                           <Button
-                            className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-500 cursor-not-allowed"
-                            onClick={() => navigate("/recipient")}
+                            className="flex-1 rounded-lg py-2 text-sm text-white"
+                            onClick={() => setShowLoginModal(true)}
                           >
-                            Ju lutem regjistrohuni për të aplikuar
-                          </Button>}
+                            Apliko
+                          </Button>
+                        }
 
 
                       </div>
@@ -254,6 +276,33 @@ export default function FoodDonationPage() {
           </button>
         </div>
       </section>
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div ref={modalRef} className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+            <h2 className="text-lg font-semibold mb-4">Për të aplikuar duhet të jeni të kyçur si përfitues</h2>
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-600"
+                onClick={() => navigate("/login")}
+              >
+                Kyçu
+              </Button>
+              <Button
+                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={() => navigate("/recipient")}
+              >
+                Krijo llogari
+              </Button>
+            </div>
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowLoginModal(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
