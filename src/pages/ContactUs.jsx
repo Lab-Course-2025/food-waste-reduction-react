@@ -1,9 +1,10 @@
-"use client";
 import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { apiClient } from "../utils/apiClient";
+import { toast } from "react-hot-toast";
 
 
 const Textarea = ({ className, ...props }) => {
@@ -22,17 +23,30 @@ export default function ContactUs() {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
+    setLoading(true);
+
+    try {
+      const { data } = await apiClient.post('/contact', formData);
+      toast.success("Mesazhi u dërgua me sukses!");
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error("Gabim: " + (error.response?.data?.message || "Diçka shkoi keq."));
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -99,9 +113,10 @@ export default function ContactUs() {
 
                     <Button
                       type="submit"
-                      className="w-full hover:bg-orange-600 text-white"
+                      className={`w-full text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-orange-600 bg-orange-500"}`}
+                      disabled={loading}
                     >
-                      Dërgo
+                      {loading ? "Duke dërguar..." : "Dërgo"}
                     </Button>
                   </form>
                 </div>
