@@ -3,6 +3,7 @@ import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,12 +18,15 @@ function LogIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
+
     const apiUrl = import.meta.env.VITE_API_URL;
 
     try {
       const response = await axios.post(`${apiUrl}/login`, {
         email,
         password,
+        rememberMe
       });
 
       const { user, token, expires_at, refresh_token } = response.data;
@@ -43,8 +47,9 @@ function LogIn() {
     } catch (err) {
       setError('Login failed. Please check your credentials.');
       console.error('Login error:', err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
-    console.log('Login attempted:', { email, password, rememberMe });
   };
 
   return (
@@ -108,13 +113,14 @@ function LogIn() {
               </Link>
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="w-full bg-[#FF4C00FF] text-white py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2"
+              className={`w-full text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-orange-600 bg-orange-500"}`}
+              disabled={loading}
             >
-              <span>Kyqu</span>
-              {/* <ArrowRight size={20} /> */}
-            </button>
+              {loading ? "Duke u kyqur..." : "Kyqu"}
+            </Button>
+
           </form>
 
           {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
