@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import Pagination from "../components/Pagination";
 import { apiClient } from '../utils/apiClient';
+import BackHeader from '../components/BackHeader';
 
 const RecipientApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -57,18 +58,9 @@ const RecipientApplications = () => {
 
   return (
     <div>
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <button
-            onClick={() => navigate(-1)}
-            className="cursor-pointer flex items-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-base font-medium">Prapa</span>
-          </button>
-        </div>
+      <BackHeader to={-1} label="Prapa" />
 
-      </div>
+
       <div className="max-w-4xl mx-auto p-6">
 
         <h2 className="py-6 text-center text-2xl font-bold">Aplikimet e mia</h2>

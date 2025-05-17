@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Pagination from "../components/Pagination";
 import { apiClient } from '../utils/apiClient';
+import BackHeader from "../components/BackHeader";
 
 export default function DonorDonations() {
   const [donations, setDonations] = useState([]);
@@ -156,18 +157,8 @@ export default function DonorDonations() {
 
   return (
     <div>
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <button
-            onClick={() => navigate(-1)}
-            className="cursor-pointer flex items-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-base font-medium">Prapa</span>
-          </button>
-        </div>
+      <BackHeader to={-1} label="Prapa" />
 
-      </div>
       <div className="mx-auto max-w-6xl px-4 md:px-6 py-6">
         <div className="rounded-lg bg-white overflow-hidden">
           <h2 className="py-6 text-center text-2xl font-bold">Donacionet aktive</h2>

@@ -4,6 +4,7 @@ import { apiClient } from "../utils/apiClient";
 import { ArrowLeft } from "lucide-react";
 import Button from "../components/Button";
 import { toast } from "react-hot-toast";
+import BackHeader from "../components/BackHeader";
 
 export default function DonationDetails() {
   const { id } = useParams();
@@ -99,17 +100,9 @@ export default function DonationDetails() {
   return (
     <div>
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <button
-            onClick={() => navigate(-1)}
-            className="cursor-pointer flex items-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-base font-medium">Prapa</span>
-          </button>
-        </div>
-      </div>
+      <BackHeader to={-1} label="Prapa" />
+
+
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="rounded-xl shadow-lg overflow-hidden border border-gray-200">
           <img

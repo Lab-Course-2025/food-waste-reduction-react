@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { toast } from "react-hot-toast";
 import { apiClient } from '../utils/apiClient';
+import BackHeader from "../components/BackHeader";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -88,17 +89,8 @@ const ChangePassword = () => {
   return (
     <div>
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <button
-            onClick={() => navigate(-1)}
-            className="cursor-pointer flex items-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-base font-medium">Prapa</span>
-          </button>
-        </div>
-      </div>
+      <BackHeader to={-1} label="Prapa" />
+
 
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">

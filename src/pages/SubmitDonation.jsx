@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
 import { apiClient } from "../utils/apiClient";
+import BackHeader from "../components/BackHeader";
 
 export default function FoodDonationForm() {
   const [formData, setFormData] = useState({
@@ -216,16 +217,8 @@ export default function FoodDonationForm() {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <Link to="/donor-dashboard">
-            <button className="cursor-pointer">
-              <ArrowLeft className="mr-3 mt-2" size={20} />
-            </button>
-          </Link>
-          <span className="text-base font-medium">Prapa</span>
-        </div>
-      </div>
+      <BackHeader to={-1} label="Prapa" />
+
 
       <div className="flex-1 overflow-auto flex items-center justify-center p-6">
         <div className="w-full max-w-4xl bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">

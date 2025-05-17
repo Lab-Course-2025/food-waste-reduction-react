@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { toast } from 'react-hot-toast';
 import { apiClient } from '../utils/apiClient';
+import BackHeader from '../components/BackHeader';
 
 const DonorAcceptedApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -92,17 +93,8 @@ const DonorAcceptedApplications = () => {
   return (
     <div>
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="max-w-4xl flex items-center ml-0">
-          <button
-            onClick={() => navigate(-1)}
-            className="cursor-pointer flex items-center space-x-2"
-          >
-            <ArrowLeft size={20} />
-            <span className="text-base font-medium">Prapa</span>
-          </button>
-        </div>
-      </div>
+      <BackHeader to={-1} label="Prapa" />
+
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto p-6">
