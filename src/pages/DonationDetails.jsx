@@ -13,6 +13,7 @@ export default function DonationDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -78,6 +79,7 @@ export default function DonationDetails() {
   };
 
   const handleConfirmApply = async () => {
+    setIsApplying(true);
     try {
       const response = await apiClient.post('/applications', {
         food_listing: donation.id
@@ -89,6 +91,8 @@ export default function DonationDetails() {
     } catch (error) {
       console.error("Ndodhi një gabim gjatë aplikimit", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsApplying(false);
     }
   };
 
@@ -171,9 +175,11 @@ export default function DonationDetails() {
               </Button>
               <Button
                 onClick={handleConfirmApply}
-                className="bg-green-500 text-white py-2 px-4 rounded"
+                className={`text-white py-2 px-4 rounded ${isApplying ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                  }`}
+                disabled={isApplying}
               >
-                Po, apliko
+                {isApplying ? 'Duke aplikuar...' : 'Po, apliko'}
               </Button>
             </div>
           </div>
