@@ -21,6 +21,11 @@ export default function FoodDonationPage() {
     });
   };
 
+
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("authToken");
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,8 +116,9 @@ export default function FoodDonationPage() {
             <div className="px-4 pb-6">
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" >
                 {donations.slice(0, 3).map((donation, index) => (
-                  <div
-                    key={donation.id || index}
+                  <Link
+                    to={`/donations/${donation.id}`}
+                    key={donation.id}
                     className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
                   >
                     <div className="relative h-[250px] w-full">
@@ -166,7 +172,15 @@ export default function FoodDonationPage() {
                           :
                           <Button
                             className="flex-1 rounded-lg py-2 text-sm text-white"
-                            onClick={() => setShowLoginModal(true)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (isAuthenticated()) {
+                                handleDonateClick(donation);
+                              } else {
+                                setShowLoginModal(true);
+                              }
+                            }}
                           >
                             Apliko
                           </Button>
@@ -175,7 +189,7 @@ export default function FoodDonationPage() {
 
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -183,7 +197,7 @@ export default function FoodDonationPage() {
             {/*Trego më shumë button*/}
             <div className="flex justify-center py-4 border-t">
               <Link to="/donacionetaktive">
-                <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
+                <Button>Trego Më Shumë</Button>
               </Link>
             </div>
           </div>
@@ -219,7 +233,6 @@ export default function FoodDonationPage() {
         <div className="mt-10 flex justify-center">
           <Button
             onClick={handleLearnMoreClick}
-            className="rounded-md bg-orange-500 px-6 py-2 font-medium text-white hover:bg-orange-600"
           >
             Mëso më shumë
           </Button>

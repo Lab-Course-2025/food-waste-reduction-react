@@ -18,9 +18,11 @@ const RecipientApplications = () => {
 
   const formatStatus = (status) => {
     switch (status) {
-      case 'pending': return 'Pending';
-      case 'accepted': return 'Accepted';
-      case 'rejected': return 'Rejected';
+      case 'pending': return 'Në pritje';
+      case 'accepted': return 'Pranuar';
+      case 'rejected': return 'Refuzuar';
+      case 'completed': return 'Përfunduar';
+      case 'failed': return 'Dështoi';
       default: return status;
     }
   };

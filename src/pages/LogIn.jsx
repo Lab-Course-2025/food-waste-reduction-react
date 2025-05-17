@@ -59,7 +59,7 @@ function LogIn() {
       }
 
     } catch (err) {
-      setError('Login failed. Please check your credentials.');
+      setError('Keni gabuar kredencialet tuaja. Ju lutem provoni përsëri!');
       console.error('Login error:', err.response?.data || err.message);
     } finally {
       setLoading(false);
@@ -120,7 +120,7 @@ function LogIn() {
                 />
                 <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
-              <Link to="/forgot-password">
+              <Link to="/forgot-password" className="text-sm text-orange-500 hover:text-orange-600">
                 Keni harruar passwordin?
               </Link>
             </div>

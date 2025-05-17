@@ -113,7 +113,7 @@ export default function ContactUs() {
 
                     <Button
                       type="submit"
-                      className={`w-full text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-orange-600 bg-orange-500"}`}
+                      className={`w-full ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
                       disabled={loading}
                     >
                       {loading ? "Duke dërguar..." : "Dërgo"}

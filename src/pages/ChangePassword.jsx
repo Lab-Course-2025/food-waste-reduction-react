@@ -134,7 +134,7 @@ const ChangePassword = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-2 rounded-md transition duration-200 text-white ${isLoading ? 'bg-gray-400 cursor-not-allowed' : ''
+              className={`w-full py-2 rounded-md transition duration-200 ${isLoading ? 'bg-gray-400 cursor-not-allowed' : ''
                 }`}
             >
               {isLoading ? 'Duke ndryshuar...' : 'Ndrysho Fjalëkalimin'}

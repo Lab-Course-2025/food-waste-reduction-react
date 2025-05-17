@@ -258,7 +258,7 @@ export default function DonorDonations() {
                                       setShowLoginModal(true);
                                     }
                                   }}
-                                  className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-700"
+                                  className="flex-1 text-sm"
                                 >
                                   Apliko!
                                 </Button>
