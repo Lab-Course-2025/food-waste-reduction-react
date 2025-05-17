@@ -1,7 +1,13 @@
 import { Routes, Route, useLocation, matchPath } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
 import "./App.css";
 import "./index.css";
+
 import ScrollToTop from "./components/ScrollToTop";
+import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Landing from "./pages/Landing";
 import Information from "./pages/Information";
 import Donors from "./pages/Donors";
@@ -10,70 +16,162 @@ import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
 import Submit from "./pages/SubmitDonation";
 import DonacionetAktive from "./pages/DonacionetAktive";
-import Layout from "./components/Layout";
+
 import DonorDashboard from "./pages/DonorDashboard";
 import RecipientDashboard from "./pages/RecipientDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import DonorProfile from './pages/DonorProfile';
-import RecipientProfile from './pages/RecipientProfile';
+
+import DonorProfile from "./pages/DonorProfile";
+import RecipientProfile from "./pages/RecipientProfile";
+
 import DonorDonations from "./pages/DonorDonations";
 import RecipientApplications from "./pages/RecipientApplications";
 import DonorApplications from "./pages/DonorApplications";
+
 import DonorAcceptedApplications from "./pages/DonorAcceptedApplications";
 import RecipientAcceptedApplications from "./pages/RecipientAcceptedApplications";
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
+
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from "./pages/ChangePassword";
+
 import DonationDetails from "./pages/DonationDetails";
-import { Toaster } from 'react-hot-toast';
 
 function App() {
   const location = useLocation();
+
   const noHeaderFooterRoutes = [
-    "/login", "/donacionetaktive",
-    "/submit", "/donor-dashboard",
-    "/recipient-dashboard", "/admin-dashboard",
-    "/donor-profile", "/recipient-profile",
-    "/donor-donations", "/recipient-applications",
-    "/donor-applications", "/donor-accepted-applications",
-    "/recipient-accepted-applications", "/forgot-password",
-    "/reset-password", "/change-password", "/donations/:id"
+    "/login",
+    "/donacionetaktive",
+    "/submit",
+    "/donor-dashboard",
+    "/recipient-dashboard",
+    "/admin-dashboard",
+    "/donor-profile",
+    "/recipient-profile",
+    "/donor-donations",
+    "/recipient-applications",
+    "/donor-applications",
+    "/donor-accepted-applications",
+    "/recipient-accepted-applications",
+    "/forgot-password",
+    "/reset-password",
+    "/change-password",
+    "/donations/:id",
   ];
 
-  const hideHeaderFooter = noHeaderFooterRoutes.some(route =>
+  const hideHeaderFooter = noHeaderFooterRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
   );
 
   return (
     <>
-      <Toaster position="top-center" toastOptions={{
-        style: {
-          fontSize: "1.125rem",
-          padding: "1rem 1.5rem",
-          minWidth: "400px",
-          minHeight: "70px",
-          borderRadius: "0.75rem"
-        }
-      }} />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            fontSize: "1.125rem",
+            padding: "1rem 1.5rem",
+            minWidth: "400px",
+            minHeight: "70px",
+            borderRadius: "0.75rem",
+          },
+        }}
+      />
+
       {hideHeaderFooter ? (
         <Routes>
+          {/* Public / Auth Routes */}
           <Route path="/login" element={<LogIn />} />
           <Route path="/donacionetaktive" element={<DonacionetAktive />} />
-          <Route path="/donor-dashboard" element={<DonorDashboard />} />
-          <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/submit" element={<Submit />} />
-          <Route path="/donor-profile" element={<DonorProfile />} />
-          <Route path="/recipient-profile" element={<RecipientProfile />} />
-          <Route path="/donor-donations" element={<DonorDonations />} />
-          <Route path="/recipient-applications" element={<RecipientApplications />} />
-          <Route path="/donor-applications" element={<DonorApplications />} />
-          <Route path="/donor-accepted-applications" element={<DonorAcceptedApplications />} />
-          <Route path="/recipient-accepted-applications" element={<RecipientAcceptedApplications />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/donations/:id" element={<DonationDetails />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/donor-dashboard"
+            element={
+              <ProtectedRoute allowedRole="donor">
+                <DonorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recipient-dashboard"
+            element={
+              <ProtectedRoute allowedRole="recipient">
+                <RecipientDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/donor-profile"
+            element={
+              <ProtectedRoute allowedRole="donor">
+                <DonorProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recipient-profile"
+            element={
+              <ProtectedRoute allowedRole="recipient">
+                <RecipientProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/donor-donations"
+            element={
+              <ProtectedRoute allowedRole="donor">
+                <DonorDonations />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recipient-applications"
+            element={
+              <ProtectedRoute allowedRole="recipient">
+                <RecipientApplications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/donor-applications"
+            element={
+              <ProtectedRoute allowedRole="donor">
+                <DonorApplications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/donor-accepted-applications"
+            element={
+              <ProtectedRoute allowedRole="donor">
+                <DonorAcceptedApplications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recipient-accepted-applications"
+            element={
+              <ProtectedRoute allowedRole="recipient">
+                <RecipientAcceptedApplications />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       ) : (
         <Layout>

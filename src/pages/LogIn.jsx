@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
@@ -14,6 +14,20 @@ function LogIn() {
   const [loading, setLoading] = useState(false); // Loading state
 
   const navigate = useNavigate();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userRole = localStorage.getItem('userRole');
+
+    if (token) {
+      if (userRole === 'donor') {
+        navigate('/donor-dashboard', { replace: true });
+      } else if (userRole === 'recipient') {
+        navigate('/recipient-dashboard', { replace: true });
+      }
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,9 +121,7 @@ function LogIn() {
                 <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
               <Link to="/forgot-password">
-                <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
-                  Keni harruar passwordin?
-                </a>
+                Keni harruar passwordin?
               </Link>
             </div>
 
