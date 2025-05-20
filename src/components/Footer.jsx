@@ -2,8 +2,41 @@ import { useState } from "react";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import logo from "../assets/logo.png";
 import Button from "./Button";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubscribe = async () => {
+    if (!email.trim()) {
+      setError("Ju lutem shkruani emailin tuaj");
+      return;
+    }
+
+    try {
+      setError("");
+      setMessage("");
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+
+      const response = await axios.post(`${apiUrl}/subscribe`, {
+        email,
+      });
+
+      toast.success(response.data.message || "Faleminderit për abonimin!");
+      setEmail(""); setEmail("");
+    } catch (err) {
+      if (err.response && err.response.data) {
+        setError(err.response.data.message || "Dështoi abonimi.");
+      } else {
+        setError("Gabim në rrjet.");
+      }
+    }
+  };
   return (
     <>
       {/* Newsletter Subscription */}
@@ -13,13 +46,19 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
             <input
               type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (error) setError(""); // Clear the error when the user starts typing
+              }}
               placeholder="Email juaj këtu"
               className="w-full bg-gray-800 border border-gray-700 text-white rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-            <Button>
-              Abonohu
-            </Button>
+            <Button onClick={handleSubscribe}>Abonohu</Button>
           </div>
+
+          {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
+
         </div>
       </section >
 
