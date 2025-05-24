@@ -233,12 +233,18 @@ export default function ActiveDonations() {
                               <span className="font-medium text-gray-700">Qyteti:</span>{" "}
                               {donation.city?.name}
                             </p>
-                            {donation.expiration_date && (
-                              <p>
-                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                                {new Date(donation.expiration_date).toLocaleDateString()}
-                              </p>
-                            )}
+                            <p>
+                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                              {donation.expiration_date
+                                ? (() => {
+                                  const date = new Date(donation.expiration_date);
+                                  const day = date.getDate().toString().padStart(2, '0');
+                                  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                                  const year = date.getFullYear();
+                                  return `${day}.${month}.${year}`;
+                                })()
+                                : "Nuk ka datë skadimi"}
+                            </p>
                           </div>
                         </div>
                         <div className="mt-5 flex flex-col gap-2">

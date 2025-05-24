@@ -117,10 +117,18 @@ export default function DonationDetails() {
               <li><strong>Kategoria:</strong> {donation.category?.name || "Ushqim"}</li>
               <li><strong>Adresa:</strong> {donation.address}</li>
               <li><strong>Qyteti:</strong> {donation.city?.name}</li>
-              {donation.expiration_date && (
-                <li><strong>Skadon më:</strong> {new Date(donation.expiration_date).toLocaleDateString()}</li>
-              )}
-              <li><strong>Statusi:</strong> {donation.status}</li>
+              <li>
+                <strong>Skadon më:</strong>{" "}
+                {donation.expiration_date
+                  ? (() => {
+                    const date = new Date(donation.expiration_date);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                    const year = date.getFullYear();
+                    return `${day}.${month}.${year}`;
+                  })()
+                  : "Nuk ka datë skadimi"}
+              </li>
             </ul>
             <div>
               <strong className="block text-sm font-semibold text-gray-700 mb-1">Përshkrimi:</strong>

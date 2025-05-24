@@ -235,15 +235,22 @@ export default function DonorDonations() {
                         <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
                         <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
                         <div className="mt-3 text-sm text-gray-500 space-y-1">
-                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}</p>
+                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name}</p>
                           <p><span className="font-medium text-gray-700">Adresa:</span> {donation.address}</p>
                           <p><span className="font-medium text-gray-700">Qyteti:</span> {donation.city?.name}</p>
-                          {donation.expiration_date && (
-                            <p>
-                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                              {new Date(donation.expiration_date).toLocaleDateString()}
-                            </p>
-                          )}
+                          <p>
+                            <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                            {donation.expiration_date
+                              ? (() => {
+                                const date = new Date(donation.expiration_date);
+                                const day = date.getDate().toString().padStart(2, '0');
+                                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${day}.${month}.${year}`;
+                              })()
+                              : "Nuk ka datë skadimi"}
+                          </p>
+
                         </div>
                       </div>
                       <div className="mt-5 flex gap-3">
@@ -410,7 +417,7 @@ export default function DonorDonations() {
                 <Button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-md bg-gray-200 px-4 py-2 text-sm"
+                  className="rounded-md bg-gray-500 hover:bg-gray-600 px-4 py-2 text-sm"
                 >
                   Mbyll
                 </Button>
@@ -439,13 +446,13 @@ export default function DonorDonations() {
             </p>
             <div className="flex justify-end gap-3">
               <Button
-                className="bg-gray-300 text-gray-800 hover:bg-gray-400"
+                className="rounded-md bg-gray-500 hover:bg-gray-600 px-4 py-2 text-sm"
                 onClick={() => setIsDeleteModalOpen(false)}
               >
                 Anulo
               </Button>
               <Button
-                className="bg-red-600 text-white hover:bg-red-700"
+                className="bg-red-600 text-white hover:bg-red-700 text-sm"
                 onClick={handleDeleteDonation}
               >
                 Fshij
