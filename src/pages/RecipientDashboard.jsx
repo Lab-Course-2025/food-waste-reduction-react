@@ -104,7 +104,7 @@ export default function DonationDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-full flex flex-col bg-gray-100 overflow-auto">
       {/* Header */}
       <header className="flex justify-between items-center mb-8 bg-white border-b px-6 py-4">
         <div className="max-w-4xl flex items-center ml-0">
@@ -150,7 +150,6 @@ export default function DonationDashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto p-4 max-w-6xl">
-
         {/* Benefits Section */}
         <section className="mb-8">
           <h2 className="text-lg font-semibold mb-1">Përfitimet e Mia</h2>
@@ -172,7 +171,7 @@ export default function DonationDashboard() {
           </div>
         </section>
 
-        <Link to="/donacionetaktive">
+        <Link to="/active-donations">
           <Button className="flex items-center text-white mb-2">
             <ClipboardList className="mr-2 h-4 w-4" />
             Shiko donacionet aktive
@@ -207,25 +206,32 @@ export default function DonationDashboard() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
+                    <td colSpan="4" className="text-center py-4">Duke u ngarkuar...</td>
                   </tr>
                 ) : (
                   <>
-                    {applications.length > 0 && applications.map((application) => (
-                      <tr key={application.id} className="border-b bg-gray-50">
-                        <td className="py-4 px-6">{application.foodListing.name}</td>
-                        <td className="py-4 px-6">{application.foodListing?.donor?.business_name || 'N/A'}</td>
-
-                        <td className="py-4 px-6">
-                          {application.completed_at ? new Date(application.completed_at).toLocaleDateString() : 'N/A'}
-                        </td>
-
-                        {/* Display the recipient address */}
-                        <td className="py-4 px-6">
-                          {application.foodListing?.donor?.address + ', ' + application.foodListing?.donor?.city?.name || 'N/A'}
+                    {applications.length > 0 ? (
+                      applications.map((application) => (
+                        <tr key={application.id} className="border-b bg-gray-50">
+                          <td className="py-4 px-6">{application.foodListing?.name || 'N/A'}</td>
+                          <td className="py-4 px-6">{application.foodListing?.donor?.business_name || 'N/A'}</td>
+                          <td className="py-4 px-6">
+                            {application.completed_at ? new Date(application.completed_at).toLocaleDateString() : 'N/A'}
+                          </td>
+                          <td className="py-4 px-6">
+                            {application.foodListing?.donor?.address && application.foodListing?.donor?.city?.name
+                              ? `${application.foodListing.donor.address}, ${application.foodListing.donor.city.name}`
+                              : 'N/A'}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="text-center py-4 text-gray-500">
+                          Nuk ka asnjë donacion të përfituar.
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </>
                 )}
               </tbody>
@@ -247,9 +253,9 @@ export default function DonationDashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center text-gray-500 text-sm bg-white px-6 py-4">
+      <footer className="mt-16 text-center text-gray-500 text-sm bg-white px-6 py-4">
         <p>2025 Ndihmo Tjetrin. Të gjitha të drejtat e rezervuara.</p>
       </footer>
-    </div>
+    </div >
   );
 }

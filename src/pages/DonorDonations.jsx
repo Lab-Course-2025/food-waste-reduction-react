@@ -213,60 +213,58 @@ export default function DonorDonations() {
             </div>
 
 
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {donations.map((donation) => (
-                <div
-                  key={donation.id}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative h-[250px] w-full">
-                    <img
-                      src={donation.image_url ?? "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"}
-                      alt={donation.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between p-5 grow">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
-                      <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
-                      <div className="mt-3 text-sm text-gray-500 space-y-1">
-                        <p><span className="font-medium text-gray-700">Kategoria:</span>{donation.category?.name || "Ushqim"}
-                        </p>
-                        <p>
-                          <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                          {donation.address}
-                        </p>
-                        <p>
-                          <span className="font-medium text-gray-700">Qyteti:</span>{" "}
-                          {donation.city?.name}
-                        </p>
-                        {donation.expiration_date && (
-                          <p>
-                            <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                            {new Date(donation.expiration_date).toLocaleDateString()}
-                          </p>
-                        )}
+            {donations.length === 0 ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-center text-gray-600 text-lg">Nuk ke asnjë donacion aktiv</p>
+              </div>) : (
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {donations.map((donation) => (
+                  <div
+                    key={donation.id}
+                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    <div className="relative h-[250px] w-full">
+                      <img
+                        src={donation.image_url ?? "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"}
+                        alt={donation.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-between p-5 grow">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
+                        <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
+                        <div className="mt-3 text-sm text-gray-500 space-y-1">
+                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}</p>
+                          <p><span className="font-medium text-gray-700">Adresa:</span> {donation.address}</p>
+                          <p><span className="font-medium text-gray-700">Qyteti:</span> {donation.city?.name}</p>
+                          {donation.expiration_date && (
+                            <p>
+                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                              {new Date(donation.expiration_date).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-5 flex gap-3">
+                        <Button
+                          onClick={() => handleEditDonation(donation)}
+                          className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
+                        >
+                          Ndrysho
+                        </Button>
+                        <Button
+                          onClick={() => confirmDeleteDonation(donation)}
+                          className="flex-1 rounded-lg bg-red-600 py-2 text-sm text-white hover:bg-red-700"
+                        >
+                          Fshij
+                        </Button>
                       </div>
                     </div>
-                    <div className="mt-5 flex gap-3">
-                      <Button
-                        onClick={() => handleEditDonation(donation)}
-                        className="flex-1 rounded-lg py-2 text-sm text-white hover:bg-orange-600"
-                      >
-                        Ndrysho
-                      </Button>
-                      <Button
-                        onClick={() => confirmDeleteDonation(donation)}
-                        className="flex-1 rounded-lg bg-red-600 py-2 text-sm text-white hover:bg-red-700"
-                      >
-                        Fshij
-                      </Button>
-                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -458,11 +456,17 @@ export default function DonorDonations() {
       )}
 
       {/* Pagination Section */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {donations.length > 0 && (
+        <div className="pb-8 flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageClick={handlePageClick}
+            onNext={handleNextPage}
+            onPrevious={handlePreviousPage}
+          />
+        </div>
+      )}
 
     </div>
   );

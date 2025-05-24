@@ -107,6 +107,7 @@ export default function FoodDonationPage() {
       </section>
 
       {/* Active Donations Section */}
+      {/* Active Donations Section */}
       <section className="py-10">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
@@ -114,95 +115,102 @@ export default function FoodDonationPage() {
 
             {/* Scrollable donation container */}
             <div className="px-4 pb-6">
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" >
-                {donations.slice(0, 3).map((donation, index) => (
-                  <Link
-                    to={`/donations/${donation.id}`}
-                    key={donation.id}
-                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                  >
-                    <div className="relative h-[250px] w-full">
-                      <img
-                        src={
-                          donation.image_url ||
-                          "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
-                        }
-                        alt={donation.name || "Donacion"}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col justify-between p-5 grow">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {donation.name || "Pako Ushqimi"}
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-600">
-                          {donation.notes || "Ushqime për familjet në nevojë"}
-                        </p>
-                        <div className="mt-3 text-sm text-gray-500 space-y-1">
-                          <p>
-                            <span className="font-medium text-gray-700">Kompania:</span>{" "}
-                            {donation.donor.business_name || "Kompani e panjohur"}
+              {donations.length === 0 ? (
+                <p className="text-center text-gray-500 py-10 text-lg">
+                  Nuk ka donacione aktive
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {donations.slice(0, 3).map((donation, index) => (
+                    <Link
+                      to={`/donations/${donation.id}`}
+                      key={donation.id}
+                      className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      <div className="relative h-[250px] w-full">
+                        <img
+                          src={
+                            donation.image_url ||
+                            "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
+                          }
+                          alt={donation.name || "Donacion"}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between p-5 grow">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {donation.name || "Pako Ushqimi"}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {donation.notes || "Ushqime për familjet në nevojë"}
                           </p>
-                          <p>
-                            <span className="font-medium text-gray-700">Kategoria:</span>{" "}
-                            {donation.category?.name || "Ushqim"}
-                          </p>
-                          <p>
-                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                            {donation.address || "Nuk ka rrugë"}
-                          </p>
-                          <p>
-                            <span className="font-medium text-gray-700">Qyteti:</span>{" "}
-                            {donation.city?.name || "Nuk ka qyetet"}
-                          </p>
-                          {donation.expiration_date && (
+                          <div className="mt-3 text-sm text-gray-500 space-y-1">
                             <p>
-                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                              {new Date(donation.expiration_date).toLocaleDateString()}
+                              <span className="font-medium text-gray-700">Kompania:</span>{" "}
+                              {donation.donor.business_name || "Kompani e panjohur"}
                             </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Kategoria:</span>{" "}
+                              {donation.category?.name || "Ushqim"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                              {donation.address || "Nuk ka rrugë"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                              {donation.city?.name || "Nuk ka qyetet"}
+                            </p>
+                            {donation.expiration_date && (
+                              <p>
+                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                                {new Date(donation.expiration_date).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-5 flex flex-col gap-2">
+                          {donation.status === 'in-wait' ? (
+                            <p className="text-center text-sm text-yellow-600 font-medium">
+                              Ky donacion është në proces të pranimit
+                            </p>
+                          ) : (
+                            <Button
+                              className="flex-1 rounded-lg py-2 text-sm text-white"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (isAuthenticated()) {
+                                  handleDonateClick(donation);
+                                } else {
+                                  setShowLoginModal(true);
+                                }
+                              }}
+                            >
+                              Apliko
+                            </Button>
                           )}
                         </div>
                       </div>
-                      <div className="mt-5 flex flex-col gap-2">
-                        {donation.status === 'in-wait' ?
-                          <p className="text-center text-sm text-yellow-600 font-medium">
-                            Ky donacion është në proces të pranimit
-                          </p>
-                          :
-                          <Button
-                            className="flex-1 rounded-lg py-2 text-sm text-white"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              if (isAuthenticated()) {
-                                handleDonateClick(donation);
-                              } else {
-                                setShowLoginModal(true);
-                              }
-                            }}
-                          >
-                            Apliko
-                          </Button>
-                        }
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
 
-
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+            {/* Trego më shumë button */}
+            {donations.length > 0 && (
+              <div className="flex justify-center py-4 border-t">
+                <Link to="/active-donations">
+                  <Button>Trego Më Shumë</Button>
+                </Link>
               </div>
-            </div>
-
-            {/*Trego më shumë button*/}
-            <div className="flex justify-center py-4 border-t">
-              <Link to="/donacionetaktive">
-                <Button>Trego Më Shumë</Button>
-              </Link>
-            </div>
+            )}
           </div>
         </div>
       </section>
+
 
       {/* Process Section */}
       <section id="process-section" className="mx-auto max-w-6xl px-4 py-10 md:px-6">

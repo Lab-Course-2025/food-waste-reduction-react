@@ -98,9 +98,13 @@ const DonorAcceptedApplications = () => {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto p-6">
-        <h2 className="py-6 text-center text-2xl font-bold">Aplikimet për postimet e mia</h2>
+        <h2 className="py-6 text-center text-2xl font-bold">Aplikimet e pranuara</h2>
         {applications.length === 0 ? (
-          <p className="text-gray-600">Nuk ka asnjë aplikim për postimet tuaja</p>
+          <div className="flex items-center justify-center h-64 w-full">
+            <p className="text-gray-600 text-lg text-center">
+              Nuk ka asnjë aplikim të pranuar!
+            </p>
+          </div>
         ) : (
           <div className="space-y-4">
             {applications.map((app) => (
@@ -110,9 +114,15 @@ const DonorAcceptedApplications = () => {
               >
                 <div>
                   <h2 className="text-lg font-semibold">{app.foodListing?.name}</h2>
-                  <p className="text-sm text-gray-500">Aplikuesi: {app.recipient?.organization_name}</p>
-                  <p className="text-sm text-gray-500">Adresa e aplikuesit: {app.recipient?.address} , {app.recipient?.city.name}</p>
-                  <p className="text-sm text-gray-500">Aplikuar me: {formatDate(app.created_at)}</p>
+                  <p className="text-sm text-gray-500">
+                    Aplikuesi: {app.recipient?.organization_name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Adresa e aplikuesit: {app.recipient?.address} , {app.recipient?.city.name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Aplikuar me: {formatDate(app.created_at)}
+                  </p>
                   <span
                     className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-medium ${app.status === 'pending'
                       ? 'bg-yellow-100 text-yellow-800'
@@ -158,6 +168,7 @@ const DonorAcceptedApplications = () => {
             ))}
           </div>
         )}
+
       </div>
 
       {/* Confirmation Modal */}
@@ -188,11 +199,13 @@ const DonorAcceptedApplications = () => {
       )}
 
       {/* Pagination Section */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {applications.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };

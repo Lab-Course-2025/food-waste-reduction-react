@@ -238,26 +238,30 @@ export default function DonationDashboard() {
                   <tr>
                     <td colSpan="6" className="text-center py-4">Duke u ngarkuar...</td>
                   </tr>
+                ) : applications.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center py-4 text-gray-500">
+                      Nuk ka asnjë donacion të dhuruar.
+                    </td>
+                  </tr>
                 ) : (
-                  <>
-                    {applications.length > 0 && applications.map((application) => (
-                      <tr key={application.id} className="border-b bg-gray-50">
-                        <td className="py-4 px-6">{application.foodListing.name}</td>
-                        <td className="py-4 px-6">{application.recipient?.organization_name || 'N/A'}</td>
-
-                        <td className="py-4 px-6">
-                          {application.completed_at ? new Date(application.completed_at).toLocaleDateString() : 'N/A'}
-                        </td>
-
-                        {/* Display the recipient address */}
-                        <td className="py-4 px-6">
-                          {application.recipient?.address + ', ' + application.recipient?.city?.name || 'N/A'}
-                        </td>
-                      </tr>
-                    ))}
-                  </>
+                  applications.map((application) => (
+                    <tr key={application.id} className="border-b bg-gray-50">
+                      <td className="py-4 px-6">{application.foodListing.name}</td>
+                      <td className="py-4 px-6">{application.recipient?.organization_name || 'N/A'}</td>
+                      <td className="py-4 px-6">
+                        {application.completed_at ? new Date(application.completed_at).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="py-4 px-6">
+                        {application.recipient?.address && application.recipient?.city?.name
+                          ? `${application.recipient.address}, ${application.recipient.city.name}`
+                          : 'N/A'}
+                      </td>
+                    </tr>
+                  ))
                 )}
               </tbody>
+
 
             </table>
             <div className="mt-4 text-center">

@@ -15,7 +15,7 @@ import Recipient from "./pages/Recipient";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
 import Submit from "./pages/SubmitDonation";
-import DonacionetAktive from "./pages/DonacionetAktive";
+import ActiveDonations from "./pages/ActiveDonations";
 
 import DonorDashboard from "./pages/DonorDashboard";
 import RecipientDashboard from "./pages/RecipientDashboard";
@@ -42,7 +42,7 @@ function App() {
 
   const noHeaderFooterRoutes = [
     "/login",
-    "/donacionetaktive",
+    "/active-donations",
     "/submit",
     "/donor-dashboard",
     "/recipient-dashboard",
@@ -83,7 +83,7 @@ function App() {
         <Routes>
           {/* Public / Auth Routes */}
           <Route path="/login" element={<LogIn />} />
-          <Route path="/donacionetaktive" element={<DonacionetAktive />} />
+          <Route path="/active-donations" element={<ActiveDonations />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

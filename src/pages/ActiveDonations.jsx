@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Button from "../components/Button"; // Adjust the import path if needed
+import Button from "../components/Button";
 import { toast } from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,9 +9,9 @@ import Pagination from "../components/Pagination";
 import { apiClient } from '../utils/apiClient';
 import BackHeader from "../components/BackHeader";
 
-export default function DonorDonations() {
+export default function ActiveDonations() {
   const [donations, setDonations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
@@ -130,6 +130,7 @@ export default function DonorDonations() {
 
   useEffect(() => {
     const fetchDonations = async () => {
+      setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("authToken");
 
@@ -144,10 +145,10 @@ export default function DonorDonations() {
         });
         // Update donations and pagination data
         setDonations(response.data.data);
-        setTotalPages(response.data.meta.last_page); // Assuming the API sends the total number of pages
-        setLoading(false);
+        setTotalPages(response.data.meta.last_page);
       } catch (error) {
         console.error("Error fetching donations:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -183,95 +184,110 @@ export default function DonorDonations() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {donations.map((donation) => {
-                // Check if the user has already applied for this donation
-                const hasApplied = userApplications.some(application => application.foodListing.id === donation.id);
+              {!loading && donations.length === 0 ? (
+                <div className="col-span-full flex items-center justify-center h-64">
+                  <p className="text-center text-gray-600 text-lg">Nuk ke asnjë donacion aktiv</p>
+                </div>
+              ) : (
+                donations.map((donation) => {
+                  const hasApplied = userApplications.some(
+                    (application) => application.foodListing.id === donation.id
+                  );
 
-                return (
-                  <Link
-                    to={`/donations/${donation.id}`}
-                    key={donation.id}
-                    className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
-                  >
-                    <div className="relative h-[250px] w-full">
-                      <img
-                        src={
-                          donation.image_url ||
-                          "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
-                        }
-                        alt={donation.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col justify-between p-5 grow">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{donation.name}</h3>
-                        <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
-                        <div className="mt-3 text-sm text-gray-500 space-y-1">
-                          <p><span className="font-medium text-gray-700">Kompania:</span> {donation.donor.business_name}</p>
-                          <p><span className="font-medium text-gray-700">Kategoria:</span> {donation.category?.name || "Ushqim"}</p>
-                          <p>
-                            <span className="font-medium text-gray-700">Adresa:</span>{" "}
-                            {donation.address}
-                          </p>
-                          <p>
-                            <span className="font-medium text-gray-700">Qyteti:</span>{" "}
-                            {donation.city?.name}
-                          </p>
-                          {donation.expiration_date && (
+                  return (
+                    <Link
+                      to={`/donations/${donation.id}`}
+                      key={donation.id}
+                      className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      <div className="relative h-[250px] w-full">
+                        <img
+                          src={
+                            donation.image_url ||
+                            "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
+                          }
+                          alt={donation.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between p-5 grow">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {donation.name}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-600">{donation.notes}</p>
+                          <div className="mt-3 text-sm text-gray-500 space-y-1">
                             <p>
-                              <span className="font-medium text-gray-700">Skadon më:</span>{" "}
-                              {new Date(donation.expiration_date).toLocaleDateString()}
+                              <span className="font-medium text-gray-700">Kompania:</span>{" "}
+                              {donation.donor.business_name}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Kategoria:</span>{" "}
+                              {donation.category?.name || "Ushqim"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                              {donation.address}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                              {donation.city?.name}
+                            </p>
+                            {donation.expiration_date && (
+                              <p>
+                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                                {new Date(donation.expiration_date).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-5 flex flex-col gap-2">
+                          {donation.status === "in-wait" && (
+                            <p className="text-center text-sm text-yellow-600 font-medium">
+                              Ky donacion është në proces të pranimit
                             </p>
                           )}
-                        </div>
-                      </div>
-                      <div className="mt-5 flex flex-col gap-2">
-                        {donation.status === 'in-wait' && (
-                          <p className="text-center text-sm text-yellow-600 font-medium">
-                            Ky donacion është në proces të pranimit
-                          </p>
-                        )}
 
-                        {donation.status === 'active' && (
-                          <>
-                            {hasApplied ? (
-                              <Button
-                                className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                }}
-                              >
-                                Keni aplikuar tashmë
-                              </Button>
-
-                            ) :
-                              <div className="flex gap-3">
+                          {donation.status === "active" && (
+                            <>
+                              {hasApplied ? (
                                 <Button
+                                  className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    if (isAuthenticated()) {
-                                      handleDonateClick(donation);
-                                    } else {
-                                      setShowLoginModal(true);
-                                    }
                                   }}
-                                  className="flex-1 text-sm"
                                 >
-                                  Apliko!
+                                  Keni aplikuar tashmë
                                 </Button>
-                              </div>
-                            }
-                          </>
-                        )}
+                              ) : (
+                                <div className="flex gap-3">
+                                  <Button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      if (isAuthenticated()) {
+                                        handleDonateClick(donation);
+                                      } else {
+                                        setShowLoginModal(true);
+                                      }
+                                    }}
+                                    className="flex-1 text-sm"
+                                  >
+                                    Apliko!
+                                  </Button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                );
-              })}
+                    </Link>
+                  );
+                })
+              )}
             </div>
+
           </div>
         </div>
       </div>
@@ -329,11 +345,14 @@ export default function DonorDonations() {
         </div>
       )}
       {/* Pagination Section */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {donations.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
+
     </div>
   );
 }
