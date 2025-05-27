@@ -37,6 +37,8 @@ import ChangePassword from "./pages/ChangePassword";
 
 import DonationDetails from "./pages/DonationDetails";
 
+import EmailVerified from "./pages/EmailVerified";
+
 function App() {
   const location = useLocation();
 
@@ -58,6 +60,7 @@ function App() {
     "/reset-password",
     "/change-password",
     "/donations/:id",
+    "/email-verified"
   ];
 
   const hideHeaderFooter = noHeaderFooterRoutes.some((route) =>
@@ -88,6 +91,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/donations/:id" element={<DonationDetails />} />
+          <Route path="/email-verified" element={<EmailVerified />} />
 
           {/* Protected Routes */}
           <Route path="/submit" element={<ProtectedRoute allowedRole="donor">

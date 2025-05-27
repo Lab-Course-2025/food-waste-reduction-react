@@ -59,8 +59,19 @@ function LogIn() {
       }
 
     } catch (err) {
-      setError('Keni gabuar kredencialet tuaja. Ju lutem provoni përsëri!');
-      console.error('Login error:', err.response?.data || err.message);
+      const response = err.response;
+
+      if (response?.status === 422) {
+        const fieldErrors = response.data.errors;
+        const firstError = Object.values(fieldErrors).flat()[0];
+        setError(firstError);
+      } else if (response?.status === 403) {
+        setError(response.data.message || 'Ju duhet të konfirmoni e-mailin tuaj për të bërë hyrjen.');
+      } else {
+        setError('Ndodhi një gabim gjatë hyrjes. Provoni përsëri.');
+      }
+
+      console.error('Login error:', response?.data || err.message);
     } finally {
       setLoading(false);
     }

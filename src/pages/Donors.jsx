@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import dphoto from "../assets/donors-photo.png";
 import axios from 'axios';
+import { toast } from "react-hot-toast";
 
 // Define the cities as an array
 const cities = [
@@ -97,10 +98,9 @@ const Donors = () => {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiUrl}/donors/register`, formData);
       console.log("Success:", response.data);
-      navigate('/login');
+      toast.success("Llogaria u shtua me sukses! Verifikoni email tuaj.");
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-
+      toast.error("Error:", error.response?.data || error.message);
       if (error.response?.data?.errors) {
         // Handle Laravel-style validation errors
         setErrors(error.response.data.errors);
