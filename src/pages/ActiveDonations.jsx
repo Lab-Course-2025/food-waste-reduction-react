@@ -342,7 +342,7 @@ export default function ActiveDonations() {
                 Kyçu
               </Button>
               <Button
-                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className="bg-gray-400 text-gray-700 hover:bg-gray-500"
                 onClick={() => navigate("/recipient")}
               >
                 Krijo llogari
