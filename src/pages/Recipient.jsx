@@ -245,7 +245,7 @@ const Recipient = () => {
                 className={`
                   w-full text-white md:col-span-2
                   ${loading
-                    ? 'bg-gray-400 cursor-not-allowed'
+                    ? 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
                     : 'hover:bg-orange-600'
                   }
                 `}
