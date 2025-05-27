@@ -32,6 +32,7 @@ const Donors = () => {
   });
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -91,6 +92,7 @@ const Donors = () => {
       return; // Stop submission if there are validation errors
     }
 
+    setLoading(true);
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiUrl}/donors/register`, formData);
@@ -103,6 +105,9 @@ const Donors = () => {
         // Handle Laravel-style validation errors
         setErrors(error.response.data.errors);
       }
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -124,17 +129,21 @@ const Donors = () => {
             <p className="max-w-2xl mx-auto mb-6 text-sm md:text-base">
               Bëhu dhurues sot dhe ndihmo në reduktimin e mbetjeve ushqimore ndërsa ushqen ata që kanë nevojë.
             </p>
-            <Link to="/submit">
-              <Button className="hover:bg-orange-600 text-white rounded-md px-6">
-                Regjistrohu Tani!
-              </Button>
-            </Link>
+            <Button
+              type="button"
+              className="hover:bg-orange-600 text-white rounded-md px-6"
+              onClick={() => {
+                document.getElementById("registration-form")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Regjistrohu Tani!
+            </Button>
           </div>
         </section>
 
         {/* Registration Form */}
         <section className="py-12 px-4">
-          <div className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
+          <div id="registration-form" className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
             <h2 className="text-xl font-bold text-center mb-8">Forma e Regjistrimit të Donatorëve</h2>
 
             <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
@@ -247,7 +256,19 @@ const Donors = () => {
                 </Link>
               </div>
 
-              <Button className="w-full hover:bg-orange-600 text-white md:col-span-2">Regjistrohu</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className={`
+                  w-full text-white md:col-span-2
+                  ${loading
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'hover:bg-orange-600'
+                  }
+                `}
+              >
+                {loading ? 'Duke ngarkuar...' : 'Regjistrohu'}
+              </Button>
             </form>
           </div>
         </section >

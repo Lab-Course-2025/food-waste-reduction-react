@@ -84,13 +84,16 @@ function App() {
           {/* Public / Auth Routes */}
           <Route path="/login" element={<LogIn />} />
           <Route path="/active-donations" element={<ActiveDonations />} />
-          <Route path="/submit" element={<Submit />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/donations/:id" element={<DonationDetails />} />
 
           {/* Protected Routes */}
+          <Route path="/submit" element={<ProtectedRoute allowedRole="donor">
+            <Submit />
+          </ProtectedRoute>} />
+
           <Route
             path="/donor-dashboard"
             element={
