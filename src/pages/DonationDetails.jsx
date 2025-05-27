@@ -129,6 +129,13 @@ export default function DonationDetails() {
                   })()
                   : "Nuk ka datë skadimi"}
               </li>
+              <li>
+                <strong>Sasia:</strong>{" "}
+                {donation.quantity && donation.unit_of_measurement
+                  ? `${donation.quantity} ${donation.unit_of_measurement}`
+                  : "E panjohur"
+                }
+              </li>
             </ul>
             <div>
               <strong className="block text-sm font-semibold text-gray-700 mb-1">Përshkrimi:</strong>

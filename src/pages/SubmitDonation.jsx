@@ -22,6 +22,7 @@ export default function FoodDonationForm() {
   });
   const [errors, setErrors] = useState({});
   const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]); // Added categories state
 
   useEffect(() => {
@@ -137,6 +138,7 @@ export default function FoodDonationForm() {
     }
 
     try {
+      setLoading(true);
       const response = await apiClient.post("food-listings", form, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -171,6 +173,8 @@ export default function FoodDonationForm() {
       } else {
         console.error("Error submitting donation:", error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -211,6 +215,10 @@ export default function FoodDonationForm() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCancel = () => {
+    navigate(-1);
   };
 
 
@@ -419,14 +427,24 @@ export default function FoodDonationForm() {
             <div className="flex justify-between px-6 py-4 bg-gray-50 border-t mt-auto">
               <Button
                 type="button"
-                className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 px-6 w-1/2 mr-2.5"
-                onClick={() => console.log("Cancel clicked")}
+                className="!text-black bg-white border border-gray-300 hover:bg-gray-100 px-6 w-1/2 mr-2.5"
+                onClick={handleCancel}
               >
                 Anulo
               </Button>
 
-              <Button type="submit" className="bg-orange-600 text-white hover:bg-orange-700 px-6 w-1/2 ml-2.5">
-                Dërgo
+              <Button
+                type="submit"
+                disabled={loading}
+                className={`
+                  ${loading
+                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed hover:bg-gray-400'
+                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                  } 
+                px-6 w-1/2 ml-2.5
+              `}
+              >
+                {loading ? 'Duke ngarkuar...' : 'Dërgo'}
               </Button>
             </div>
           </form>

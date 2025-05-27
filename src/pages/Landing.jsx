@@ -168,6 +168,13 @@ export default function FoodDonationPage() {
                                 {new Date(donation.expiration_date).toLocaleDateString()}
                               </p>
                             )}
+                            <p>
+                              <span className="font-medium text-gray-700">Sasia:</span>{" "}
+                              {donation.quantity && donation.unit_of_measurement
+                                ? `${donation.quantity} ${donation.unit_of_measurement}`
+                                : "E panjohur"
+                              }
+                            </p>
                           </div>
                         </div>
                         <div className="mt-5 flex flex-col gap-2">

@@ -176,15 +176,15 @@ export default function DonationDashboard() {
           <p className="text-gray-600 mb-8">Ndjek dhe menaxho dhurimet e tua bamirëse</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="rounded-lg border bg-white shadow-sm p-6">
+            <div className="rounded-lg bg-white shadow-sm p-6">
               <p className="text-gray-500 text-sm mb-1">Donacionet Aktive</p>
               <p className="text-3xl font-bold">{meta?.active_donations}</p>
             </div>
-            <div className="rounded-lg border bg-white shadow-sm p-6">
+            <div className="rounded-lg bg-white shadow-sm p-6">
               <p className="text-gray-500 text-sm mb-1">Donacionet e dhuruara</p>
               <p className="text-3xl font-bold">{meta?.donated_donations}</p>
             </div>
-            <div className="rounded-lg border bg-white shadow-sm p-6">
+            <div className="rounded-lg bg-white shadow-sm p-6">
               <p className="text-gray-500 text-sm mb-1">Donacionet në pritje</p>
               <p className="text-3xl font-bold">{meta?.in_hold_donations}</p>
             </div>
