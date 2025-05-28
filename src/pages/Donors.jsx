@@ -146,7 +146,7 @@ const Donors = () => {
           <div id="registration-form" className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
             <h2 className="text-xl font-bold text-center mb-8">Forma e Regjistrimit të Donatorëve</h2>
 
-            <form autocomplete="off" className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
               {/* Business Information */}
               <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg mt-5">Informatat e biznesit</div>
               <div>
