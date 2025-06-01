@@ -101,7 +101,7 @@ const RecipientApplications = () => {
       </div>
 
       {/* Pagination Section */}
-      {applications.length > 0 && (
+      {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

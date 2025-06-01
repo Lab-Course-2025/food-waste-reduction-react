@@ -91,7 +91,7 @@ const DonorApplications = () => {
         {applications.length === 0 ? (
           <div className="flex items-center justify-center h-64">
             <p className="text-center text-gray-600 text-lg">
-              Nuk ka asnjë aplikim për postimet tuaja!
+              Nuk ka asnjë aplikim në pritje për postimet tuaja!
             </p>
           </div>
         ) : (
@@ -160,24 +160,28 @@ const DonorApplications = () => {
             </p>
             <div className="mt-6 flex justify-center space-x-4">
               <Button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded"
+                className="bg-gray-400 text-gray-700 px-4 py-2 rounded hover:bg-gray-500"
                 onClick={() => setShowModal(false)}
               >
                 Anulo
               </Button>
               <Button
-                className={`px-4 py-2 rounded text-white ${actionType === "accepted" ? "bg-green-500" : "bg-red-500"}`}
+                className={`px-4 py-2 rounded text-white transition duration-200 ${actionType === "accepted"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-red-500 hover:bg-red-600"
+                  }`}
                 onClick={handleConfirmAction}
               >
                 Po, {actionType === "accepted" ? "prano" : "refuzo"}
               </Button>
+
             </div>
           </div>
         </div>
       )}
 
       {/* Pagination Section */}
-      {applications.length > 0 && (
+      {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

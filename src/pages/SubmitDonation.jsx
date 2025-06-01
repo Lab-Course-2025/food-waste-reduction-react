@@ -230,7 +230,7 @@ export default function FoodDonationForm() {
 
       <div className="flex-1 overflow-auto flex items-center justify-center p-6">
         <div className="w-full max-w-4xl bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-          <form onSubmit={handleSubmit} className="flex flex-col">
+          <form onSubmit={handleSubmit} className="flex flex-col" autoComplete="off">
             <div className="p-6">
               {/* Donation Details */}
               <div className="mb-6">

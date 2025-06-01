@@ -358,7 +358,7 @@ export default function ActiveDonations() {
         </div>
       )}
       {/* Pagination Section */}
-      {donations.length > 0 && (
+      {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

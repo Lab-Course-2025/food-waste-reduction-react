@@ -182,13 +182,13 @@ const DonorAcceptedApplications = () => {
             </p>
             <div className="mt-6 flex justify-center space-x-4">
               <Button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded"
+                className="bg-gray-400 text-gray-700 px-4 py-2 rounded hover:bg-gray-500"
                 onClick={() => setShowModal(false)}
               >
                 Anulo
               </Button>
               <Button
-                className={`px-4 py-2 rounded text-white ${actionType === "completed" ? "bg-green-500" : "bg-red-500"}`}
+                className={`px-4 py-2 rounded text-white ${actionType === "completed" ? "bg-green-500 hover:bg-green-600 " : "bg-red-500"}`}
                 onClick={handleConfirmAction}
               >
                 Po, shënoje si {actionType === "completed" ? "të kompletuar" : "dështuar"}
@@ -199,13 +199,14 @@ const DonorAcceptedApplications = () => {
       )}
 
       {/* Pagination Section */}
-      {applications.length > 0 && (
+      {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       )}
+
     </div>
   );
 };

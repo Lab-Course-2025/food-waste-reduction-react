@@ -106,16 +106,12 @@ const DonorAcceptedApplications = () => {
       </div>
 
       {/* Pagination Section */}
-      {applications.length > 0 && (
-        <div className="pb-8 flex justify-center">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageClick={handlePageClick}
-            onNext={handleNextPage}
-            onPrevious={handlePreviousPage}
-          />
-        </div>
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );
