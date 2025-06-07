@@ -4,13 +4,14 @@ import { Toaster } from "react-hot-toast";
 import "./App.css";
 import "./index.css";
 
+
 import ScrollToTop from "./components/ScrollToTop";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Landing from "./pages/Landing";
 import Information from "./pages/Information";
-import Donors from "./pages/Donors";
+import Donors from "./pages/donors";
 import Recipient from "./pages/Recipient";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
