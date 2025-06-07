@@ -20,7 +20,6 @@ import ActiveDonations from "./pages/ActiveDonations";
 
 import DonorDashboard from "./pages/DonorDashboard";
 import RecipientDashboard from "./pages/RecipientDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
 
 import DonorProfile from "./pages/DonorProfile";
 import RecipientProfile from "./pages/RecipientProfile";
@@ -51,7 +50,6 @@ function App() {
     "/submit",
     "/donor-dashboard",
     "/recipient-dashboard",
-    "/admin-dashboard",
     "/donor-profile",
     "/recipient-profile",
     "/donor-donations",
@@ -121,15 +119,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute allowedRole="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-
           <Route
             path="/donor-profile"
             element={

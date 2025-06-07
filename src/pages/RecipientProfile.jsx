@@ -58,6 +58,7 @@ export default function UserProfile() {
     // Fetch recipient data when the component mounts
     const fetchRecipientData = async () => {
       try {
+        setLoading(true);
         const response = await apiClient.get('recipients/profile');
 
         // Update state with the recipient's data
@@ -76,7 +77,8 @@ export default function UserProfile() {
         });
       } catch (error) {
         console.error("Error fetching recipient data:", error);
-        // setLoading(false);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -208,8 +210,13 @@ export default function UserProfile() {
             <div className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-white">
               <span>{recipient?.organization_name?.charAt(0) || "F"}</span>
             </div>
-            {/* <span className="font-medium">Filan Fisteku</span> */}
-            <span className="font-medium">{recipient?.organization_name || "Filan Fisteku"}</span> {/* Fallback to static name */}
+            <span className="font-medium">
+              {loading ? (
+                <div className="w-24 h-5 bg-gray-300 animate-pulse rounded"></div>
+              ) : (
+                recipient?.organization_name
+              )}
+            </span>
 
             <ChevronDown className="h-4 w-4" />
           </button>

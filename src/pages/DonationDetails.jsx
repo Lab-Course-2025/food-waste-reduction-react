@@ -43,7 +43,6 @@ export default function DonationDetails() {
       const applications = response.data.data;
       const alreadyApplied = applications.some(app => app.foodListing.id === id);
       setHasApplied(alreadyApplied);
-      console.log('aplikuar ?! ' + alreadyApplied);
     } catch (error) {
       console.error("Error checking application status:", error);
     }
