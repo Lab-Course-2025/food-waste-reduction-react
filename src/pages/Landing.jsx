@@ -1,14 +1,16 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import Lphoto from "../assets/Landing-photo.png";
+import axios from "axios";
 
 export default function FoodDonationPage() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const modalRef = useRef(null);
 
+  const [donations, setDonations] = useState([]);
   // Handle donation button click
   const handleDonateClick = () => {
     setShowDonationForm(true);
@@ -18,6 +20,49 @@ export default function FoodDonationPage() {
       behavior: "smooth",
     });
   };
+
+
+  const isAuthenticated = () => {
+    return !!localStorage.getItem("authToken");
+  };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowLoginModal(false);
+      }
+    };
+
+    if (showLoginModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showLoginModal]);
+
+  useEffect(() => {
+    const fetchFirstThreeDonations = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      try {
+        const response = await axios.get(`${apiUrl}/food-listings`, {
+          params: {
+            statuses: ['active', 'in-wait']
+          }
+        });
+        console.log(response.data.data);
+        setDonations(response.data.data);
+      } catch (error) {
+        console.error("Error fetching top donations:", error);
+      }
+    };
+
+    fetchFirstThreeDonations();
+  }, []);
 
   // Handle learn more button click
   const handleLearnMoreClick = () => {
@@ -46,12 +91,12 @@ export default function FoodDonationPage() {
               </div>
               <div className="mt-6 flex justify-center gap-4">
                 <Link to="/donors">
-                  <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
+                  <Button>
                     Regjistrohu si Donator
                   </Button>
                 </Link>
                 <Link to="/recipient">
-                  <Button className="rounded-md px-4 py-2 font-medium text-white hover:bg-orange-600">
+                  <Button>
                     Regjistrohu si Perfitues
                   </Button>
                 </Link>
@@ -62,6 +107,7 @@ export default function FoodDonationPage() {
       </section>
 
       {/* Active Donations Section */}
+      {/* Active Donations Section */}
       <section className="py-10">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
@@ -69,41 +115,109 @@ export default function FoodDonationPage() {
 
             {/* Scrollable donation container */}
             <div className="px-4 pb-6">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="overflow-hidden rounded-lg border bg-white shadow-sm">
-                    <div className="relative h-48 w-full">
-                      <img
-                        src="https://www.food-safety.com/ext/resources/Newsletters/GettyImages-1225416626.jpg?height=635&t=1616167053&width=1200"
-                        alt="Hands holding food"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium">Pako ushqimi {item}</h3>
-                      <p className="mt-1 text-sm text-gray-500">Ushqime të ndryshme për familjet në nevojë</p>
-                      <Button
-                        onClick={handleDonateClick}
-                        className="mt-4 w-full rounded-md py-2 font-medium text-white hover:bg-orange-600"
-                      >
-                        Apliko!
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {donations.length === 0 ? (
+                <p className="text-center text-gray-500 py-10 text-lg">
+                  Nuk ka donacione aktive
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {donations.slice(0, 3).map((donation, index) => (
+                    <Link
+                      to={`/donations/${donation.id}`}
+                      key={donation.id}
+                      className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      <div className="relative h-[250px] w-full">
+                        <img
+                          src={
+                            donation.image_url ||
+                            "https://finegrocery.in/wp-content/uploads/2021/05/finegrocery-place-holder-2.jpg"
+                          }
+                          alt={donation.name || "Donacion"}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between p-5 grow">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {donation.name || "Pako Ushqimi"}
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {donation.notes || "Ushqime për familjet në nevojë"}
+                          </p>
+                          <div className="mt-3 text-sm text-gray-500 space-y-1">
+                            <p>
+                              <span className="font-medium text-gray-700">Kompania:</span>{" "}
+                              {donation.donor.business_name || "Kompani e panjohur"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Kategoria:</span>{" "}
+                              {donation.category?.name || "Ushqim"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Adresa:</span>{" "}
+                              {donation.address || "Nuk ka rrugë"}
+                            </p>
+                            <p>
+                              <span className="font-medium text-gray-700">Qyteti:</span>{" "}
+                              {donation.city?.name || "Nuk ka qyetet"}
+                            </p>
+                            {donation.expiration_date && (
+                              <p>
+                                <span className="font-medium text-gray-700">Skadon më:</span>{" "}
+                                {new Date(donation.expiration_date).toLocaleDateString()}
+                              </p>
+                            )}
+                            <p>
+                              <span className="font-medium text-gray-700">Sasia:</span>{" "}
+                              {donation.quantity && donation.unit_of_measurement
+                                ? `${donation.quantity} ${donation.unit_of_measurement}`
+                                : "E panjohur"
+                              }
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-5 flex flex-col gap-2">
+                          {donation.status === 'in-wait' ? (
+                            <p className="text-center text-sm text-yellow-600 font-medium">
+                              Ky donacion është në proces të pranimit
+                            </p>
+                          ) : (
+                            <Button
+                              className="flex-1 rounded-lg py-2 text-sm text-white"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (isAuthenticated()) {
+                                  handleDonateClick(donation);
+                                } else {
+                                  setShowLoginModal(true);
+                                }
+                              }}
+                            >
+                              Apliko
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/*Trego më shumë button*/}
-            <div className="flex justify-center py-4 border-t">
-              <Link to="/donacionetaktive">
-                <Button className="text-white hover:bg-orange-600">Trego Më Shumë</Button>
-              </Link>
-            </div>
+            {/* Trego më shumë button */}
+            {donations.length > 0 && (
+              <div className="flex justify-center py-4 border-t">
+                <Link to="/active-donations">
+                  <Button>Trego Më Shumë</Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
+
 
       {/* Process Section */}
       <section id="process-section" className="mx-auto max-w-6xl px-4 py-10 md:px-6">
@@ -134,7 +248,6 @@ export default function FoodDonationPage() {
         <div className="mt-10 flex justify-center">
           <Button
             onClick={handleLearnMoreClick}
-            className="rounded-md bg-orange-500 px-6 py-2 font-medium text-white hover:bg-orange-600"
           >
             Mëso më shumë
           </Button>
@@ -191,6 +304,33 @@ export default function FoodDonationPage() {
           </button>
         </div>
       </section>
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>
+          <div ref={modalRef} className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+            <h2 className="text-lg font-semibold mb-4">Për të aplikuar duhet të jeni të kyçur si përfitues</h2>
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-600"
+                onClick={() => navigate("/login")}
+              >
+                Kyçu
+              </Button>
+              <Button
+                className="bg-gray-400 text-gray-700 hover:bg-gray-500"
+                onClick={() => navigate("/recipient")}
+              >
+                Krijo llogari
+              </Button>
+            </div>
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowLoginModal(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

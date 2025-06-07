@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Facebook, Twitter, Instagram, Youtube, Globe, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import dphoto from "../assets/donors-photo.png";
 import axios from 'axios';
+import { toast } from "react-hot-toast";
 
 // Define the cities as an array
 const cities = [
@@ -26,53 +27,59 @@ const Donors = () => {
     contact_phone: "",
     email: "",
     password: "",
-    address: {
-      street: "",
-      postcode: "",
-      city: "",
-      country: "Kosova", // Default value since it's fixed
-    }
+    confirm_password: "",
+    address: "",
+    city: ""
   });
   const [errors, setErrors] = useState({});
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Handle nested address fields
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: { ...prev.address, [field]: value },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     // Clear the error for the specific field when the user starts typing
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
 
   };
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/cities`);
+        setCities(response.data.data); // access the 'data' array
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+
   const validateForm = () => {
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
       if (typeof formData[key] === "string" && !formData[key].trim()) {
         newErrors[key] = "*E nevojshme. ";
-      } else if (typeof formData[key] === "object" && formData[key] !== null) {
-        // Validate address fields
-        Object.keys(formData[key]).forEach((subKey) => {
-          const value = formData[key][subKey];
-          if (typeof value !== "string" || !value.trim()) {
-            newErrors[`${key}.${subKey}`] = "*E nevojshme.";
-          }
-        });
       }
     });
+
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = "Fjalëkalimi duhet të ketë të paktën 8 karaktere.";
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = "Fjalëkalimet nuk përputhen.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
@@ -86,14 +93,21 @@ const Donors = () => {
       return; // Stop submission if there are validation errors
     }
 
+    setLoading(true);
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiUrl}/donors/register`, formData);
       console.log("Success:", response.data);
-      navigate('/LogIn');
+      toast.success("Llogaria u shtua me sukses! Verifikoni email tuaj.");
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-      // alert("Registration failed!");
+      toast.error("Error:", error.response?.data || error.message);
+      if (error.response?.data?.errors) {
+        // Handle Laravel-style validation errors
+        setErrors(error.response.data.errors);
+      }
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -115,17 +129,21 @@ const Donors = () => {
             <p className="max-w-2xl mx-auto mb-6 text-sm md:text-base">
               Bëhu dhurues sot dhe ndihmo në reduktimin e mbetjeve ushqimore ndërsa ushqen ata që kanë nevojë.
             </p>
-            <Link to="/submit">
-              <Button className="hover:bg-orange-600 text-white rounded-md px-6">
-                Regjistrohu Tani!
-              </Button>
-            </Link>
+            <Button
+              type="button"
+              className="hover:bg-orange-600 text-white rounded-md px-6"
+              onClick={() => {
+                document.getElementById("registration-form")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Regjistrohu Tani!
+            </Button>
           </div>
         </section>
 
         {/* Registration Form */}
         <section className="py-12 px-4">
-          <div className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
+          <div id="registration-form" className="max-w-3xl mx-auto border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
             <h2 className="text-xl font-bold text-center mb-8">Forma e Regjistrimit të Donatorëve</h2>
 
             <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
@@ -166,30 +184,43 @@ const Donors = () => {
               </div>
 
               {/* Address Information */}
+              {/* Address Information */}
               <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg mt-5">Adresa e biznesit</div>
-              <div>
-                <label htmlFor="street" className="block text-sm font-medium mb-1">Rruga</label>
-                <Input name="address.street" value={formData.address.street} onChange={handleChange} placeholder="Rruga" className="w-full border-gray-300" />
-                {errors["address.street"] && <p className="text-red-500 text-sm mt-1">{errors["address.street"]}</p>}
+
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium mb-1">Rruga</label>
+                  <Input
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Rruga"
+                    className="w-full border-gray-300"
+                  />
+                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="city" className="block text-sm font-medium mb-1">Qyteti</label>
+                  <select
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.city === "" ? "text-gray-500" : "text-black"} border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}
+                  >
+                    <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                </div>
+
               </div>
-              <div>
-                <label htmlFor="postcode" className="block text-sm font-medium mb-1">Kodi Postar</label>
-                <Input name="address.postcode" value={formData.address.postcode} onChange={handleChange} placeholder="40000" className="w-full border-gray-300" />
-                {errors["address.postcode"] && <p className="text-red-500 text-sm mt-1">{errors["address.postcode"]}</p>}
-              </div>
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium mb-1">Qyteti</label>
-                <select name="address.city" value={formData.address.city} onChange={handleChange} className={`w-full shadow-sm px-3 py-2 border rounded-md ${formData.address.city === "" ? "text-gray-500" : "text-black"
-                  } border-gray-300 focus:outline-none focus:border-orange-500 transition-colors`}>
-                  <option className="text-gray-400" value="" disabled>Zgjedh qytetin</option>
-                  {cities.map((city) => (<option key={city} value={city}>{city}</option>))}
-                </select>
-                {errors["address.city"] && <p className="text-red-500 text-sm mt-1">{errors["address.city"]}</p>}
-              </div>
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium mb-1">Shteti</label>
-                <Input name="address.country" value={formData.address.country} onChange={handleChange} placeholder="Kosova" className="w-full border-gray-300" disabled />
-              </div>
+
+
 
               {/* Login Information */}
               <div className="md:col-span-2 col-span-1 md:text-left text-center font-semibold text-lg mt-5">Email dhe fjalëkalimi</div>
@@ -199,9 +230,22 @@ const Donors = () => {
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                <Input name="password" value={formData.password} onChange={handleChange} type="password" placeholder="Password" className="w-full border-gray-300" />
+                <label htmlFor="password" className="block text-sm font-medium mb-1">Fjalëkalimi</label>
+                <Input name="password" value={formData.password} onChange={handleChange} type="password" placeholder="Fjalëkalimi" className="w-full border-gray-300" />
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="confirm_password" className="block text-sm font-medium mb-1">Konfirmo Fjalëkalimin</label>
+                <Input
+                  type="password"
+                  name="confirm_password"
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                  placeholder="Konfirmo fjalëkalimin"
+                  className="w-full border-gray-300"
+                />
+                {errors.confirm_password && <p className="text-red-500 text-sm mt-1">{errors.confirm_password}</p>}
               </div>
 
               <div className="flex items-start py-2 md:col-span-2">
@@ -212,11 +256,23 @@ const Donors = () => {
                 </Link>
               </div>
 
-              <Button className="w-full hover:bg-orange-600 text-white md:col-span-2">Regjistrohu</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className={`
+                  w-full text-white md:col-span-2
+                  ${loading
+                    ? 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
+                    : 'hover:bg-orange-600'
+                  }
+                `}
+              >
+                {loading ? 'Duke ngarkuar...' : 'Regjistrohu'}
+              </Button>
             </form>
           </div>
-        </section>
-      </main>
+        </section >
+      </main >
     </div >
   );
 };

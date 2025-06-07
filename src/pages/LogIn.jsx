@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,27 +15,66 @@ function LogIn() {
 
   const navigate = useNavigate();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userRole = localStorage.getItem('userRole');
+
+    if (token) {
+      if (userRole === 'donor') {
+        navigate('/donor-dashboard', { replace: true });
+      } else if (userRole === 'recipient') {
+        navigate('/recipient-dashboard', { replace: true });
+      }
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
+
     const apiUrl = import.meta.env.VITE_API_URL;
 
     try {
       const response = await axios.post(`${apiUrl}/login`, {
         email,
         password,
+        rememberMe
       });
 
-      const { token } = response.data;
+      const { user, token, expires_at, refresh_token } = response.data;
+      localStorage.setItem('userRole', user.role);
       localStorage.setItem('authToken', token);
-      console.log('Login successful:', response.data);
+      localStorage.setItem('refreshToken', refresh_token);
+      localStorage.setItem('expiresAt', expires_at);
 
-      navigate('/donors');
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (user.role === 'donor') {
+        navigate('/donor-dashboard');
+      } else if (user.role === 'recipient') {
+        // navigate to recipient dashboard
+        navigate('/recipient-dashboard');
+      }
+
     } catch (err) {
-      setError('Login failed. Please check your credentials.');
-      console.error('Login error:', err.response?.data || err.message);
+      const response = err.response;
+
+      if (response?.status === 422) {
+        const fieldErrors = response.data.errors;
+        const firstError = Object.values(fieldErrors).flat()[0];
+        setError(firstError);
+      } else if (response?.status === 403) {
+        setError(response.data.message || 'Ju duhet të konfirmoni e-mailin tuaj për të bërë hyrjen.');
+      } else {
+        setError('Ndodhi një gabim gjatë hyrjes. Provoni përsëri.');
+      }
+
+      console.error('Login error:', response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
-    console.log('Login attempted:', { email, password, rememberMe });
   };
 
   return (
@@ -91,18 +131,19 @@ function LogIn() {
                 />
                 <span className="text-sm text-gray-600">Më mbaj mend</span>
               </label>
-              <a href="#" className="text-sm text-orange-500 hover:text-orange-600">
+              <Link to="/forgot-password" className="text-sm text-orange-500 hover:text-orange-600">
                 Keni harruar passwordin?
-              </a>
+              </Link>
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="w-full bg-[#FF4C00FF] text-white py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2"
+              className={`w-full text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-orange-600 bg-orange-500"}`}
+              disabled={loading}
             >
-              <span>Kyqu</span>
-              {/* <ArrowRight size={20} /> */}
-            </button>
+              {loading ? "Duke u kyqur..." : "Kyqu"}
+            </Button>
+
           </form>
 
           {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
@@ -150,8 +191,8 @@ function LogIn() {
             <img src={loginSvg} alt="Login Illustration" className="w-full h-full" />
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
