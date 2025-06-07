@@ -40,6 +40,8 @@ import DonationDetails from "./pages/DonationDetails";
 
 import EmailVerified from "./pages/EmailVerified";
 
+import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated";
+
 function App() {
   const location = useLocation();
 
@@ -86,7 +88,11 @@ function App() {
       {hideHeaderFooter ? (
         <Routes>
           {/* Public / Auth Routes */}
-          <Route path="/login" element={<LogIn />} />
+          <Route path="/login" element={
+            <RedirectIfAuthenticated>
+              <LogIn />
+            </RedirectIfAuthenticated>
+          } />
           <Route path="/active-donations" element={<ActiveDonations />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -184,11 +190,31 @@ function App() {
       ) : (
         <Layout>
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/information" element={<Information />} />
-            <Route path="/donors" element={<Donors />} />
-            <Route path="/recipient" element={<Recipient />} />
-            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/" element={
+              <RedirectIfAuthenticated>
+                <Landing />
+              </RedirectIfAuthenticated>
+            } />
+            <Route path="/information" element={
+              <RedirectIfAuthenticated>
+                <Information />
+              </RedirectIfAuthenticated>
+            } />
+            <Route path="/donors" element={
+              <RedirectIfAuthenticated>
+                <Donors />
+              </RedirectIfAuthenticated>
+            } />
+            <Route path="/recipient" element={
+              <RedirectIfAuthenticated>
+                <Recipient />
+              </RedirectIfAuthenticated>
+            } />
+            <Route path="/contact-us" element={
+              <RedirectIfAuthenticated>
+                <ContactUs />
+              </RedirectIfAuthenticated>
+            } />
           </Routes>
         </Layout>
       )}

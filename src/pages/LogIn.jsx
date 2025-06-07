@@ -14,21 +14,6 @@ function LogIn() {
   const [loading, setLoading] = useState(false); // Loading state
 
   const navigate = useNavigate();
-
-  // Check if user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const userRole = localStorage.getItem('userRole');
-
-    if (token) {
-      if (userRole === 'donor') {
-        navigate('/donor-dashboard', { replace: true });
-      } else if (userRole === 'recipient') {
-        navigate('/recipient-dashboard', { replace: true });
-      }
-    }
-  }, [navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
