@@ -25,6 +25,16 @@ export default function FoodDonationForm() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]); // Added categories state
 
+
+  useEffect(() => {
+    return () => {
+      if (formData.imagePreview) {
+        URL.revokeObjectURL(formData.imagePreview);
+      }
+    };
+  }, [formData.imagePreview]);
+
+
   useEffect(() => {
     const fetchCities = async () => {
       try {
