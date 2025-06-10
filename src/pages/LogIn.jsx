@@ -122,7 +122,7 @@ function LogIn() {
 
             <Button
               type="submit"
-              className={`w-full text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-orange-600 bg-orange-500"}`}
+              className={`w-full text-white mt-5 ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? "Duke u kyqur..." : "Kyqu"}
@@ -132,41 +132,6 @@ function LogIn() {
 
           {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
 
-
-          <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Apo kyqu me:</span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <img
-                  src="https://www.svgrepo.com/show/303108/google-icon-logo.svg"
-                  alt="Google"
-                  className="h-5 object-contain"
-                />
-              </button>
-              <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
-                  alt="Facebook"
-                  className="h-5 object-contain"
-                />
-              </button>
-              <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-                  alt="Facebook"
-                  className="h-5 object-contain"
-                />
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Right side - Illustration */}
