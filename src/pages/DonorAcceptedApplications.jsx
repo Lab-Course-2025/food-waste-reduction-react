@@ -47,7 +47,6 @@ const DonorAcceptedApplications = () => {
       setApplications(response.data.data);
       setTotalPages(response.data.meta.last_page);
     } catch (error) {
-      console.error("Error fetching donor applications:", error);
     }
   };
 
@@ -85,7 +84,6 @@ const DonorAcceptedApplications = () => {
 
       }
     } catch (error) {
-      console.error(`Failed to update application status to ${actionType}`, error);
       toast.error('Ndodhi nje gabim!');
     }
   };

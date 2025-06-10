@@ -41,7 +41,6 @@ const DonorApplications = () => {
       setApplications(response.data.data);
       setTotalPages(response.data.meta.last_page);
     } catch (error) {
-      console.error("Error fetching donor applications:", error);
     }
   };
 
@@ -73,7 +72,6 @@ const DonorApplications = () => {
       // Show success toast
       toast.success(`Aplikimi u ${actionType === "accepted" ? "pranua" : "refuzua"} me sukses!`);
     } catch (error) {
-      console.error(`Failed to ${actionType} application`, error);
       toast.error('Ndodhi një gabim!');
     }
   };

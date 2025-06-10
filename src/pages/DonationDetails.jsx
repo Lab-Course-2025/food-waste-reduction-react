@@ -44,7 +44,6 @@ export default function DonationDetails() {
       const alreadyApplied = applications.some(app => app.foodListing.id === id);
       setHasApplied(alreadyApplied);
     } catch (error) {
-      console.error("Error checking application status:", error);
     }
   };
 
@@ -55,7 +54,6 @@ export default function DonationDetails() {
         const response = await apiClient.get(`/food-listings/${id}`);
         setDonation(response.data);
       } catch (error) {
-        console.error("Error fetching donation details:", error);
       } finally {
         setLoading(false);
       }
@@ -89,7 +87,6 @@ export default function DonationDetails() {
       handleCloseModal();
       checkIfApplied();
     } catch (error) {
-      console.error("Ndodhi një gabim gjatë aplikimit", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsApplying(false);
@@ -146,7 +143,7 @@ export default function DonationDetails() {
             {/* Apliko button */}
             <div className="pt-4">
               {hasApplied ? (
-                <Button className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600" disabled>
+                <Button className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600 pointer-events-none" disabled>
                   Keni aplikuar tashmë
                 </Button>
               ) : <Button
@@ -176,13 +173,13 @@ export default function DonationDetails() {
             <div className="flex justify-between">
               <Button
                 onClick={handleCloseModal}
-                className="bg-gray-500 text-white py-2 px-4 rounded"
+                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
               >
                 Anulo
               </Button>
               <Button
                 onClick={handleConfirmApply}
-                className={`text-white py-2 px-4 rounded ${isApplying ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                className={`text-white py-2 px-4 rounded bg-green-500 hover:bg-green-600 ${isApplying ? 'cursor-not-allowed pointer-events-none' : ''
                   }`}
                 disabled={isApplying}
               >

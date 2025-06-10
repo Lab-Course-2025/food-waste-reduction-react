@@ -92,7 +92,6 @@ export default function DonorDonations() {
       toast.success("Donacioni u fshi me sukses!");
     } catch (error) {
       toast.error("Ndodhi një gabim gjatë fshirjes!");
-      console.error("Error deleting donation:", error);
     } finally {
       setIsDeleteModalOpen(false);
       setDonationToDelete(null);
@@ -128,7 +127,6 @@ export default function DonorDonations() {
       setIsModalOpen(false);
       setSelectedDonation(null);
     } catch (error) {
-      console.error("Error updating donation", error);
     }
   };
 
@@ -139,7 +137,6 @@ export default function DonorDonations() {
         const response = await axios.get(`${apiUrl}/cities`);
         setCities(response.data.data);
       } catch (error) {
-        console.error("Error fetching cities:", error);
       }
     };
 
@@ -149,7 +146,6 @@ export default function DonorDonations() {
         const response = await axios.get(`${apiUrl}/categories`);
         setCategories(response.data.data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
       }
     };
 
@@ -176,7 +172,6 @@ export default function DonorDonations() {
         setTotalPages(response.data.meta.last_page); // Assuming the API sends the total number of pages
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching donations:", error);
         setLoading(false);
       }
     };

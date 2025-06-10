@@ -68,7 +68,6 @@ const Recipient = () => {
         const response = await axios.get(`${apiUrl}/cities`);
         setCities(response.data.data); // access the 'data' array
       } catch (error) {
-        console.error("Error fetching cities:", error);
       }
     };
 
@@ -89,10 +88,8 @@ const Recipient = () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiUrl}/recipients/register`, formData);
-      console.log("Success:", response.data);
       toast.success("Llogaria u shtua me sukses! Verifikoni email tuaj.");
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
       if (error.response?.data?.errors) {
         // Handle Laravel-style validation errors
         setErrors(error.response.data.errors);

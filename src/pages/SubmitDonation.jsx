@@ -42,7 +42,6 @@ export default function FoodDonationForm() {
         const response = await axios.get(`${apiUrl}/cities`);
         setCities(response.data.data); // access the 'data' array
       } catch (error) {
-        console.error("Error fetching cities:", error);
       }
     };
 
@@ -52,7 +51,6 @@ export default function FoodDonationForm() {
         const response = await axios.get(`${apiUrl}/categories`);
         setCategories(response.data.data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
       }
     };
 
@@ -85,44 +83,6 @@ export default function FoodDonationForm() {
   };
   const navigate = useNavigate();
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log("Form submitted:", formData);
-
-  //   const isValid = validateForm();
-  //   if (!isValid) return;
-
-  //   const apiUrl = import.meta.env.VITE_API_URL;
-  //   const token = localStorage.getItem("authToken");
-
-
-  //   try {
-  //     const response = await apiClient.post('food-listings', formData);
-  //     console.log("Donation submitted successfully:", response.data);
-  //     toast.success("Donacioni u shtua me sukses!");
-  //     setTimeout(() => {
-  //       navigate("/donor-dashboard");
-  //     }, 1000);
-
-  //     // Optionally reset the form
-  //     setFormData({
-  //       name: "",
-  //       category: "",
-  //       expiration_date: "",
-  //       notes: "",
-  //       address: "",
-  //       city: ""
-  //     });
-
-  //     // Optionally show a success message or redirect
-  //   } catch (error) {
-  //     if (error.response) {
-  //       console.error("Server responded with error:", error.response.data);
-  //     } else {
-  //       console.error("Error submitting donation:", error.message);
-  //     }
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -156,7 +116,6 @@ export default function FoodDonationForm() {
         },
       });
 
-      console.log("Donation submitted successfully:", response.data);
       toast.success("Donacioni u shtua me sukses!");
 
       setTimeout(() => {
@@ -179,9 +138,7 @@ export default function FoodDonationForm() {
 
     } catch (error) {
       if (error.response) {
-        console.error("Server responded with error:", error.response.data);
       } else {
-        console.error("Error submitting donation:", error.message);
       }
     } finally {
       setLoading(false);

@@ -46,7 +46,6 @@ const DonorAcceptedApplications = () => {
       setApplications(response.data.data);
       setTotalPages(response.data.meta.last_page);
     } catch (error) {
-      console.error("Error fetching donor applications:", error);
     }
   };
 

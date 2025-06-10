@@ -47,7 +47,6 @@ export default function UserProfile() {
         const response = await axios.get(`${apiUrl}/cities`);
         setCities(response.data.data); // assuming response.data is an array of cities
       } catch (error) {
-        console.error("Error fetching cities:", error);
       }
     };
 
@@ -62,7 +61,6 @@ export default function UserProfile() {
         const response = await apiClient.get('recipients/profile');
 
         // Update state with the recipient's data
-        console.log(response.data.data);
         setRecipient(response.data.data);
         setFormData({
           contact_first_name: response.data.data.contact_first_name || "",
@@ -76,7 +74,6 @@ export default function UserProfile() {
           city: response.data.data.city?.id || ""
         });
       } catch (error) {
-        console.error("Error fetching recipient data:", error);
       } finally {
         setLoading(false);
       }
@@ -90,12 +87,8 @@ export default function UserProfile() {
   };
 
   const handleLogout = async () => {
-    console.log("Logging out...");
-
     try {
       const response = await apiClient.post('/logout');
-
-      console.log(response.data.message);
 
       // Remove auth data from localStorage
       localStorage.removeItem("authToken");
@@ -105,7 +98,6 @@ export default function UserProfile() {
       setProfileMenuOpen(false);
       navigate("/login");
     } catch (error) {
-      console.error("Error logging out:", error);
     }
   };
 
@@ -182,11 +174,9 @@ export default function UserProfile() {
     try {
       const response = await apiClient.patch(`/recipients/${recipient.id}`, payload);
 
-      console.log('Updated successfully:', response.data);
       toast.success("Profili u përditësua me sukses!");
 
     } catch (error) {
-      console.error('Error updating profile:', error.response?.data || error.message);
       toast.error("Ndodhi një gabim gjatë përditësimit.");
     }
   };

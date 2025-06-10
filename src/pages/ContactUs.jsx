@@ -40,7 +40,6 @@ export default function ContactUs() {
 
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("Error submitting contact form:", error);
       toast.error("Gabim: " + (error.response?.data?.message || "Diçka shkoi keq."));
     } finally {
       setLoading(false);

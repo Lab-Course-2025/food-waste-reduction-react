@@ -42,11 +42,9 @@ const RecipientApplications = () => {
           },
         });
         setApplications(response.data.data);
-        console.log(response.data);
         setTotalPages(response.data.meta.last_page);
         // setLoading(false);
       } catch (error) {
-        console.error("Error fetching donations:", error);
         // setLoading(false);
       }
     };

@@ -54,10 +54,8 @@ export default function FoodDonationPage() {
             statuses: ['active', 'in-wait']
           }
         });
-        console.log(response.data.data);
         setDonations(response.data.data);
       } catch (error) {
-        console.error("Error fetching top donations:", error);
       }
     };
 

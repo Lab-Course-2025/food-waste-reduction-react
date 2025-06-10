@@ -58,7 +58,6 @@ export default function DonationDashboard() {
         setTotalDonations(response.data.meta.total);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching applications:", error);
         setLoading(false);
       }
     };
@@ -85,7 +84,6 @@ export default function DonationDashboard() {
         setDonor(response.data.data);
         setMeta(response.data.meta);
       } catch (error) {
-        console.error("Error fetching donor data:", error);
       } finally {
         setLoading(false);
       }
@@ -95,12 +93,8 @@ export default function DonationDashboard() {
   }, []);
 
   const handleLogout = async () => {
-    console.log("Logging out...");
-
     try {
       const response = await apiClient.post('/logout');
-
-      console.log(response.data.message);
 
       // Remove auth data from localStorage
       localStorage.removeItem("authToken");
@@ -110,7 +104,6 @@ export default function DonationDashboard() {
       setProfileMenuOpen(false);
       navigate("/login");
     } catch (error) {
-      console.error("Error logging out:", error);
     }
   };
 

@@ -56,7 +56,6 @@ function LogIn() {
         setError('Ndodhi një gabim gjatë hyrjes. Provoni përsëri.');
       }
 
-      console.error('Login error:', response?.data || err.message);
     } finally {
       setLoading(false);
     }

@@ -93,7 +93,6 @@ export default function ActiveDonations() {
       toast.success("Aplikimi u krye me sukses!");
       handleCloseModal();
     } catch (error) {
-      console.error("Ndodhi një gabim gjatë aplikimit", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsApplying(false);
@@ -109,7 +108,6 @@ export default function ActiveDonations() {
         const response = await axios.get(`${apiUrl}/cities`);
         setCities(response.data.data);
       } catch (error) {
-        console.error("Error fetching cities:", error);
       }
     };
 
@@ -118,7 +116,6 @@ export default function ActiveDonations() {
         const response = await apiClient.get('/recipient-applications');
         setUserApplications(response.data.data);
       } catch (error) {
-        console.error("Error fetching applications:", error);
       }
     };
 
@@ -147,7 +144,6 @@ export default function ActiveDonations() {
         setDonations(response.data.data);
         setTotalPages(response.data.meta.last_page);
       } catch (error) {
-        console.error("Error fetching donations:", error);
       } finally {
         setLoading(false);
       }
@@ -265,7 +261,7 @@ export default function ActiveDonations() {
                             <>
                               {hasApplied ? (
                                 <Button
-                                  className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600"
+                                  className="flex-1 rounded-lg py-2 text-sm text-white bg-gray-600 pointer-events-none"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -313,13 +309,13 @@ export default function ActiveDonations() {
             <div className="flex justify-between">
               <Button
                 onClick={handleCloseModal}
-                className="bg-gray-500 text-white py-2 px-4 rounded"
+                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
               >
                 Anulo
               </Button>
               <Button
                 onClick={handleConfirmApply}
-                className={`text-white py-2 px-4 rounded ${isApplying ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                className={`text-white py-2 px-4 rounded bg-green-500 hover:bg-green-600 ${isApplying ? 'cursor-not-allowed pointer-events-none' : ''
                   }`}
                 disabled={isApplying}
               >
