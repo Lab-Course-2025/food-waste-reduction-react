@@ -15,6 +15,7 @@ const DonorAcceptedApplications = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [actionType, setActionType] = useState(""); // "completed" or "failed"
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -60,6 +61,7 @@ const DonorAcceptedApplications = () => {
 
   const handleConfirmAction = async () => {
     if (!selectedApplication) return;
+    setIsProcessing(true);
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("authToken");
@@ -85,6 +87,8 @@ const DonorAcceptedApplications = () => {
       }
     } catch (error) {
       toast.error('Ndodhi nje gabim!');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -186,10 +190,17 @@ const DonorAcceptedApplications = () => {
                 Anulo
               </Button>
               <Button
-                className={`px-4 py-2 rounded text-white ${actionType === "completed" ? "bg-green-500 hover:bg-green-600 " : "bg-red-500"}`}
+                className={`px-4 py-2 rounded text-white transition duration-200 ${actionType === "completed"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-red-500 hover:bg-red-600"
+                  } ${isProcessing ? 'pointer-events-none' : ''}`}
                 onClick={handleConfirmAction}
+                disabled={isProcessing}
               >
-                Po, shënoje si {actionType === "completed" ? "të kompletuar" : "dështuar"}
+                {isProcessing
+                  ? `Duke shënuar si ${actionType === "completed" ? "të kompletuar..." : "dështim..."}`
+                  : `Po, shënoje si ${actionType === "completed" ? "të kompletuar" : "dështim"}`
+                }
               </Button>
             </div>
           </div>

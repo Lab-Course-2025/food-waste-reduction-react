@@ -15,6 +15,7 @@ const DonorApplications = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [actionType, setActionType] = useState(""); // "accept" or "reject"
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -54,6 +55,7 @@ const DonorApplications = () => {
 
   const handleConfirmAction = async () => {
     if (!selectedApplication) return;
+    setIsProcessing(true);
 
     try {
       // Update the application status
@@ -73,6 +75,8 @@ const DonorApplications = () => {
       toast.success(`Aplikimi u ${actionType === "accepted" ? "pranua" : "refuzua"} me sukses!`);
     } catch (error) {
       toast.error('Ndodhi një gabim!');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -164,15 +168,22 @@ const DonorApplications = () => {
                 Anulo
               </Button>
               <Button
-                className={`px-4 py-2 rounded text-white transition duration-200 ${actionType === "accepted"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-red-500 hover:bg-red-600"
-                  }`}
+                className={`
+                px-4 py-2 rounded text-white transition duration-200
+                ${actionType === "accepted"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-red-500 hover:bg-red-600"
+                  }
+                  ${isProcessing ? 'pointer-events-none' : ''}
+                `}
                 onClick={handleConfirmAction}
+                disabled={isProcessing} // Optional: disables click via accessibility too
               >
-                Po, {actionType === "accepted" ? "prano" : "refuzo"}
+                {isProcessing
+                  ? (actionType === "accepted" ? "Duke pranuar..." : "Duke refuzuar...")
+                  : `Po, ${actionType === "accepted" ? "prano" : "refuzo"}`
+                }
               </Button>
-
             </div>
           </div>
         </div>
