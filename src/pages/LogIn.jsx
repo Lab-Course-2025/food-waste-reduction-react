@@ -122,7 +122,7 @@ function LogIn() {
 
             <Button
               type="submit"
-              className={`w-full text-white mt-5 ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
+              className={`w-full text-white mt-5 disabled:opacity-50 ${loading ? "pointer-events-none cursor-not-allowed" : ""}`}
               disabled={loading}
             >
               {loading ? "Duke u kyqur..." : "Kyqu"}

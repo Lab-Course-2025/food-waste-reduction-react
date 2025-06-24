@@ -240,10 +240,8 @@ const Recipient = () => {
                 type="submit"
                 disabled={loading}
                 className={`
-                  w-full text-white md:col-span-2
-                  ${loading
-                    ? 'bg-gray-400 cursor-not-allowed hover:bg-gray-400'
-                    : 'hover:bg-orange-600'
+                  w-full text-white md:col-span-2 disabled:opacity-50
+                  ${loading ? 'pointer-events-none cursor-not-allowed' : ''
                   }
                 `}
               >

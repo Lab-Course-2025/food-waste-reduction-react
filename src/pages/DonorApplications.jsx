@@ -169,7 +169,7 @@ const DonorApplications = () => {
               </Button>
               <Button
                 className={`
-                px-4 py-2 rounded text-white transition duration-200
+                px-4 py-2 rounded text-white transition duration-200 disabled:opacity-70
                 ${actionType === "accepted"
                     ? "bg-green-500 hover:bg-green-600"
                     : "bg-red-500 hover:bg-red-600"

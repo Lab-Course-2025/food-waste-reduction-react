@@ -179,7 +179,7 @@ export default function DonationDetails() {
               </Button>
               <Button
                 onClick={handleConfirmApply}
-                className={`text-white py-2 px-4 rounded bg-green-500 hover:bg-green-600 ${isApplying ? 'cursor-not-allowed pointer-events-none' : ''
+                className={`text-white py-2 px-4 rounded bg-green-500 hover:bg-green-600 disabled:opacity-70 ${isApplying ? 'cursor-not-allowed pointer-events-none' : ''
                   }`}
                 disabled={isApplying}
               >
