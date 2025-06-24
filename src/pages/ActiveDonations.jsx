@@ -182,7 +182,7 @@ export default function ActiveDonations() {
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {!loading && donations.length === 0 ? (
                 <div className="col-span-full flex items-center justify-center h-64">
-                  <p className="text-center text-gray-600 text-lg">Nuk ke asnjë donacion aktiv</p>
+                  <p className="text-center text-gray-600 text-lg">Nuk ka asnjë donacion aktiv</p>
                 </div>
               ) : (
                 donations.map((donation) => {
