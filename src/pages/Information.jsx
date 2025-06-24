@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowDown, ChevronLeft, ChevronRight, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import IPhoto from "../assets/information-photo.png";
@@ -333,9 +334,13 @@ const Information = () => {
               Nëse vazhdojmë të punojmë së bashku, mund të krijojmë një
               komunitet më të qëndrueshëm dhe të reduktojmë humbjet ushqimore.
             </p>
-            <Button className="bg-white text-orange-500">
-              Regjistrohuni Falas!
-            </Button>
+            <div className="w-full">
+              <Link to="/donors" className="block w-full">
+                <Button className="w-full bg-orange border border-white text-orange-500">
+                  Regjistrohuni Falas!
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="bg-gray-200">
             <img

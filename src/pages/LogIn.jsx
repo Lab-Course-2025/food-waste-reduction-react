@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Apple, ArrowRight, ArrowLeft } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -131,6 +131,16 @@ function LogIn() {
           </form>
 
           {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
+
+          <div className="mt-6 text-center">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-orange-500 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              Kthehu në faqen kryesore
+            </Link>
+          </div>
 
         </div>
 
