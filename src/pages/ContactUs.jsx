@@ -112,7 +112,7 @@ export default function ContactUs() {
 
                     <Button
                       type="submit"
-                      className={`w-full ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
+                      className={`w-full disabled:opacity-50 ${loading ? "pointer-events-none cursor-not-allowed" : ""}`}
                       disabled={loading}
                     >
                       {loading ? "Duke dërguar..." : "Dërgo"}
