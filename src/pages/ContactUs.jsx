@@ -25,6 +25,10 @@ export default function ContactUs() {
   });
   const [loading, setLoading] = useState(false);
 
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -33,6 +37,15 @@ export default function ContactUs() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const trimmedEmail = formData.email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      toast.error("Ju lutem vendosni një email valid!");
+      setLoading(false);
+      return;
+    }
+
+
 
     try {
       const { data } = await apiClient.post('/contact', formData);
