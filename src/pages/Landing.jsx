@@ -244,11 +244,13 @@ export default function FoodDonationPage() {
           </div>
         </div>
         <div className="mt-10 flex justify-center">
+          <Link to="/information">
           <Button
             onClick={handleLearnMoreClick}
           >
             Mëso më shumë
           </Button>
+          </Link>
         </div>
       </section>
 
@@ -284,7 +286,7 @@ export default function FoodDonationPage() {
             </div>
           </div>
         </div>
-        <div className="mt-6 flex justify-center gap-2">
+        {/* <div className="mt-6 flex justify-center gap-2">
           <button className="rounded-full p-1 hover:bg-gray-100">
             <ChevronLeft className="h-5 w-5 text-gray-400" />
           </button>
@@ -300,7 +302,7 @@ export default function FoodDonationPage() {
           <button className="rounded-full p-1 hover:bg-gray-100">
             <ChevronRight className="h-5 w-5 text-gray-400" />
           </button>
-        </div>
+        </div> */}
       </section>
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}>

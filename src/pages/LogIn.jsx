@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Apple, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Apple, ArrowRight, ArrowLeft } from 'lucide-react';
 import loginSvg from "./../assets/login.svg";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -65,9 +65,20 @@ function LogIn() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-5xl w-full flex rounded-2xl shadow-lg overflow-hidden">
         {/* Left side - Login Form */}
-        <div className="w-full md:w-1/2 p-8 sm:p-12 bg-white ">
+        <div className="w-full md:w-1/2 px-4 pt-4 sm:px-6 sm:pt-6 bg-white relative">
+
+          <div className="mt-0 pt-0 mb-8">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm text-[#FF4C00FF] hover:text-[#CC3B00FF] transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              Kthehu në faqen kryesore
+            </Link>
+          </div>
+
           <h1 className="text-3xl font-bold mb-8 text-center">Kyqu</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 pb-10">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -131,6 +142,8 @@ function LogIn() {
           </form>
 
           {error && <p className="text-red-500 text-sm text-center font-semibold mt-5">{error}</p>}
+
+
 
         </div>
 

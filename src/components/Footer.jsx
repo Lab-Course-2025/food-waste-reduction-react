@@ -4,6 +4,7 @@ import logo from "../assets/logo.png";
 import Button from "./Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -71,12 +72,24 @@ const Footer = () => {
               <span className="font-bold">Ndihmo Tjetrin</span>
             </div>
             <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-400">
-              <a href="#">Rreth Nesh</a>
-              <a href="#">Donacionet</a>
-              <a href="#">Qendrat e ndihmave</a>
-              <a href="#">Na kontaktoni</a>
-              <a href="#">FAQs</a>
-              <a href="#">Karriera</a>
+              <Link
+                to="/information"
+                className="text-sm text-gray-400"
+              >
+                Rreth Nesh
+              </Link>
+              <Link
+                to="/active-donations"
+                className="text-sm text-gray-400"
+              >
+                Donacionet
+              </Link>
+              <Link
+                to="/contact-us"
+                className="text-sm text-gray-400"
+              >
+                Na kontaktoni
+              </Link>
             </nav>
           </div>
 
@@ -88,16 +101,23 @@ const Footer = () => {
             </div>
             <div className="mb-4 md:mb-0">© 2025 Ndihmo Tjetrin</div>
             <div className="flex space-x-4">
-              <a href="#" aria-label="Twitter">
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="Facebook">
+              <a href="https://www.facebook.com/uibm02/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook">
+
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Instagram">
+              <a href="https://www.instagram.com/uibm_net/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="YouTube">
+              <a href="https://www.youtube.com/@universitetiisaboletini-mi6352"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube">
                 <Youtube className="h-4 w-4" />
               </a>
             </div>
